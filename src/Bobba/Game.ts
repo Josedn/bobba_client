@@ -33,7 +33,9 @@ export default class Game {
     }
 
     gameLoop(delta: number) {
-
+        if (this.currentRoom != null) {
+            this.currentRoom.tick(delta);
+        }
     }
 
     onResize() {
