@@ -1,17 +1,17 @@
 {
-  "name": "bobba_client",
+  "name": "gfx-test",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/jest": "23.3.11",
-    "@types/node": "10.12.18",
-    "@types/react": "16.7.18",
-    "@types/react-dom": "16.0.11",
-    "pixi.js": "^4.8.4",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-scripts": "2.1.2",
-    "typescript": "3.2.2"
+    "@types/jest": "24.0.11",
+    "@types/node": "11.12.0",
+    "@types/react": "16.8.10",
+    "@types/react-dom": "16.8.3",
+    "pixi.js": "^4.8.7",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "2.1.8",
+    "typescript": "3.3.4000"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -28,8 +28,7 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Josedn/bobba_client.git"
+  "devDependencies": {
+    "@types/pixi.js": "^4.8.7"
   }
 }
