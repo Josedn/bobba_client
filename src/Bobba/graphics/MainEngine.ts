@@ -40,10 +40,12 @@ export default class MainEngine {
         this.setMouseInteractions();
     }
 
-    loadResource(item: any, callback: Function) {
-        PIXI.loader
-            .add(item)
-            .load((loader, resources) => callback(loader, resources));
+    loadResource(item: any): Promise<void> {
+        return new Promise((resolve, reject) => {
+            PIXI.loader
+                .add(item)
+                .load((loader, resources) => resolve());
+        });
     }
 
     getResource(name: string): PIXI.loaders.Resource {

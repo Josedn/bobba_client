@@ -108,11 +108,11 @@ export default class RoomEngine {
     }
 
     handleTouchMove = (mouseX: number, mouseY: number) => {
-        this.handleMouseMovement(mouseX, mouseY, false);
+        this.handleMouseMovement(mouseX, mouseY, true);
     }
 
     handleTouchStart = (mouseX: number, mouseY: number) => {
-        this.handleMouseMovement(mouseX, mouseY, true);
+        this.handleMouseMovement(mouseX, mouseY, false);
     }
 
     handleMouseDoubleClick = (mouseX: number, mouseY: number) => {

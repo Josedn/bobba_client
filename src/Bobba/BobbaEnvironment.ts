@@ -1,11 +1,11 @@
 import Game from "./Game";
 
 export default class BobbaEnvironment {
-    static gameInstance: Game;
+    static _gameInstance: Game;
     static getGame(): Game {
-        if (this.gameInstance == null) {
-            this.gameInstance = new Game();
+        if (this._gameInstance == null) {
+            this._gameInstance = new Game();
         }
-        return this.gameInstance;
+        return this._gameInstance;
     }
 }

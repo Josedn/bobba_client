@@ -2,15 +2,18 @@ import Room from "./rooms/Room";
 import RoomModel from "./rooms/RoomModel";
 import MainEngine from './graphics/MainEngine';
 import GenericSprites from "./graphics/GenericSprites";
+import AvatarImager from "./imagers/avatars/AvatarImager";
+import AvatarInfo from "./imagers/avatars/AvatarInfo";
 
 export default class Game {
     currentRoom: Room | null;
     engine: MainEngine;
-
+    avatarImager: AvatarImager;
 
     constructor() {
         this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
         this.currentRoom = null;
+        this.avatarImager = new AvatarImager();
         this.loadGame();
     }
 
@@ -20,7 +23,17 @@ export default class Game {
             GenericSprites.ROOM_SELECTED_TILE,
         ];
 
-        this.engine.loadResource(sprites, this.continueGameLoading);
+        Promise.all([
+            this.avatarImager.initialize(),
+            this.engine.loadResource(sprites)
+        ]).then(() => {
+
+            this.avatarImager.generateGeneric(new AvatarInfo("hd-190-10.lg-3023-1408.ch-215-91.hr-893-45", 2, 2, ["wlk"], "std", 2, false, "n"));
+
+            this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
+        }).catch((err) => {
+            console.log("Error loading game:" + err);
+        });
     }
 
     onMouseMove = (x: number, y: number, isMouseDragging: boolean) => {
@@ -57,10 +70,6 @@ export default class Game {
         if (this.currentRoom != null) {
             this.currentRoom.engine.onResize();
         }
-    }
-
-    continueGameLoading = () => {
-        this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
     }
 
     gameLoop = (delta: number) => {
