@@ -1,46 +1,38 @@
-import * as PIXI from 'pixi.js';
 import Room from "./rooms/Room";
 import RoomModel from "./rooms/RoomModel";
+import MainEngine from './graphics/MainEngine';
+import GenericSprites from "./graphics/GenericSprites";
 
 export default class Game {
     currentRoom: Room | null;
-    pixiApp: PIXI.Application | null;
+    engine: MainEngine;
 
     constructor() {
+        this.engine = new MainEngine(this.gameLoop);
+        this.currentRoom = null;
+        this.loadGame();
+    }
+
+    loadGame() {
+        const sprites: string[] = [
+            GenericSprites.ROOM_TILE,
+            GenericSprites.ROOM_SELECTED_TILE,
+        ];
+
+        PIXI.loader
+            .add(sprites)
+            .load(() => {
+                this.continueGameLoading();
+            });
+    }
+
+    continueGameLoading() {
         this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
-        this.pixiApp = null;
-        this.initializeGfx();
     }
 
-    initializeGfx() {
-        const app = new PIXI.Application({
-            width: window.innerWidth,
-            height: window.innerHeight,
-            antialias: false,
-            transparent: false,
-            resolution: 1,
-        });
-
-        app.renderer.autoResize = true;
-        app.renderer.backgroundColor = 0x061639;
-
-        app.ticker.add(delta => this.gameLoop(delta));
-        document.body.appendChild(app.view);
-
-        window.addEventListener('resize', this.onResize, false);
-
-        this.pixiApp = app;
-    }
-
-    gameLoop(delta: number) {
+    gameLoop = (delta: number) => {
         if (this.currentRoom != null) {
             this.currentRoom.tick(delta);
-        }
-    }
-
-    onResize() {
-        if (this.pixiApp != null) {
-            //this.pixiApp.renderer.resize(window.innerWidth, window.innerHeight);
         }
     }
 }
