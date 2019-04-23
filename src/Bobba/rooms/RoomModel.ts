@@ -35,4 +35,8 @@ export default class RoomModel {
 
         return new RoomModel(maxX, maxY, doorX, doorY, doorZ, doorRot, map);
     }
+
+    isValidTile(x: number, y: number): boolean {
+        return (x >= 0 && x < this.maxX && y >= 0 && y < this.maxY && this.heightMap[x][y] != 0);
+    }
 }

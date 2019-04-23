@@ -6,11 +6,14 @@ import GenericSprites from "./graphics/GenericSprites";
 export default class Game {
     currentRoom: Room | null;
     engine: MainEngine;
+    isMouseDragging: boolean;
 
     constructor() {
         this.engine = new MainEngine(this.gameLoop, this.onResize);
         this.currentRoom = null;
+        this.isMouseDragging = false;
         this.loadGame();
+        this.setMouseInteractions();
     }
 
     loadGame() {
@@ -20,6 +23,18 @@ export default class Game {
         ];
 
         this.engine.loadResource(sprites, this.continueGameLoading);
+    }
+
+    onMouseMove = (x: number, y: number) => {
+        if (this.currentRoom != null) {
+            this.currentRoom.engine.handleMouseMovement(x, y, this.isMouseDragging);
+        }
+    }
+
+    setMouseInteractions() {
+        this.engine.pixiApp.view.addEventListener('mousemove', (evt) => {
+            this.onMouseMove(evt.x, evt.y);
+        }, false);
     }
 
     onResize = () => {
