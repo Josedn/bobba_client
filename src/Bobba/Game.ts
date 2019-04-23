@@ -6,14 +6,12 @@ import GenericSprites from "./graphics/GenericSprites";
 export default class Game {
     currentRoom: Room | null;
     engine: MainEngine;
-    isMouseDragging: boolean;
+
 
     constructor() {
-        this.engine = new MainEngine(this.gameLoop, this.onResize);
+        this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
         this.currentRoom = null;
-        this.isMouseDragging = false;
         this.loadGame();
-        this.setMouseInteractions();
     }
 
     loadGame() {
@@ -25,16 +23,34 @@ export default class Game {
         this.engine.loadResource(sprites, this.continueGameLoading);
     }
 
-    onMouseMove = (x: number, y: number) => {
+    onMouseMove = (x: number, y: number, isMouseDragging: boolean) => {
         if (this.currentRoom != null) {
-            this.currentRoom.engine.handleMouseMovement(x, y, this.isMouseDragging);
+            this.currentRoom.engine.handleMouseMovement(x, y, isMouseDragging);
         }
     }
 
-    setMouseInteractions() {
-        this.engine.pixiApp.view.addEventListener('mousemove', (evt) => {
-            this.onMouseMove(evt.x, evt.y);
-        }, false);
+    onTouchStart = (x: number, y: number) => {
+        if (this.currentRoom != null) {
+            this.currentRoom.engine.handleTouchStart(x, y);
+        }
+    }
+
+    onTouchMove = (x: number, y: number) => {
+        if (this.currentRoom != null) {
+            this.currentRoom.engine.handleTouchMove(x, y);
+        }
+    }
+
+    onMouseClick = (x: number, y: number) => {
+        if (this.currentRoom != null) {
+            this.currentRoom.engine.handleMouseClick(x, y);
+        }
+    }
+
+    onMouseDoubleClick = (x: number, y: number) => {
+        if (this.currentRoom != null) {
+            this.currentRoom.engine.handleMouseDoubleClick(x, y);
+        }
     }
 
     onResize = () => {

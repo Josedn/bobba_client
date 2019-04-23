@@ -12,12 +12,16 @@ export default class RoomEngine {
     container: Container;
     floorSprites: Sprite[];
     selectedTileSprite: Sprite | null;
+    lastMousePositionX: number;
+    lastMousePositionY: number;
 
     constructor(room: Room) {
         this.room = room;
         this.container = new Container();
         this.floorSprites = [];
         this.selectedTileSprite = null;
+        this.lastMousePositionX = 0;
+        this.lastMousePositionY = 0;
         this.onResize();
         this.setFloor();
         this.setSelectedTile();
@@ -88,7 +92,35 @@ export default class RoomEngine {
 
     handleMouseMovement = (mouseX: number, mouseY: number, isDrag: boolean) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
+        if (isDrag) {
+            const diffX = Math.round(this.lastMousePositionX - mouseX);
+            const diffY = Math.round(this.lastMousePositionY - mouseY);
+            this.container.x -= diffX;
+            this.container.y -= diffY;
+        }
+        this.lastMousePositionX = Math.round(mouseX);
+        this.lastMousePositionY = Math.round(mouseY);
         this.updateSelectedTile(x, y)
+    }
+
+    handleMouseClick = (mouseX: number, mouseY: number) => {
+        
+    }
+
+    handleTouchMove = (mouseX: number, mouseY: number) => {
+        this.handleMouseMovement(mouseX, mouseY, false);
+    }
+
+    handleTouchStart = (mouseX: number, mouseY: number) => {
+        this.handleMouseMovement(mouseX, mouseY, true);
+    }
+
+    handleMouseDoubleClick = (mouseX: number, mouseY: number) => {
+        const { x, y } = this.globalToTile(mouseX, mouseY);
+        const model = this.room.model;
+        if (!model.isValidTile(x, y)) {
+            this.centerCamera();
+        }
     }
 
     updateSelectedTile(tileX: number, tileY: number) {
