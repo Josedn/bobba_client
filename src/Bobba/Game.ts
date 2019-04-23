@@ -8,7 +8,7 @@ export default class Game {
     engine: MainEngine;
 
     constructor() {
-        this.engine = new MainEngine(this.gameLoop);
+        this.engine = new MainEngine(this.gameLoop, this.onResize);
         this.currentRoom = null;
         this.loadGame();
     }
@@ -19,14 +19,16 @@ export default class Game {
             GenericSprites.ROOM_SELECTED_TILE,
         ];
 
-        PIXI.loader
-            .add(sprites)
-            .load(() => {
-                this.continueGameLoading();
-            });
+        this.engine.loadResource(sprites, this.continueGameLoading);
     }
 
-    continueGameLoading() {
+    onResize = () => {
+        if (this.currentRoom != null) {
+            this.currentRoom.engine.onResize();
+        }
+    }
+
+    continueGameLoading = () => {
         this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
     }
 

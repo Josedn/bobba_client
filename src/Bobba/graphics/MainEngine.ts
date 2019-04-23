@@ -2,8 +2,12 @@ import * as PIXI from 'pixi.js';
 
 export default class MainEngine {
     pixiApp: PIXI.Application;
+    onResizeHandler: Function;
 
-    constructor(gameLoop: Function) {
+    constructor(gameLoop: Function, onResize: Function) {
+
+        this.onResizeHandler = onResize;
+
         const app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
@@ -19,7 +23,23 @@ export default class MainEngine {
         document.body.appendChild(app.view);
 
         this.pixiApp = app;
-        //window.addEventListener('resize', onResize, false);
+
+        window.addEventListener('resize', this.onResize, false);
+    }
+
+    loadResource(item: any, callback: Function) {
+        PIXI.loader
+        .add(item)
+        .load((loader, resources) => callback(loader, resources));
+    }
+
+    getResource(name: string): PIXI.loaders.Resource {
+        return PIXI.loader.resources[name];
+    }
+
+    onResize = () => {
+        this.pixiApp.renderer.resize(MainEngine.getViewportWidth(), MainEngine.getViewportHeight());
+        this.onResizeHandler();
     }
 
     getMainStage(): PIXI.Container {
