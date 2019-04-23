@@ -37,8 +37,6 @@ export default class RoomEngine {
     setSelectedTile() {
         const floorTexture = BobbaEnvironment.getGame().engine.getResource(GenericSprites.ROOM_SELECTED_TILE).texture;
         this.selectedTileSprite = new Sprite(floorTexture);
-        this.selectedTileSprite.x = 0;
-        this.selectedTileSprite.y = 0;
         this.selectedTileSprite.visible = false;
         this.container.addChild(this.selectedTileSprite);
     }
@@ -79,7 +77,7 @@ export default class RoomEngine {
         const offsetX = this.container.x;
         const offsetY = this.container.y;
 
-        const xminusy = (x - 32 - offsetX) / GenericSprites.ROOM_TILE_WIDTH;
+        const xminusy = (x - GenericSprites.ROOM_TILE_WIDTH - offsetX) / GenericSprites.ROOM_TILE_WIDTH;
         const xplusy = (y - offsetY) / GenericSprites.ROOM_TILE_HEIGHT;
 
         const tileX = Math.floor((xminusy + xplusy) / 2);
