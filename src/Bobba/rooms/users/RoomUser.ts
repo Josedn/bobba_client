@@ -36,7 +36,8 @@ export default class RoomUser {
 
         this.loaded = false;
         this.sprite = new Sprite();
-
+        this.sprite.interactive = true;
+        this.sprite.on('click', (event) => this.handleClick());
         const game = BobbaEnvironment.getGame();
         this.textures = game.ghostTextures;
         this.updateTexture();
@@ -70,6 +71,10 @@ export default class RoomUser {
 
     tick(delta: number) {
 
+    }
+
+    handleClick() {
+        console.log("click on " + this.name);
     }
 
     loadTextures(): Promise<any> {

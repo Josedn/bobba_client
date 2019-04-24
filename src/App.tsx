@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-import BobbaEnvironment from './bobba/BobbaEnvironment';
 
 class App extends Component {
 

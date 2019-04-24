@@ -5,11 +5,13 @@ import GenericSprites from "./graphics/GenericSprites";
 import AvatarImager from "./imagers/avatars/AvatarImager";
 import { TextureDictionary, loadGhostTextures } from "./imagers/avatars/AvatarHelper";
 import PromiseQueue from "./misc/PromiseQueue";
+import FurniImager from "./imagers/furniture/FurniImager";
 
 export default class Game {
     currentRoom: Room | null;
     engine: MainEngine;
     avatarImager: AvatarImager;
+    furniImager: FurniImager;
     ghostTextures: TextureDictionary | null;
     promiseQueue: PromiseQueue;
 
@@ -19,6 +21,7 @@ export default class Game {
         this.ghostTextures = null;
         this.promiseQueue = new PromiseQueue();
         this.avatarImager = new AvatarImager();
+        this.furniImager = new FurniImager();
         this.loadGame();
     }
 
@@ -30,6 +33,7 @@ export default class Game {
 
         Promise.all([
             this.avatarImager.initialize(),
+            this.furniImager.initialize(),
             this.engine.loadResource(sprites)
         ]).then(() => {
             loadGhostTextures(this.avatarImager, this.engine).then(ghostTextures => {

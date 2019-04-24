@@ -7,6 +7,9 @@ import MainEngine from "../graphics/MainEngine";
 const CAMERA_CENTERED_OFFSET_X = 3;
 const CAMERA_CENTERED_OFFSET_Y = 114;
 
+const ROOM_SELECTED_TILE_OFFSET_X = 0;
+const ROOM_SELECTED_TILE_OFFSET_Y = -3;
+
 export default class RoomEngine {
     room: Room;
     container: Container;
@@ -73,14 +76,6 @@ export default class RoomEngine {
                     currentSprite.x = localPos.x;
                     currentSprite.y = localPos.y;
 
-                    currentSprite.interactive = true;
-
-                    //sprite hitbox
-                    /*currentSprite.anchor.set(0.5, 0.5);
-                    currentSprite.on('click', (event) => {
-                        console.log(event.target.x);
-                        console.log(event.target.y);
-                    });*/
                     this.floorSprites.push(currentSprite);
                     this.container.addChild(currentSprite);
                 }
@@ -143,8 +138,8 @@ export default class RoomEngine {
         const localPos = this.tileToLocal(tileX, tileY, 0);
         if (this.selectedTileSprite != null) {
             this.selectedTileSprite.visible = model.isValidTile(tileX, tileY);
-            this.selectedTileSprite.x = localPos.x;
-            this.selectedTileSprite.y = localPos.y;
+            this.selectedTileSprite.x = localPos.x + ROOM_SELECTED_TILE_OFFSET_X;
+            this.selectedTileSprite.y = localPos.y + ROOM_SELECTED_TILE_OFFSET_Y;
         }
     }
 
