@@ -45,7 +45,7 @@ export const loadAvatarTextures = (avatarImager: AvatarImager, engine: MainEngin
             }
         }
         //sit
-        for (let i = 0; i <= 7; i++) {
+        for (let i = 0; i <= 7; i = i+2) {
             promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit"], "std", 0));
             //eyb
             promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit"], "eyb", 0));
@@ -55,7 +55,7 @@ export const loadAvatarTextures = (avatarImager: AvatarImager, engine: MainEngin
             }
         }
         //sit-wav
-        for (let i = 0; i <= 7; i++) {
+        for (let i = 0; i <= 7; i = i+2) {
             for (let j = 0; j <= 1; j++) {
                 promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit", "wav"], "std", j));
                 promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit", "wav"], "spk", j));

@@ -35,7 +35,9 @@ export default class Game {
             loadGhostTextures(this.avatarImager, this.engine).then(ghostTextures => {
                 this.ghostTextures = ghostTextures;
                 this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
-                this.currentRoom.roomUserManager.addUserToRoom(1, 4, 4, 0, 2, "Relv", "hd-190-10.lg-3023-1408.ch-215-91.hr-893-45");
+                this.currentRoom.roomUserManager.addUserToRoom(1, 4, 4, 0, 0, "Relv", "hd-190-10.lg-3023-1408.ch-215-91.hr-893-45");
+
+                this.currentRoom.roomUserManager.addUserToRoom(2, 4, 6, 0, 4, "Grav", "ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10");
             });
         }).catch((err) => {
             console.log("Error loading game:" + err);
