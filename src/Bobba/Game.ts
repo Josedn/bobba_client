@@ -3,16 +3,21 @@ import RoomModel from "./rooms/RoomModel";
 import MainEngine from './graphics/MainEngine';
 import GenericSprites from "./graphics/GenericSprites";
 import AvatarImager from "./imagers/avatars/AvatarImager";
-import AvatarInfo from "./imagers/avatars/AvatarInfo";
+import { TextureDictionary, loadGhostTextures } from "./imagers/avatars/AvatarHelper";
+import PromiseQueue from "./misc/PromiseQueue";
 
 export default class Game {
     currentRoom: Room | null;
     engine: MainEngine;
     avatarImager: AvatarImager;
+    ghostTextures: TextureDictionary | null;
+    promiseQueue: PromiseQueue;
 
     constructor() {
         this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
         this.currentRoom = null;
+        this.ghostTextures = null;
+        this.promiseQueue = new PromiseQueue();
         this.avatarImager = new AvatarImager();
         this.loadGame();
     }
@@ -27,10 +32,11 @@ export default class Game {
             this.avatarImager.initialize(),
             this.engine.loadResource(sprites)
         ]).then(() => {
-
-            this.avatarImager.generateGeneric(new AvatarInfo("hd-190-10.lg-3023-1408.ch-215-91.hr-893-45", 2, 2, ["wlk"], "std", 2, false, "n"));
-
-            this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
+            loadGhostTextures(this.avatarImager, this.engine).then(ghostTextures => {
+                this.ghostTextures = ghostTextures;
+                this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
+                this.currentRoom.roomUserManager.addUserToRoom(1, 4, 4, 0, 2, "Relv", "hd-190-10.lg-3023-1408.ch-215-91.hr-893-45");
+            });
         }).catch((err) => {
             console.log("Error loading game:" + err);
         });

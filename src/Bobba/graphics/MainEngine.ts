@@ -40,6 +40,12 @@ export default class MainEngine {
         this.setMouseInteractions();
     }
 
+    loadTextureFromImage(img: HTMLImageElement): PIXI.Texture {
+        let base = new PIXI.BaseTexture(img),
+            texture = new PIXI.Texture(base);
+        return texture;
+    }
+
     loadResource(item: any): Promise<void> {
         return new Promise((resolve, reject) => {
             PIXI.loader

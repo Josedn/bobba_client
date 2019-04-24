@@ -79,7 +79,15 @@ export default class AvatarImager {
             });
     }
 
-    generateGeneric(avatarInfo: AvatarInfo) {
+    generate(avatarInfo: AvatarInfo): Promise<HTMLImageElement> {
+        return this._generateGeneric(avatarInfo, false);
+    }
+
+    generateGhost(avatarInfo: AvatarInfo): Promise<HTMLImageElement> {
+        return this._generateGeneric(avatarInfo, true);
+    }
+
+    _generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLImageElement> {
         const activeParts: any = {};
         activeParts.rect = this.getActivePartSet(avatarInfo.isHeadOnly ? "head" : "figure");
         activeParts.head = this.getActivePartSet("head");
@@ -132,9 +140,9 @@ export default class AvatarImager {
                             continue;
                         }
 
-                        //if (isGhost && (activeParts.gesture.includes(type) || activeParts.eye.includes(type))) {
-                        //continue;
-                        //}
+                        if (isGhost && (activeParts.gesture.includes(type) || activeParts.eye.includes(type))) {
+                            continue;
+                        }
 
                         let drawDirection = avatarInfo.direction;
                         let drawAction = null;
@@ -193,7 +201,7 @@ export default class AvatarImager {
             }
         }
 
-        const finalPromise = new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
 
             Promise.all(offsetsPromises).then(() => {
                 let tempCanvas: any = document.createElement('canvas');
@@ -281,8 +289,7 @@ export default class AvatarImager {
 
                                 let img: any = chunk.resource;
                                 if (chunk.color != null) {
-                                    //img = this.tintSprite(img, chunk.color, (isGhost ? 170 : 255));
-                                    img = this.tintSprite(img, chunk.color, 255);
+                                    img = this.tintSprite(img, chunk.color, (isGhost ? 170 : 255));
                                 }
                                 if (chunk.isFlip) {
                                     posX = -(posX + img.width - avatarInfo.rectWidth + 1);

@@ -14,11 +14,13 @@ export default class RoomEngine {
     selectedTileSprite: Sprite | null;
     lastMousePositionX: number;
     lastMousePositionY: number;
+    userSprites: SpriteDictionary;
 
     constructor(room: Room) {
         this.room = room;
         this.container = new Container();
         this.floorSprites = [];
+        this.userSprites = {};
         this.selectedTileSprite = null;
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
@@ -45,6 +47,19 @@ export default class RoomEngine {
         this.container.addChild(this.selectedTileSprite);
     }
 
+    addUserSprite(id: number, sprite: Sprite) {
+        this.userSprites[id] = sprite;
+        this.container.addChild(sprite);
+    }
+
+    removeUserSprite(id: number) {
+        const sprite = this.userSprites[id];
+        if (sprite != null) {
+            this.container.removeChild(sprite);
+            delete(this.userSprites[id]);
+        }
+    }
+
     setFloor() {
         const floorTexture = BobbaEnvironment.getGame().engine.getResource(GenericSprites.ROOM_TILE).texture;
         this.floorSprites = [];
@@ -54,7 +69,7 @@ export default class RoomEngine {
                 const tile = model.heightMap[i][j];
                 if (tile > 0) {
                     const currentSprite = new Sprite(floorTexture);
-                    const localPos = this.tileToLocal(i, j);
+                    const localPos = this.tileToLocal(i, j, 0);
                     currentSprite.x = localPos.x;
                     currentSprite.y = localPos.y;
 
@@ -73,8 +88,8 @@ export default class RoomEngine {
         }
     }
 
-    tileToLocal(x: number, y: number): Point {
-        return new Point((x - y) * GenericSprites.ROOM_TILE_WIDTH, (x + y) * GenericSprites.ROOM_TILE_HEIGHT);
+    tileToLocal(x: number, y: number, z: number): Point {
+        return new Point((x - y) * GenericSprites.ROOM_TILE_WIDTH, (x + y) * GenericSprites.ROOM_TILE_HEIGHT - (z * GenericSprites.ROOM_TILE_HEIGHT));
     }
 
     globalToTile(x: number, y: number): Point {
@@ -125,7 +140,7 @@ export default class RoomEngine {
 
     updateSelectedTile(tileX: number, tileY: number) {
         const model = this.room.model;
-        const localPos = this.tileToLocal(tileX, tileY);
+        const localPos = this.tileToLocal(tileX, tileY, 0);
         if (this.selectedTileSprite != null) {
             this.selectedTileSprite.visible = model.isValidTile(tileX, tileY);
             this.selectedTileSprite.x = localPos.x;
@@ -136,4 +151,8 @@ export default class RoomEngine {
     tick(delta: number) {
 
     }
+}
+
+interface SpriteDictionary {
+    [id: number]: Sprite;
 }

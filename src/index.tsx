@@ -4,7 +4,8 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import BobbaEnvironment from './bobba/BobbaEnvironment';
 
-BobbaEnvironment.getGame();
+const win: any = window;
+win.mainGame = BobbaEnvironment.getGame();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
