@@ -40,6 +40,7 @@ export default class AvatarInfo {
                 break;
             case "d":
                 this.isDownsampled = true;
+                break;
             case "n":
             default:
                 break;
@@ -131,7 +132,7 @@ export default class AvatarInfo {
 
                 case "swm":
                     this.drawAction.swm = "swm";
-                    if (this.gesture == "spk") {
+                    if (this.gesture === "spk") {
                         this.drawAction.speak = "sws";
                     }
                     break;
@@ -144,17 +145,17 @@ export default class AvatarInfo {
                     break;
             }
         }
-        if (this.drawAction.sit == "sit") {
+        if (this.drawAction.sit === "sit") {
             if (this.direction >= 2 && this.direction <= 4) {
                 this.drawOrder = "sit";
-                if (this.drawAction.handRight == "drk" && this.direction >= 2 && this.direction <= 3) {
+                if (this.drawAction.handRight === "drk" && this.direction >= 2 && this.direction <= 3) {
                     this.drawOrder += ".rh-up";
-                } else if (this.drawAction.handLeft && this.direction == 4) {
+                } else if (this.drawAction.handLeft && this.direction === 4) {
                     this.drawOrder += ".lh-up";
                 }
-            } else if (this.drawAction.body == "lay") {
+            } else if (this.drawAction.body === "lay") {
                 this.drawOrder = "lay";
-            } else if (this.drawAction.handRight == "drk" && this.direction >= 0 && this.direction <= 3) {
+            } else if (this.drawAction.handRight === "drk" && this.direction >= 0 && this.direction <= 3) {
                 this.drawOrder = "rh-up";
             } else if (this.drawAction.handLeft && this.direction >= 4 && this.direction <= 6) {
                 this.drawOrder = "lh-up";

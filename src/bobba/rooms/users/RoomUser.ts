@@ -1,5 +1,5 @@
 import BobbaEnvironment from "../../BobbaEnvironment";
-import AvatarInfo, { Direction } from "../../imagers/avatars/AvatarInfo";
+import { Direction } from "../../imagers/avatars/AvatarInfo";
 import { Texture, Sprite } from "pixi.js";
 import Room from "../Room";
 import { loadAvatarTextures, getAvatarSpriteKey } from "../../imagers/avatars/AvatarHelper";
@@ -100,7 +100,7 @@ export default class RoomUser {
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
-        const offsetX = (this.rot == 6 || this.rot == 5 || this.rot == 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
+        const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
         this.sprite.x = x + offsetX;
         this.sprite.y = y + ROOM_USER_SPRITE_OFFSET_Y;
     }

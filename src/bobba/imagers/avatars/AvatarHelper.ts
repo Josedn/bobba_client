@@ -15,50 +15,50 @@ export const loadAvatarTextures = (avatarImager: AvatarImager, engine: MainEngin
         const promises: Promise<any>[] = [];
         //std
         for (let i = 0; i <= 7; i++) {
-            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["std"], "std", 0));
+            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["std"], "std", 0));
             //eyb
-            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["std"], "eyb", 0));
+            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["std"], "eyb", 0));
             //spk
             for (let j = 0; j <= 1; j++) {
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["std"], "spk", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["std"], "spk", j));
             }
         }
         //wlk
         for (let i = 0; i <= 7; i++) {
             for (let j = 0; j <= 3; j++) {
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["wlk"], "std", j));
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["wlk"], "spk", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["wlk"], "std", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["wlk"], "spk", j));
             }
         }
         //wav
         for (let i = 0; i <= 7; i++) {
             for (let j = 0; j <= 1; j++) {
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["wav"], "std", j));
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["wav"], "spk", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["wav"], "std", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["wav"], "spk", j));
             }
         }
         //wlk-wav
         for (let i = 0; i <= 7; i++) {
             for (let j = 0; j <= 3; j++) {
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["wlk", "wav"], "std", j));
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["wlk", "wav"], "spk", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["wlk", "wav"], "std", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["wlk", "wav"], "spk", j));
             }
         }
         //sit
         for (let i = 0; i <= 7; i = i+2) {
-            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit"], "std", 0));
+            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit"], "std", 0));
             //eyb
-            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit"], "eyb", 0));
+            promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit"], "eyb", 0));
             //spk
             for (let j = 0; j <= 1; j++) {
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit"], "spk", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit"], "spk", j));
             }
         }
         //sit-wav
         for (let i = 0; i <= 7; i = i+2) {
             for (let j = 0; j <= 1; j++) {
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit", "wav"], "std", j));
-                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, <Direction>i, <Direction>i, ["sit", "wav"], "spk", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit", "wav"], "std", j));
+                promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit", "wav"], "spk", j));
             }
         }
 

@@ -25,7 +25,7 @@ export default class RoomModel {
         const doorZ = 0.0;
         const doorRot = 2;
 
-        const map: number[][] = new Array();
+        const map: number[][] = [];
         for (let i = 0; i < maxX; i++) {
             map.push([]);
             for (let j = 0; j < maxY; j++) {
@@ -37,6 +37,6 @@ export default class RoomModel {
     }
 
     isValidTile(x: number, y: number): boolean {
-        return (x >= 0 && x < this.maxX && y >= 0 && y < this.maxY && this.heightMap[x][y] != 0);
+        return (x >= 0 && x < this.maxX && y >= 0 && y < this.maxY && this.heightMap[x][y] !== 0);
     }
 }

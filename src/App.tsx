@@ -3,10 +3,6 @@ import './App.css';
 
 class App extends Component {
 
-  constructor(props: Readonly<{}>) {
-    super(props);
-  }
-
   render() {
     return (
       <div>

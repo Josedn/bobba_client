@@ -86,12 +86,12 @@ export default class MainEngine {
             this.isMouseDragging = false;
         }, false);
         this.pixiApp.view.addEventListener('touchmove', (evt) => {
-            if (evt.touches.length == 1) {
+            if (evt.touches.length === 1) {
                 this.onTouchMoveHandler(evt.touches[0].clientX, evt.touches[0].clientY);
             }
         }, false);
         this.pixiApp.view.addEventListener('touchstart', (evt) => {
-            if (evt.touches.length == 1) {
+            if (evt.touches.length === 1) {
                 this.onTouchStartHandler(evt.touches[0].clientX, evt.touches[0].clientY);
             }
         }, false);

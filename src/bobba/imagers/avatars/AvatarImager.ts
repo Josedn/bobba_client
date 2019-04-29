@@ -217,10 +217,10 @@ export default class AvatarImager {
                         chunksPromises.push(chunk.downloadAsync());
                     } else {
                         let flippedType = this.partsets.partSet[chunk.type]['flipped-set-type'];
-                        if (flippedType != "") {
+                        if (flippedType !== "") {
                             chunk.resType = flippedType;
                         }
-                        if (this.offsets[chunk.lib].data == null || this.offsets[chunk.lib].data[chunk.getResourceName()] == null || this.offsets[chunk.lib].data[chunk.getResourceName()].flipped && chunk.action == "std") {
+                        if (chunk.action === "std" && (this.offsets[chunk.lib].data == null || this.offsets[chunk.lib].data[chunk.getResourceName()] == null || this.offsets[chunk.lib].data[chunk.getResourceName()].flipped)) {
                             //console.log("Not found... " + chunk.getResourceName());
                             //chunk.resType = chunk.type;
                             chunk.resAction = "spk";
@@ -243,10 +243,10 @@ export default class AvatarImager {
                             chunk.resFrame = chunk.frame;
                             chunk.resAction = chunk.action;
                             //chunk.resType = chunk.type;
-                            if (chunk.direction == 7) {
+                            if (chunk.direction === 7) {
                                 chunk.resDirection = 3;
                             }
-                            if (chunk.direction == 3) {
+                            if (chunk.direction === 3) {
                                 chunk.resDirection = 7;
                             }
                         }
@@ -260,7 +260,7 @@ export default class AvatarImager {
                             chunk.resType = flippedType;
                             chunk.resDirection = chunk.direction;
                         }
-                        if (this.offsets[chunk.lib].data == null || this.offsets[chunk.lib].data[chunk.getResourceName()] == null || this.offsets[chunk.lib].data[chunk.getResourceName()].flipped && chunk.action == "std") { //////// ?????? CHECK THIS
+                        if (chunk.action === "std" && (this.offsets[chunk.lib].data == null || this.offsets[chunk.lib].data[chunk.getResourceName()] == null || this.offsets[chunk.lib].data[chunk.getResourceName()].flipped)) { //////// ?????? CHECK THIS
                             //console.log("Not found... " + chunk.getResourceName());
                             chunk.resAction = "spk";
                             chunk.resType = chunk.type;
@@ -318,7 +318,7 @@ export default class AvatarImager {
 
     getActivePartSet(partSet: string): any {
         const activeParts = this.partsets['activePartSet'][partSet]['activePart'];
-        if (activeParts == null || activeParts.length == 0) {
+        if (activeParts == null || activeParts.length === 0) {
             return null;
         }
         return activeParts;
@@ -326,7 +326,7 @@ export default class AvatarImager {
 
     getDrawOrder(action: string, direction: Direction): any {
         const drawOrder = this.draworder[action][direction];
-        if (drawOrder == null || drawOrder.length == 0) {
+        if (drawOrder == null || drawOrder.length === 0) {
             return null;
         }
         return drawOrder;
@@ -373,7 +373,7 @@ export default class AvatarImager {
 
     getPartUniqueName(type: string, partId: number): string {
         let uniqueName = this.figuremap[type][partId];
-        if (uniqueName == null && type == "hrb") {
+        if (uniqueName == null && type === "hrb") {
             uniqueName = this.figuremap["hr"][partId];
         }
         if (uniqueName == null) {
@@ -430,11 +430,11 @@ export default class AvatarImager {
         for (let y = 0; y < height; y++) {
             let inpos = y * width * 4;
             for (let x = 0; x < width; x++) {
-                let pr = imageData.data[inpos++];
-                let pg = imageData.data[inpos++];
-                let pb = imageData.data[inpos++];
+                inpos++; //r
+                inpos++; //g
+                inpos++; //b
                 let pa = imageData.data[inpos++];
-                if (pa != 0) {
+                if (pa !== 0) {
                     imageData.data[inpos - 1] = alpha; //A
                     imageData.data[inpos - 2] = Math.round(rgb.b * imageData.data[inpos - 2] / 255); //B
                     imageData.data[inpos - 3] = Math.round(rgb.g * imageData.data[inpos - 3] / 255); //G
