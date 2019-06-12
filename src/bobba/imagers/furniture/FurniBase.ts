@@ -1,12 +1,14 @@
+import { Size } from "./FurniImager";
+
 export default class FurniBase {
     itemId: number;
     itemName: string;
-    size: number;
+    size: Size;
     promise: Promise<any> | null;
     states: object;
-    assets: object;
+    assets: any;
 
-    constructor(itemId: number, itemName: string, size: number) {
+    constructor(itemId: number, itemName: string, size: Size) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.size = size;

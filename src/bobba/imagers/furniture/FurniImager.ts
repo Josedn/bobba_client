@@ -51,17 +51,18 @@ export default class FurniImager {
         return null;
     }
 
-    _drawItem(furniBase: FurniBase, direction: Direction, state: number, frame: number) {
+    _drawItem(furniBase: FurniBase, direction: Direction, state: number, frame: number): any[] {
+        const chunks: any[] = [];
         const offset = this._getOffset(furniBase.itemName);
-        const { colorId } = this.splitItemNameAndColor(furniBase.itemName);
+        const { itemName, colorId } = this.splitItemNameAndColor(furniBase.itemName);
         if (offset == null) {
-            return;
+            return [];
         }
 
         const visualization = offset.visualization[furniBase.size];
 
         for (let i = -1; i < visualization.layerCount; i++) {
-            let layerData: any = { id: i };
+            let layerData: any = { id: i, frame: 0 };
 
             if (i === -1) {
                 layerData.alpha = 77;
@@ -74,7 +75,7 @@ export default class FurniImager {
                     }
                 }
             }
-            if (visualization.directions != null && visualization.directions[direction]) {
+            if (visualization.directions != null && visualization.directions[direction] != null) {
                 for (let overrideLayer of visualization.directions[direction]) {
                     // eslint-disable-next-line
                     if (overrideLayer.layerId == i && overrideLayer.z != null) {
@@ -101,14 +102,30 @@ export default class FurniImager {
                 }
             }
 
-
-            //console.log(layerData);
+            layerData.resourceName = this._buildResourceName(itemName, furniBase.size, i, direction, layerData.frame);
+            if (furniBase.assets[layerData.resourceName] != null) {
+                chunks.push(layerData);
+            }
         }
+
+        return chunks;
+    }
+
+    _getLayerName(layerId: number): string {
+        if (layerId === -1) {
+            return "sd";
+        }
+        return String.fromCharCode(97 + layerId);
+    }
+
+    _buildResourceName(itemName: string, size: Size, layerId: number, direction: Direction, frame: number): string {
+        let resourceName = itemName + "_" + size + "_" + this._getLayerName(layerId) + "_" + direction + "_" + frame;
+        return resourceName;
     }
 
     generateItem(type: ItemType, itemId: number) {
         this._loadItemBase(type, itemId, 64).then(furniBase => {
-            this._drawItem(furniBase, 0, 0, 0);
+            console.log(this._drawItem(furniBase, 0, 0, 0));
 
         }).catch(err => {
             console.log(err);
@@ -167,7 +184,7 @@ export default class FurniImager {
                     if (fixedName.startsWith(size.toString())) {
                         if (asset.source == null) {
                             assetsPromises.push(this._downloadAssetAsync(itemName, asset.name).then(img => {
-                                this.bases[type][itemId].assets[asset.name] = img;
+                                this.bases[type][itemId].assets[asset.name] = { img, x: asset.x, y: asset.y };
                             }).catch(err => {
                                 reject(err);
                             }));
@@ -175,10 +192,9 @@ export default class FurniImager {
                     }
                 }
                 this.bases[type][itemId].states = states;
-                
+
                 Promise.all(assetsPromises).then(() => {
 
-                    
                     resolve(this.bases[type][itemId]);
                 }).catch(err => {
                     reject(err);

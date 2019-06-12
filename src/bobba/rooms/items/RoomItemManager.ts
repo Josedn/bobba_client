@@ -15,12 +15,12 @@ export default class RoomItemManager {
         return (id in this.items) ? this.items[id] : null;
     }
 
-    addItemToRoom(id: number, x: number, y: number, z: number, rot: Direction) {
+    addItemToRoom(id: number, x: number, y: number, z: number, rot: Direction, baseId: number) {
         const item = this.getItem(id);
         if (item == null) {
-            const newUser = new RoomItem(id, x, y, z, rot, this.room);
-            //this.room.engine.addUserSprite(id, newUser.sprite);
-            this.items[id] = newUser;
+            const newItem = new RoomItem(id, x, y, z, rot, baseId, this.room);
+            this.room.engine.addRoomItemSprite(newItem.sprite);
+            this.items[id] = newItem;
         } else {
             //user.updateParams(x, y...);
         }

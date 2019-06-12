@@ -23,7 +23,7 @@ export default class RoomEngine {
         this.room = room;
         this.container = new Container();
         this.floorSprites = [];
-        this.userSprites = {};
+        this.userSprites = {};   
         this.selectedTileSprite = null;
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
@@ -52,6 +52,10 @@ export default class RoomEngine {
 
     addUserSprite(id: number, sprite: Sprite) {
         this.userSprites[id] = sprite;
+        this.container.addChild(sprite);
+    }
+
+    addRoomItemSprite(sprite: Sprite) {
         this.container.addChild(sprite);
     }
 
