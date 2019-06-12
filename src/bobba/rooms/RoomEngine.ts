@@ -18,12 +18,14 @@ export default class RoomEngine {
     lastMousePositionX: number;
     lastMousePositionY: number;
     userSprites: SpriteDictionary;
+    roomItemSprites: ContainerDictionary;
 
     constructor(room: Room) {
         this.room = room;
         this.container = new Container();
         this.floorSprites = [];
-        this.userSprites = {};   
+        this.userSprites = {};
+        this.roomItemSprites = {};
         this.selectedTileSprite = null;
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
@@ -55,15 +57,24 @@ export default class RoomEngine {
         this.container.addChild(sprite);
     }
 
-    addRoomItemSprite(sprite: Sprite) {
-        this.container.addChild(sprite);
+    addRoomItemSpriteContainer(id: number, container: Container) {
+        this.roomItemSprites[id] = container;
+        this.container.addChild(container);
+    }
+
+    removeRoomItemSprite(id: number) {
+        const sprite = this.roomItemSprites[id];
+        if (sprite != null) {
+            this.container.removeChild(sprite);
+            delete (this.roomItemSprites[id]);
+        }
     }
 
     removeUserSprite(id: number) {
         const sprite = this.userSprites[id];
         if (sprite != null) {
             this.container.removeChild(sprite);
-            delete(this.userSprites[id]);
+            delete (this.userSprites[id]);
         }
     }
 
@@ -118,7 +129,7 @@ export default class RoomEngine {
     }
 
     handleMouseClick = (mouseX: number, mouseY: number) => {
-        
+
     }
 
     handleTouchMove = (mouseX: number, mouseY: number) => {
@@ -154,4 +165,8 @@ export default class RoomEngine {
 
 interface SpriteDictionary {
     [id: number]: Sprite;
+}
+
+interface ContainerDictionary {
+    [id: number]: Container;
 }

@@ -1,9 +1,8 @@
 import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
-import { Sprite, Texture } from "pixi.js";
-import GenericSprites from "../../graphics/GenericSprites";
+import { Container, Sprite } from "pixi.js";
+import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
-import FurniBase from "../../imagers/furniture/FurniBase";
 
 export default class RoomItem {
     id: number;
@@ -13,10 +12,10 @@ export default class RoomItem {
     rot: Direction;
 
     baseId: number;
-    base: FurniBase | null;
-    sprite: Sprite;
+    sprites: Sprite[];
+    baseItem: BaseItem | null;
+    container: Container;
     loaded: boolean;
-    texture: Texture;
 
     room: Room;
 
@@ -27,15 +26,13 @@ export default class RoomItem {
         this._z = z;
         this.rot = rot;
         this.baseId = baseId;
-        this.base = null;
+        this.baseItem = null;
         this.room = room;
 
         this.loaded = false;
-        this.sprite = new Sprite();
-        this.sprite.interactive = true;
-        this.sprite.on('click', (event) => this.handleClick());
-        this.texture = BobbaEnvironment.getGame().engine.getResource(GenericSprites.FURNI_PLACEHOLDER).texture;
-        this.updateTexture();
+        this.sprites = [];
+        this.container = new Container();
+
         this.updateSpritePosition();
         this.loadBase();
     }
@@ -64,25 +61,48 @@ export default class RoomItem {
         this.updateSpritePosition();
     }
 
-    updateTexture() {
-        if (this.texture != null)
-            this.sprite.texture = this.texture;
+    updateTextures() {
+        if (this.baseItem == null) {
+
+            //this.sprite.texture = this.texture;
+        } else {
+
+        }
     }
 
     tick(delta: number) {
 
     }
 
+    setSprites() {
+        if (this.baseItem != null) {
+            for (let layer of this.baseItem.furniBase.getLayers(this.rot, 0, 0)) {
+                const texture = this.baseItem.getTexture(layer.resourceName);
+                if (texture != null) {
+                    const sprite = new Sprite(texture);
+                    sprite.x = -layer.asset.x;
+                    sprite.y = -layer.asset.y;
+
+                    this.container.addChild(sprite);
+                }
+            }
+            
+        }
+    }
+
     loadBase() {
-        BobbaEnvironment.getGame().furniImager._loadItemBase('roomitem', 13, 64).then(furniBase => {
-            this.base = furniBase;
+        BobbaEnvironment.getGame().baseItemManager.getItem('roomitem', this.baseId).then(baseItem => {
+            this.baseItem = baseItem;
+            this.setSprites();
+        }).catch(err => {
+            console.log("Error with item: " + err);
         });
     }
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
-        this.sprite.x = x + 0;
-        this.sprite.y = y + 0;
+        this.container.x = x + 0;
+        this.container.y = y + 0;
     }
 
     handleClick() {

@@ -1,4 +1,5 @@
 import FurniBase from "./FurniBase";
+import FurniAsset from "./FurniAsset";
 
 export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni/";
 
@@ -33,106 +34,16 @@ export default class FurniImager {
         return null;
     }
 
-    splitItemNameAndColor(itemName: string): NameColorPair {
-        let colorId = 0;
-        if (itemName.includes("*")) {
-            const longFurniName = itemName.split("*");
-            itemName = longFurniName[0];
-            colorId = parseInt(longFurniName[1]);
-        }
-        return { itemName, colorId }
-    }
-
-    _getOffset(rawItemName: string): any {
-        const { itemName } = this.splitItemNameAndColor(rawItemName);
-        if (this.offsets[itemName] != null) {
-            return this.offsets[itemName].data;
-        }
-        return null;
-    }
-
-    _drawItem(furniBase: FurniBase, direction: Direction, state: number, frame: number): any[] {
-        const chunks: any[] = [];
-        const offset = this._getOffset(furniBase.itemName);
-        const { itemName, colorId } = this.splitItemNameAndColor(furniBase.itemName);
-        if (offset == null) {
-            return [];
-        }
-
-        const visualization = offset.visualization[furniBase.size];
-
-        for (let i = -1; i < visualization.layerCount; i++) {
-            let layerData: any = { id: i, frame: 0 };
-
-            if (i === -1) {
-                layerData.alpha = 77;
-            }
-            if (visualization.layers != null) {
-                for (let layer of visualization.layers) {
-                    // eslint-disable-next-line
-                    if (layer.id == i) {
-                        layerData = layer;
-                    }
-                }
-            }
-            if (visualization.directions != null && visualization.directions[direction] != null) {
-                for (let overrideLayer of visualization.directions[direction]) {
-                    // eslint-disable-next-line
-                    if (overrideLayer.layerId == i && overrideLayer.z != null) {
-                        layerData.z = overrideLayer.z;
-                    }
-                }
-            }
-
-            if (visualization.colors != null && visualization.colors[colorId] != null) {
-                for (let colorLayer of visualization.colors[colorId]) {
-                    // eslint-disable-next-line
-                    if (colorLayer.layerId == i) {
-                        layerData.color = colorLayer.color;
-                    }
-                }
-            }
-
-            if (visualization.animations != null && visualization.animations[state] != null) {
-                for (let animationLayer of visualization.animations[state].layers) {
-                    // eslint-disable-next-line
-                    if (animationLayer.layerId == i && animationLayer.frameSequence != null) {
-                        layerData.frame = animationLayer.frameSequence[frame % animationLayer.frameSequence.length];
-                    }
-                }
-            }
-
-            layerData.resourceName = this._buildResourceName(itemName, furniBase.size, i, direction, layerData.frame);
-            if (furniBase.assets[layerData.resourceName] != null) {
-                chunks.push(layerData);
-            }
-        }
-
-        return chunks;
-    }
-
-    _getLayerName(layerId: number): string {
-        if (layerId === -1) {
-            return "sd";
-        }
-        return String.fromCharCode(97 + layerId);
-    }
-
-    _buildResourceName(itemName: string, size: Size, layerId: number, direction: Direction, frame: number): string {
-        let resourceName = itemName + "_" + size + "_" + this._getLayerName(layerId) + "_" + direction + "_" + frame;
-        return resourceName;
-    }
-
-    generateItem(type: ItemType, itemId: number) {
+    /*generateItem(type: ItemType, itemId: number) {
         this._loadItemBase(type, itemId, 64).then(furniBase => {
             console.log(this._drawItem(furniBase, 0, 0, 0));
 
         }).catch(err => {
             console.log(err);
         });
-    }
+    }*/
 
-    _loadItemBase(type: ItemType, itemId: number, size: Size): Promise<FurniBase> {
+    loadItemBase(type: ItemType, itemId: number, size: Size): Promise<FurniBase> {
         const rawItemName = this.findItemNameById(type, itemId);
         if (rawItemName == null) {
             return new Promise((resolve, reject) => {
@@ -140,7 +51,7 @@ export default class FurniImager {
             });
         }
 
-        const { itemName } = this.splitItemNameAndColor(rawItemName);
+        const { itemName } = splitItemNameAndColor(rawItemName);
 
         if (this.bases[type][itemId] != null && this.bases[type][itemId].promise != null) {
             return this.bases[type][itemId].promise;
@@ -151,12 +62,14 @@ export default class FurniImager {
         if (this.offsets[itemName] == null) {
             this.offsets[itemName] = { promise: this.fetchOffsetAsync(itemName), data: {} };
         }
-        const offsetPromise = this.offsets[itemName].promise as Promise<object>;
+        const offsetPromise = this.offsets[itemName].promise as Promise<any>;
 
         const finalPromise: Promise<FurniBase> = new Promise((resolve, reject) => {
-            offsetPromise.then(() => {
-                const visualization = this.offsets[itemName].data.visualization[64];
+            offsetPromise.then(offset => {
+                const visualization = offset.visualization[64];
                 let states = { "0": { count: 1 } } as any;
+
+                this.bases[type][itemId].offset = offset;
 
                 if (visualization.animations != null) {
                     for (let stateId in visualization.animations) {
@@ -178,13 +91,13 @@ export default class FurniImager {
 
                 const assetsPromises = [];
 
-                for (let assetId in this.offsets[itemName].data.assets) {
-                    const asset = this.offsets[itemName].data.assets[assetId];
+                for (let assetId in offset.assets) {
+                    const asset = offset.assets[assetId];
                     const fixedName = asset.name.split(itemName + '_')[1] as String;
                     if (fixedName.startsWith(size.toString())) {
                         if (asset.source == null) {
-                            assetsPromises.push(this._downloadAssetAsync(itemName, asset.name).then(img => {
-                                this.bases[type][itemId].assets[asset.name] = { img, x: asset.x, y: asset.y };
+                            assetsPromises.push(this._downloadImageAsync(itemName, asset.name).then(img => {
+                                this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y);
                             }).catch(err => {
                                 reject(err);
                             }));
@@ -194,12 +107,10 @@ export default class FurniImager {
                 this.bases[type][itemId].states = states;
 
                 Promise.all(assetsPromises).then(() => {
-
                     resolve(this.bases[type][itemId]);
                 }).catch(err => {
                     reject(err);
                 });
-
 
             }).catch(err => {
                 reject("Error downloading offset for " + itemName + " reason: " + err);
@@ -209,9 +120,25 @@ export default class FurniImager {
         return finalPromise;
     }
 
-    _downloadAssetAsync(itemName: string, resourceName: string) {
+    initialize(): Promise<void> {
+        const p = this._loadFiles();
+        return Promise.all(p).then(() => {
+            this.ready = true;
+        });
+    }
+
+    _loadFiles(): Promise<void>[] {
+        return [
+            this._fetchJsonAsync(LOCAL_RESOURCES_URL + "furnidata.json")
+                .then(data => {
+                    this.furnidata = data;
+                }),
+        ];
+    }
+
+    _downloadImageAsync(itemName: string, resourceName: string): Promise<HTMLImageElement> {
         let img = new Image();
-        let d = new Promise((resolve, reject) => {
+        let d: Promise<HTMLImageElement> = new Promise((resolve, reject) => {
             img.onload = () => {
                 //console.log("downloaded " + this.itemName + " -> " + this.resourceName);
                 resolve(img);
@@ -226,23 +153,7 @@ export default class FurniImager {
         return d;
     }
 
-    initialize(): Promise<void> {
-        const p = this.loadFiles();
-        return Promise.all(p).then(() => {
-            this.ready = true;
-        });
-    }
-
-    loadFiles(): Promise<void>[] {
-        return [
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + "furnidata.json")
-                .then(data => {
-                    this.furnidata = data;
-                }),
-        ];
-    }
-
-    fetchJsonAsync(URL: string): Promise<object> {
+    _fetchJsonAsync(URL: string): Promise<object> {
         return new Promise((resolve, reject) => {
 
             const options: RequestInit = {
@@ -260,7 +171,7 @@ export default class FurniImager {
 
     fetchOffsetAsync(uniqueName: string): Promise<object> {
         return new Promise((resolve, reject) => {
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
+            this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
                 this.offsets[uniqueName].data = data;
                 resolve(data);
             }).catch(err => reject(err));
@@ -270,5 +181,15 @@ export default class FurniImager {
 
 export type Size = 32 | 64;
 export type ItemType = 'roomitem' | 'wallitem';
-interface NameColorPair { itemName: string, colorId: number };
+export interface NameColorPair { itemName: string, colorId: number };
 export type Direction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
+export const splitItemNameAndColor = (itemName: string): NameColorPair => {
+    let colorId = 0;
+    if (itemName.includes("*")) {
+        const longFurniName = itemName.split("*");
+        itemName = longFurniName[0];
+        colorId = parseInt(longFurniName[1]);
+    }
+    return { itemName, colorId }
+};
