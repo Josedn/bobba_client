@@ -3,13 +3,15 @@ export default class FurniBase {
     itemName: string;
     size: number;
     promise: Promise<any> | null;
-    sprites: object;
+    states: object;
+    assets: object;
 
     constructor(itemId: number, itemName: string, size: number) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.size = size;
-        this.sprites = {};
         this.promise = null;
+        this.states = {};
+        this.assets = {};
     }
 }

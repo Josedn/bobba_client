@@ -1,6 +1,6 @@
+import { Texture, Sprite } from "pixi.js";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { Direction } from "../../imagers/avatars/AvatarInfo";
-import { Texture, Sprite } from "pixi.js";
 import Room from "../Room";
 import { loadAvatarTextures, getAvatarSpriteKey } from "../../imagers/avatars/AvatarHelper";
 
