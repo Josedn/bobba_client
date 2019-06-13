@@ -46,7 +46,7 @@ export default class RoomEngine {
     }
 
     setSelectedTile() {
-        const floorTexture = BobbaEnvironment.getGame().engine.getResource(ROOM_SELECTED_TILE).texture;
+        const floorTexture = BobbaEnvironment.getGame().engine.getTexture(ROOM_SELECTED_TILE);
         this.selectedTileSprite = new Sprite(floorTexture);
         this.selectedTileSprite.visible = false;
         this.container.addChild(this.selectedTileSprite);
@@ -79,7 +79,7 @@ export default class RoomEngine {
     }
 
     setFloor() {
-        const floorTexture = BobbaEnvironment.getGame().engine.getResource(ROOM_TILE).texture;
+        const floorTexture = BobbaEnvironment.getGame().engine.getTexture(ROOM_TILE);
         this.floorSprites = [];
         const model = this.room.model;
         for (let i = 0; i < model.maxX; i++) {

@@ -42,7 +42,8 @@ export default class RoomItem {
         this.loaded = false;
         this.container = new Container();
 
-        const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getResource(FURNI_PLACEHOLDER).texture);
+        const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(FURNI_PLACEHOLDER));
+        
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
 

@@ -39,7 +39,7 @@ export default class Game {
         Promise.all([
             this.avatarImager.initialize(),
             this.furniImager.initialize(),
-            this.engine.loadResource(sprites)
+            this.engine.loadGlobalTextures(sprites)
         ]).then(() => {
             loadGhostTextures(this.avatarImager, this.engine).then(ghostTextures => {
                 this.ghostTextures = ghostTextures;
@@ -62,7 +62,7 @@ export default class Game {
 
             });
         }).catch((err) => {
-            console.log("Error loading game:" + err);
+            console.log("Error loading game: " + err);
         });
     }
 

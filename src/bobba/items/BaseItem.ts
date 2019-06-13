@@ -24,7 +24,7 @@ export default class BaseItem {
     }
 
     _loadTexture(image: HTMLImageElement, key: string) {
-        this.textures[key] = BobbaEnvironment.getGame().engine.loadTextureFromImage(image);
+        this.textures[key] = BobbaEnvironment.getGame().engine.getTextureFromImage(image);
     }
 
 }

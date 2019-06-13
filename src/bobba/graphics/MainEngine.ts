@@ -9,6 +9,7 @@ export default class MainEngine {
     onMouseClickHandler: Function;
     onMouseDoubleClickHandler: Function;
     isMouseDragging: boolean;
+    globalTextures: TextureDictionary;
 
     constructor(gameLoop: Function, onResize: Function, onMouseMove: Function, onTouchStart: Function, onTouchMove: Function, onMouseClick: Function, onMouseDoubleClick: Function) {
         this.isMouseDragging = false;
@@ -18,6 +19,7 @@ export default class MainEngine {
         this.onTouchStartHandler = onTouchStart;
         this.onMouseClickHandler = onMouseClick;
         this.onMouseDoubleClickHandler = onMouseDoubleClick;
+        this.globalTextures = {};
 
         const app = new PIXI.Application({
             width: window.innerWidth,
@@ -40,22 +42,33 @@ export default class MainEngine {
         this.setMouseInteractions();
     }
 
-    loadTextureFromImage(img: HTMLImageElement): PIXI.Texture {
+    loadGlobalTextures(texturesUrl: string[]): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const loader = PIXI.Loader.shared;
+            loader.add(texturesUrl);
+            loader.load((loader: PIXI.Loader, resources: any) => {
+                for (let resourceId in resources) {
+                    this.globalTextures[resourceId] = resources[resourceId].texture;
+                }
+            });
+
+            loader.onError.add(() => reject('Cannot load global textures'));
+            loader.onComplete.add(() => resolve());
+        });
+    }
+
+    getTextureFromImage(img: HTMLImageElement): PIXI.Texture {
         let base = new PIXI.BaseTexture(img),
             texture = new PIXI.Texture(base);
         return texture;
     }
 
-    loadResource(item: any): Promise<void> {
-        return new Promise((resolve, reject) => {
-            PIXI.loader
-                .add(item)
-                .load((loader, resources) => resolve());
-        });
-    }
+    /*loadTextureFromImageUrl(url: string): PIXI.Texture {
+        return new PIXI.Texture(PIXI.BaseTexture.from(url));
+    }*/
 
-    getResource(name: string): PIXI.loaders.Resource {
-        return PIXI.loader.resources[name];
+    getTexture(name: string): PIXI.Texture {
+        return this.globalTextures[name];
     }
 
     onResize = () => {
@@ -102,4 +115,8 @@ export default class MainEngine {
             this.onMouseDoubleClickHandler(evt.x, evt.y);
         }, false);
     }
+}
+
+export interface TextureDictionary {
+    [id: string]: PIXI.Texture;
 }

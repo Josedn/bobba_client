@@ -83,12 +83,12 @@ const loadUniqueTexture = (avatarImager: AvatarImager, engine: MainEngine, textu
     if (isGhost) {
         return avatarImager.generateGhost(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, "n"))
             .then(image => {
-                textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.loadTextureFromImage(image);
+                textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.getTextureFromImage(image);
             });
     } else {
         return avatarImager.generate(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, "n"))
             .then(image => {
-                textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.loadTextureFromImage(image);
+                textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.getTextureFromImage(image);
             });
     }
 
