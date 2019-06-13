@@ -95,19 +95,15 @@ export default class FurniImager {
                     const asset = offset.assets[assetId];
                     const fixedName = asset.name.split(itemName + '_')[1] as String;
                     if (fixedName.startsWith(size.toString())) {
-                        if (asset.source == null) {
-                            assetsPromises.push(this._downloadImageAsync(itemName, asset.name).then(img => {
-                                this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y, false);
-                            }).catch(err => {
-                                reject(err);
-                            }));
-                        } else {
-                            assetsPromises.push(this._downloadImageAsync(itemName, asset.source).then(img => {
-                                this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y, true);
-                            }).catch(err => {
-                                reject(err);
-                            }));
+                        let resourceName = asset.name;
+                        if (asset.source != null) {
+                            resourceName = asset.source;
                         }
+                        assetsPromises.push(this._downloadImageAsync(itemName, resourceName).then(img => {
+                            this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === '1');
+                        }).catch(err => {
+                            reject(err);
+                        }));
                     }
                 }
                 this.bases[type][itemId].states = states;
