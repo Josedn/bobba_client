@@ -101,6 +101,8 @@ export default class FurniImager {
                             }).catch(err => {
                                 reject(err);
                             }));
+                        } else {
+                            
                         }
                     }
                 }

@@ -1,15 +1,20 @@
 import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite, BLEND_MODES } from "pixi.js";
 import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
+
+const FRAME_SPEED = 5;
 
 export default class RoomItem {
     id: number;
     _x: number;
     _y: number;
     _z: number;
+    _state: number;
     rot: Direction;
+    _frame: number;
+    _frameCounter: number;
 
     baseId: number;
     sprites: Sprite[];
@@ -24,10 +29,14 @@ export default class RoomItem {
         this._x = x;
         this._y = y;
         this._z = z;
+        this._state = 0;
         this.rot = rot;
         this.baseId = baseId;
         this.baseItem = null;
         this.room = room;
+
+        this._frame = 0;
+        this._frameCounter = 0;
 
         this.loaded = false;
         this.sprites = [];
@@ -61,32 +70,53 @@ export default class RoomItem {
         this.updateSpritePosition();
     }
 
-    updateTextures() {
-        if (this.baseItem == null) {
-
-            //this.sprite.texture = this.texture;
-        } else {
-
-        }
+    _nextPrivateFrame() {
+        this._frame++;
+        this.setSprites();
     }
 
     tick(delta: number) {
-
+        this._frameCounter += delta;
+        if (this._frameCounter >= FRAME_SPEED) {
+            this._nextPrivateFrame();
+            this._frameCounter = 0;
+        }
     }
 
     setSprites() {
+        this.container.removeChildren();
         if (this.baseItem != null) {
-            for (let layer of this.baseItem.furniBase.getLayers(this.rot, 0, 0)) {
+            let actualState = 0;
+            let actualFrame = 0;
+            if (this.baseItem.furniBase.states[this._state] != null) {
+                actualState = this._state;
+                actualFrame = this._frame % this.baseItem.furniBase.states[this._state].count;
+            }
+            for (let layer of this.baseItem.furniBase.getLayers(this.rot, actualState, actualFrame)) {
+
                 const texture = this.baseItem.getTexture(layer.resourceName);
                 if (texture != null) {
                     const sprite = new Sprite(texture);
                     sprite.x = -layer.asset.x;
                     sprite.y = -layer.asset.y;
 
+                    if (layer.ink != null) {
+                        if (layer.ink === 'ADD') {
+                            sprite.blendMode = BLEND_MODES.ADD;
+                        }
+                    }
+
+                    if (layer.alpha != null) {
+                        sprite.alpha = layer.alpha / 255;
+                    }
+
+                    if (layer.color != null) {
+                        sprite.tint = layer.color;
+                    }
+
                     this.container.addChild(sprite);
                 }
             }
-            
         }
     }
 

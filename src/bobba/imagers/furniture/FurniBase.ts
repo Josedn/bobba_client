@@ -1,5 +1,5 @@
 import { Size, Direction, splitItemNameAndColor } from "./FurniImager";
-import { FurniAssetDictionary } from "./FurniAsset";
+import FurniAsset, { FurniAssetDictionary } from "./FurniAsset";
 
 export default class FurniBase {
     itemId: number;
@@ -20,48 +20,52 @@ export default class FurniBase {
         this.offset = {};
     }
 
-    getLayers(direction: Direction, state: number, frame: number): any[] {
+    getLayers(direction: Direction, state: number, frame: number): LayerData[] {
         const chunks: any[] = [];
         const { itemName, colorId } = splitItemNameAndColor(this.itemName);
 
         const visualization = this.offset.visualization[this.size];
         for (let i = -1; i < visualization.layerCount; i++) {
-            let layerData: any = { id: i, frame: 0 };
+            let layerData: any = { id: i, frame: 0, resourceName: '' };
 
             if (i === -1) {
                 layerData.alpha = 77;
             }
             if (visualization.layers != null) {
                 for (let layer of visualization.layers) {
-                    // eslint-disable-next-line
-                    if (layer.id == i) {
-                        layerData = layer;
+                    if (parseInt(layer.id) === i) {
+                        if (layer.ink != null) {
+                            layerData.ink = layer.ink;
+                        }
+                        if (layer.alpha != null) {
+                            layerData.alpha = parseInt(layer.alpha);
+                        }
+                        if (layer.ignoreMouse != null) {
+                            layerData.ignoreMouse = layer.ignoreMouse;
+                        }
                     }
                 }
             }
             if (visualization.directions != null && visualization.directions[direction] != null) {
                 for (let overrideLayer of visualization.directions[direction]) {
-                    // eslint-disable-next-line
-                    if (overrideLayer.layerId == i && overrideLayer.z != null) {
-                        layerData.z = overrideLayer.z;
+                    if (parseInt(overrideLayer.layerId) === i && overrideLayer.z != null) {
+                        layerData.z = parseInt(overrideLayer.z);
                     }
                 }
             }
 
             if (visualization.colors != null && visualization.colors[colorId] != null) {
                 for (let colorLayer of visualization.colors[colorId]) {
-                    // eslint-disable-next-line
-                    if (colorLayer.layerId == i) {
-                        layerData.color = colorLayer.color;
+                    if (parseInt(colorLayer.layerId) === i) {
+                        layerData.color = parseInt(colorLayer.color, 16);
                     }
                 }
             }
 
             if (visualization.animations != null && visualization.animations[state] != null) {
                 for (let animationLayer of visualization.animations[state].layers) {
-                    // eslint-disable-next-line
-                    if (animationLayer.layerId == i && animationLayer.frameSequence != null) {
-                        layerData.frame = animationLayer.frameSequence[frame % animationLayer.frameSequence.length];
+                    if (parseInt(animationLayer.layerId) === i && animationLayer.frameSequence != null) {
+                        layerData.frame = parseInt(animationLayer.frameSequence[frame % animationLayer.frameSequence.length]);
                     }
                 }
             }
@@ -76,6 +80,18 @@ export default class FurniBase {
         return chunks;
     }
 }
+
+export interface LayerData {
+    id: number,
+    resourceName: string,
+    asset: FurniAsset,
+    frame: number,
+    alpha?: number,
+    color?: number,
+    ink?: string,
+    ignoreMouse?: string,
+    z?: number,
+};
 
 const buildResourceName = (itemName: string, size: Size, layerId: number, direction: Direction, frame: number): string => {
     let resourceName = itemName + "_" + size + "_" + getLayerName(layerId) + "_" + direction + "_" + frame;
