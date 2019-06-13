@@ -97,12 +97,16 @@ export default class FurniImager {
                     if (fixedName.startsWith(size.toString())) {
                         if (asset.source == null) {
                             assetsPromises.push(this._downloadImageAsync(itemName, asset.name).then(img => {
-                                this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y);
+                                this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y, false);
                             }).catch(err => {
                                 reject(err);
                             }));
                         } else {
-                            
+                            assetsPromises.push(this._downloadImageAsync(itemName, asset.source).then(img => {
+                                this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y, true);
+                            }).catch(err => {
+                                reject(err);
+                            }));
                         }
                     }
                 }

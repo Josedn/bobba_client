@@ -97,8 +97,14 @@ export default class RoomItem {
                 const texture = this.baseItem.getTexture(layer.resourceName);
                 if (texture != null) {
                     const sprite = new Sprite(texture);
+
                     sprite.x = -layer.asset.x;
                     sprite.y = -layer.asset.y;
+
+                    if (layer.asset.isFlipped) {
+                        sprite.x = layer.asset.x;
+                        sprite.scale.x = -1;
+                    }
 
                     if (layer.ink != null) {
                         if (layer.ink === 'ADD') {
