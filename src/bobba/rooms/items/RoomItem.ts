@@ -72,7 +72,7 @@ export default class RoomItem {
 
     _nextPrivateFrame() {
         this._frame++;
-        this.setSprites();
+        this.updateTextures();
     }
 
     tick(delta: number) {
@@ -84,19 +84,37 @@ export default class RoomItem {
     }
 
     setSprites() {
-        this.container.removeChildren();
+        if (this.baseItem != null) {
+            const layerCount = parseInt(this.baseItem.furniBase.offset.visualization[this.baseItem.furniBase.size].layerCount) + 1;
+
+            for (let i = 0; i < layerCount; i++) {
+                const sprite = new Sprite();
+                sprite.visible = false;
+                sprite.interactive = true;
+                sprite.on('click', this.handleClick);
+                this.sprites.push(sprite);
+                this.container.addChild(sprite);
+            }
+            this.updateTextures();
+        }
+    }
+
+    updateTextures() {
         if (this.baseItem != null) {
             let actualState = 0;
             let actualFrame = 0;
+            let layerIndex = 0;
             if (this.baseItem.furniBase.states[this._state] != null) {
                 actualState = this._state;
                 actualFrame = this._frame % this.baseItem.furniBase.states[this._state].count;
             }
             for (let layer of this.baseItem.furniBase.getLayers(this.rot, actualState, actualFrame)) {
-
                 const texture = this.baseItem.getTexture(layer.resourceName);
                 if (texture != null) {
-                    const sprite = new Sprite(texture);
+                    const sprite = this.sprites[layerIndex++];
+
+                    sprite.texture = texture;
+                    sprite.visible = true;
 
                     sprite.x = -layer.asset.x;
                     sprite.y = -layer.asset.y;
@@ -104,24 +122,31 @@ export default class RoomItem {
                     if (layer.asset.isFlipped) {
                         sprite.x = layer.asset.x;
                         sprite.scale.x = -1;
+                    } else {
+                        sprite.scale.x = 1;
                     }
 
-                    if (layer.ink != null) {
-                        if (layer.ink === 'ADD') {
-                            sprite.blendMode = BLEND_MODES.ADD;
-                        }
+                    if (layer.ink != null && layer.ink === 'ADD') {
+                        sprite.blendMode = BLEND_MODES.ADD;
+                    } else {
+                        sprite.blendMode = BLEND_MODES.NORMAL;
                     }
 
                     if (layer.alpha != null) {
                         sprite.alpha = layer.alpha / 255;
+                    } else {
+                        sprite.alpha = 1.0;
                     }
 
                     if (layer.color != null) {
                         sprite.tint = layer.color;
+                    } else {
+                        sprite.tint = 0xFFFFFF;
                     }
-
-                    this.container.addChild(sprite);
                 }
+            }
+            for (let i = layerIndex; i < this.sprites.length; i++) {
+                this.sprites[i].visible = false;
             }
         }
     }
@@ -137,11 +162,20 @@ export default class RoomItem {
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
-        this.container.x = x + 0;
-        this.container.y = y + 0;
+        this.container.x = x + DRAWING_OFFSET_X;
+        this.container.y = y + DRAWING_OFFSET_Y;
     }
 
-    handleClick() {
+    handleClick = (event: any) => {
+        if (this._state === 0) {
+            this._state = 1;
+        } else {
+            this._state = 0;
+        }
+        this.updateTextures();
         console.log("click on furni");
     }
 }
+
+const DRAWING_OFFSET_X = 32;
+const DRAWING_OFFSET_Y = 16;
