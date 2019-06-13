@@ -22,14 +22,14 @@ export default class RoomItemManager {
             this.room.engine.addRoomItemSpriteContainer(id, newItem.container);
             this.items[id] = newItem;
         } else {
-            //user.updateParams(x, y...);
+            //item.updateParams(x, y...);
         }
     }
 
     removeItemFromRoom(id: number) {
         this.room.engine.removeUserSprite(id);
         if (this.getItem(id) != null) {
-            delete(this.items[id]);
+            delete (this.items[id]);
         }
     }
 

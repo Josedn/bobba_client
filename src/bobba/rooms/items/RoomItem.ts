@@ -89,7 +89,7 @@ export default class RoomItem {
         }
     }
 
-    setSprites() {
+    setAdditionalSprites() {
         if (this.baseItem != null) {
             const layerCount = parseInt(this.baseItem.furniBase.offset.visualization[this.baseItem.furniBase.size].layerCount) + 1;
 
@@ -160,7 +160,7 @@ export default class RoomItem {
     loadBase() {
         BobbaEnvironment.getGame().baseItemManager.getItem('roomitem', this.baseId).then(baseItem => {
             this.baseItem = baseItem;
-            this.setSprites();
+            this.setAdditionalSprites();
         }).catch(err => {
             console.log("Error with item: " + err);
         });
