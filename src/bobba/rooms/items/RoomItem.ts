@@ -3,6 +3,7 @@ import Room from "../Room";
 import { Container, Sprite, BLEND_MODES } from "pixi.js";
 import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
+import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 
 const FRAME_SPEED = 5;
 
@@ -24,12 +25,12 @@ export default class RoomItem {
 
     room: Room;
 
-    constructor(id: number, x: number, y: number, z: number, rot: Direction, baseId: number, room: Room) {
+    constructor(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number, room: Room) {
         this.id = id;
         this._x = x;
         this._y = y;
         this._z = z;
-        this._state = 0;
+        this._state = state;
         this.rot = rot;
         this.baseId = baseId;
         this.baseItem = null;
@@ -39,9 +40,14 @@ export default class RoomItem {
         this._frameCounter = 0;
 
         this.loaded = false;
-        this.sprites = [];
         this.container = new Container();
 
+        const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getResource(FURNI_PLACEHOLDER).texture);
+        placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
+        placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
+
+        this.container.addChild(placeholderSprite);
+        this.sprites = [placeholderSprite];
         this.updateSpritePosition();
         this.loadBase();
     }
@@ -87,7 +93,7 @@ export default class RoomItem {
         if (this.baseItem != null) {
             const layerCount = parseInt(this.baseItem.furniBase.offset.visualization[this.baseItem.furniBase.size].layerCount) + 1;
 
-            for (let i = 0; i < layerCount; i++) {
+            for (let i = 1; i < layerCount; i++) {
                 const sprite = new Sprite();
                 sprite.visible = false;
                 sprite.interactive = true;

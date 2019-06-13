@@ -1,8 +1,8 @@
 import Room from "./Room";
-import GenericSprites from "../graphics/GenericSprites";
 import { Sprite, Container, Point } from "pixi.js";
 import BobbaEnvironment from "../BobbaEnvironment";
 import MainEngine from "../graphics/MainEngine";
+import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE } from "../graphics/GenericSprites";
 
 const CAMERA_CENTERED_OFFSET_X = 3;
 const CAMERA_CENTERED_OFFSET_Y = 114;
@@ -41,12 +41,12 @@ export default class RoomEngine {
 
     centerCamera() {
         const model = this.room.model;
-        this.container.x = Math.round((MainEngine.getViewportWidth() - (GenericSprites.ROOM_TILE_WIDTH * (model.maxX - model.maxY + CAMERA_CENTERED_OFFSET_X))) / 2);
-        this.container.y = Math.round((MainEngine.getViewportHeight() - ((model.maxX + model.maxY) * GenericSprites.ROOM_TILE_HEIGHT) + CAMERA_CENTERED_OFFSET_Y) / 2);
+        this.container.x = Math.round((MainEngine.getViewportWidth() - (ROOM_TILE_WIDTH * (model.maxX - model.maxY + CAMERA_CENTERED_OFFSET_X))) / 2);
+        this.container.y = Math.round((MainEngine.getViewportHeight() - ((model.maxX + model.maxY) * ROOM_TILE_HEIGHT) + CAMERA_CENTERED_OFFSET_Y) / 2);
     }
 
     setSelectedTile() {
-        const floorTexture = BobbaEnvironment.getGame().engine.getResource(GenericSprites.ROOM_SELECTED_TILE).texture;
+        const floorTexture = BobbaEnvironment.getGame().engine.getResource(ROOM_SELECTED_TILE).texture;
         this.selectedTileSprite = new Sprite(floorTexture);
         this.selectedTileSprite.visible = false;
         this.container.addChild(this.selectedTileSprite);
@@ -79,7 +79,7 @@ export default class RoomEngine {
     }
 
     setFloor() {
-        const floorTexture = BobbaEnvironment.getGame().engine.getResource(GenericSprites.ROOM_TILE).texture;
+        const floorTexture = BobbaEnvironment.getGame().engine.getResource(ROOM_TILE).texture;
         this.floorSprites = [];
         const model = this.room.model;
         for (let i = 0; i < model.maxX; i++) {
@@ -99,15 +99,15 @@ export default class RoomEngine {
     }
 
     tileToLocal(x: number, y: number, z: number): Point {
-        return new Point((x - y) * GenericSprites.ROOM_TILE_WIDTH, (x + y) * GenericSprites.ROOM_TILE_HEIGHT - (z * GenericSprites.ROOM_TILE_HEIGHT));
+        return new Point((x - y) * ROOM_TILE_WIDTH, (x + y) * ROOM_TILE_HEIGHT - (z * ROOM_TILE_HEIGHT));
     }
 
     globalToTile(x: number, y: number): Point {
         const offsetX = this.container.x;
         const offsetY = this.container.y;
 
-        const xminusy = (x - GenericSprites.ROOM_TILE_WIDTH - offsetX) / GenericSprites.ROOM_TILE_WIDTH;
-        const xplusy = (y - offsetY) / GenericSprites.ROOM_TILE_HEIGHT;
+        const xminusy = (x - ROOM_TILE_WIDTH - offsetX) / ROOM_TILE_WIDTH;
+        const xplusy = (y - offsetY) / ROOM_TILE_HEIGHT;
 
         const tileX = Math.floor((xminusy + xplusy) / 2);
         const tileY = Math.floor((xplusy - xminusy) / 2);
