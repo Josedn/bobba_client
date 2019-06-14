@@ -1,6 +1,5 @@
-import { Texture } from "pixi.js";
 import AvatarImager from "./AvatarImager";
-import MainEngine from "../../graphics/MainEngine";
+import MainEngine, { TextureDictionary } from "../../graphics/MainEngine";
 import AvatarInfo, { Direction } from "./AvatarInfo";
 
 const GHOST_LOOK = "hd-180-1021";
@@ -92,8 +91,4 @@ const loadUniqueTexture = (avatarImager: AvatarImager, engine: MainEngine, textu
             });
     }
 
-}
-
-export interface TextureDictionary {
-    [id: string]: Texture;
 }

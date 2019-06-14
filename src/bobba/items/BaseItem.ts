@@ -1,6 +1,7 @@
 import FurniBase from "../imagers/furniture/FurniBase";
 import { Texture } from "pixi.js";
 import BobbaEnvironment from "../BobbaEnvironment";
+import { TextureDictionary } from "../graphics/MainEngine";
 
 export default class BaseItem {
     furniBase: FurniBase;
@@ -27,8 +28,4 @@ export default class BaseItem {
         this.textures[key] = BobbaEnvironment.getGame().engine.getTextureFromImage(image);
     }
 
-}
-
-export interface TextureDictionary {
-    [id: string]: Texture;
 }

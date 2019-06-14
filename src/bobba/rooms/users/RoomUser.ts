@@ -1,8 +1,9 @@
-import { Texture, Sprite } from "pixi.js";
+import { Sprite } from "pixi.js";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
 import { loadAvatarTextures, getAvatarSpriteKey } from "../../imagers/avatars/AvatarHelper";
+import { TextureDictionary } from "../../graphics/MainEngine";
 
 const ROOM_USER_SPRITE_OFFSET_X = 3;
 const ROOM_USER_SPRITE_OFFSET_Y = -85;
@@ -104,8 +105,4 @@ export default class RoomUser {
         this.sprite.x = x + offsetX;
         this.sprite.y = y + ROOM_USER_SPRITE_OFFSET_Y;
     }
-}
-
-interface TextureDictionary {
-    [id: string]: Texture;
 }

@@ -63,10 +63,6 @@ export default class MainEngine {
         return texture;
     }
 
-    /*loadTextureFromImageUrl(url: string): PIXI.Texture {
-        return new PIXI.Texture(PIXI.BaseTexture.from(url));
-    }*/
-
     getTexture(name: string): PIXI.Texture {
         return this.globalTextures[name];
     }

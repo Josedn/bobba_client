@@ -1,8 +1,8 @@
 import Room from "./rooms/Room";
 import RoomModel from "./rooms/RoomModel";
-import MainEngine from './graphics/MainEngine';
+import MainEngine, { TextureDictionary } from './graphics/MainEngine';
 import AvatarImager from "./imagers/avatars/AvatarImager";
-import { TextureDictionary, loadGhostTextures } from "./imagers/avatars/AvatarHelper";
+import { loadGhostTextures } from "./imagers/avatars/AvatarHelper";
 //import PromiseQueue from "./misc/PromiseQueue";
 import FurniImager from "./imagers/furniture/FurniImager";
 import BaseItemManager from "./items/BaseItemManager";
