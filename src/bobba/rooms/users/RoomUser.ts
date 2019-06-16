@@ -1,8 +1,8 @@
-import { Sprite } from "pixi.js";
-import BobbaEnvironment from "../../BobbaEnvironment";
+import { Container } from "pixi.js";
+//import BobbaEnvironment from "../../BobbaEnvironment";
 import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
-import { loadAvatarTextures, getAvatarSpriteKey } from "../../imagers/avatars/AvatarHelper";
+import { getAvatarSpriteKey } from "../../imagers/avatars/AvatarHelper";
 import { TextureDictionary } from "../../graphics/MainEngine";
 
 const ROOM_USER_SPRITE_OFFSET_X = 3;
@@ -18,8 +18,9 @@ export default class RoomUser {
     _z: number;
     rot: Direction;
 
-    textures: TextureDictionary | null;
-    sprite: Sprite;
+    headTextures: TextureDictionary | null;
+    bodyTextures: TextureDictionary | null;
+    sprite: Container;
     loaded: boolean;
 
     room: Room;
@@ -36,11 +37,13 @@ export default class RoomUser {
         this.room = room;
 
         this.loaded = false;
-        this.sprite = new Sprite();
-        this.sprite.interactive = true;
-        this.sprite.on('click', this.handleClick);
-        const game = BobbaEnvironment.getGame();
-        this.textures = game.ghostTextures;
+        this.sprite = new Container();
+        //this.sprite.interactive = true;
+        //this.sprite.on('click', this.handleClick);
+        this.bodyTextures = null;
+        this.headTextures = null;
+        //const game = BobbaEnvironment.getGame();
+        //this.textures = game.ghostTextures;
         this.updateTexture();
         this.updateSpritePosition();
         this.loadTextures();
@@ -78,21 +81,21 @@ export default class RoomUser {
         console.log("click on " + this.name);
     }
 
-    loadTextures(): Promise<any> {
-        const game = BobbaEnvironment.getGame();
+    loadTextures() {
+        /*const game = BobbaEnvironment.getGame();
         return loadAvatarTextures(game.avatarImager, game.engine, this.look, false).then(textures => {
             this.textures = textures;
             this.loaded = true;
             this.updateTexture();
-        });
+        });*/
     }
 
     updateTexture() {
-        if (this.textures != null) {
+        /*if (this.textures != null) {
             const texture = this.textures[this.getCurrentAvatarSpriteKey()];
             if (texture != null)
                 this.sprite.texture = texture;
-        }
+        }*/
     }
 
     getCurrentAvatarSpriteKey() {

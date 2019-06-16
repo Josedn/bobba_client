@@ -6,7 +6,7 @@ const GHOST_LOOK = "hd-180-1021";
 
 export const loadGhostTextures = (avatarImager: AvatarImager, engine: MainEngine): Promise<TextureDictionary> => {
     return loadAvatarTextures(avatarImager, engine, GHOST_LOOK, true);
-} 
+}
 
 export const loadAvatarTextures = (avatarImager: AvatarImager, engine: MainEngine, look: string, isGhost: boolean): Promise<TextureDictionary> => {
     return new Promise((resolve, reject) => {
@@ -44,7 +44,7 @@ export const loadAvatarTextures = (avatarImager: AvatarImager, engine: MainEngin
             }
         }
         //sit
-        for (let i = 0; i <= 7; i = i+2) {
+        for (let i = 0; i <= 7; i = i + 2) {
             promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit"], "std", 0));
             //eyb
             promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit"], "eyb", 0));
@@ -54,7 +54,7 @@ export const loadAvatarTextures = (avatarImager: AvatarImager, engine: MainEngin
             }
         }
         //sit-wav
-        for (let i = 0; i <= 7; i = i+2) {
+        for (let i = 0; i <= 7; i = i + 2) {
             for (let j = 0; j <= 1; j++) {
                 promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit", "wav"], "std", j));
                 promises.push(loadUniqueTexture(avatarImager, engine, textures, isGhost, look, i as Direction, i as Direction, ["sit", "wav"], "spk", j));
@@ -79,16 +79,8 @@ export const getAvatarSpriteKey = (direction: Direction, headDirection: Directio
 }
 
 const loadUniqueTexture = (avatarImager: AvatarImager, engine: MainEngine, textures: TextureDictionary, isGhost: boolean, look: string, direction: Direction, headDirection: Direction, action: string[], gesture: string, frame: number): Promise<any> => {
-    if (isGhost) {
-        return avatarImager.generateGhost(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, "n"))
-            .then(image => {
-                textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.getTextureFromImage(image);
-            });
-    } else {
-        return avatarImager.generate(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, "n"))
-            .then(image => {
-                textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.getTextureFromImage(image);
-            });
-    }
-
+    return avatarImager.generateGeneric(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, "n"), isGhost)
+        .then(image => {
+            textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.getTextureFromImage(image);
+        });
 }

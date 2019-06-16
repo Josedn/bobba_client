@@ -17,7 +17,7 @@ export default class RoomEngine {
     selectedTileSprite: Sprite | null;
     lastMousePositionX: number;
     lastMousePositionY: number;
-    userSprites: SpriteDictionary;
+    userSprites: ContainerDictionary;
     roomItemSprites: ContainerDictionary;
 
     constructor(room: Room) {
@@ -52,7 +52,7 @@ export default class RoomEngine {
         this.container.addChild(this.selectedTileSprite);
     }
 
-    addUserSprite(id: number, sprite: Sprite) {
+    addUserContainer(id: number, sprite: Container) {
         this.userSprites[id] = sprite;
         this.container.addChild(sprite);
     }

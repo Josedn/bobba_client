@@ -79,15 +79,7 @@ export default class AvatarImager {
             });
     }
 
-    generate(avatarInfo: AvatarInfo): Promise<HTMLImageElement> {
-        return this._generateGeneric(avatarInfo, false);
-    }
-
-    generateGhost(avatarInfo: AvatarInfo): Promise<HTMLImageElement> {
-        return this._generateGeneric(avatarInfo, true);
-    }
-
-    _generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLImageElement> {
+    generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLImageElement> {
         const activeParts: any = {};
         activeParts.rect = this.getActivePartSet(avatarInfo.isHeadOnly ? "head" : "figure");
         activeParts.head = this.getActivePartSet("head");

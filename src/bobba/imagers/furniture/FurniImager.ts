@@ -60,7 +60,7 @@ export default class FurniImager {
         this.bases[type][itemId] = new FurniBase(itemId, rawItemName, size);
 
         if (this.offsets[itemName] == null) {
-            this.offsets[itemName] = { promise: this.fetchOffsetAsync(itemName), data: {} };
+            this.offsets[itemName] = { promise: this._fetchOffsetAsync(itemName), data: {} };
         }
         const offsetPromise = this.offsets[itemName].promise as Promise<any>;
 
@@ -171,7 +171,7 @@ export default class FurniImager {
         });
     }
 
-    fetchOffsetAsync(uniqueName: string): Promise<object> {
+    _fetchOffsetAsync(uniqueName: string): Promise<object> {
         return new Promise((resolve, reject) => {
             this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
                 this.offsets[uniqueName].data = data;

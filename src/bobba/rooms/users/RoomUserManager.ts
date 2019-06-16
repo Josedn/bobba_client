@@ -19,7 +19,7 @@ export default class RoomUserManager {
         const user = this.getUser(id);
         if (user == null) {
             const newUser = new RoomUser(id, name, look, x, y, z, rot, this.room);
-            this.room.engine.addUserSprite(id, newUser.sprite);
+            this.room.engine.addUserContainer(id, newUser.sprite);
             this.users[id] = newUser;
         } else {
             //user.updateParams(x, y...);
