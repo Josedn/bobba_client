@@ -79,7 +79,7 @@ export const getAvatarSpriteKey = (direction: Direction, headDirection: Directio
 }
 
 const loadUniqueTexture = (avatarImager: AvatarImager, engine: MainEngine, textures: TextureDictionary, isGhost: boolean, look: string, direction: Direction, headDirection: Direction, action: string[], gesture: string, frame: number): Promise<any> => {
-    return avatarImager.generateGeneric(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, "n"), isGhost)
+    return avatarImager.generateGeneric(new AvatarInfo(look, direction, headDirection, action, gesture, frame, false, false, "n"), isGhost)
         .then(image => {
             textures[getAvatarSpriteKey(direction, headDirection, action, gesture, frame)] = engine.getTextureFromImage(image);
         });

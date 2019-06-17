@@ -1,9 +1,9 @@
-import { Container } from "pixi.js";
+import { Container, Sprite } from "pixi.js";
 //import BobbaEnvironment from "../../BobbaEnvironment";
 import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
-import { getAvatarSpriteKey } from "../../imagers/avatars/AvatarHelper";
-import { TextureDictionary } from "../../graphics/MainEngine";
+import AvatarContainer from "./AvatarContainer";
+import BobbaEnvironment from "../../BobbaEnvironment";
 
 const ROOM_USER_SPRITE_OFFSET_X = 3;
 const ROOM_USER_SPRITE_OFFSET_Y = -85;
@@ -18,9 +18,10 @@ export default class RoomUser {
     _z: number;
     rot: Direction;
 
-    headTextures: TextureDictionary | null;
-    bodyTextures: TextureDictionary | null;
-    sprite: Container;
+    avatarContainer: AvatarContainer;
+    container: Container;
+    headSprite: Sprite;
+    bodySprite: Sprite;
     loaded: boolean;
 
     room: Room;
@@ -37,13 +38,16 @@ export default class RoomUser {
         this.room = room;
 
         this.loaded = false;
-        this.sprite = new Container();
-        //this.sprite.interactive = true;
-        //this.sprite.on('click', this.handleClick);
-        this.bodyTextures = null;
-        this.headTextures = null;
-        //const game = BobbaEnvironment.getGame();
-        //this.textures = game.ghostTextures;
+
+        this.bodySprite = new Sprite();
+        this.headSprite = new Sprite();
+        this.container = new Container();
+        this.container.addChild(this.bodySprite);
+        this.container.addChild(this.headSprite);
+        this.avatarContainer = new AvatarContainer(look);
+        //this.container.interactive = true;
+        //this.container.on('click', this.handleClick);
+
         this.updateTexture();
         this.updateSpritePosition();
         this.loadTextures();
@@ -82,30 +86,26 @@ export default class RoomUser {
     }
 
     loadTextures() {
-        /*const game = BobbaEnvironment.getGame();
-        return loadAvatarTextures(game.avatarImager, game.engine, this.look, false).then(textures => {
-            this.textures = textures;
+        return this.avatarContainer.initialize().then(() => {
             this.loaded = true;
             this.updateTexture();
-        });*/
+        });
     }
 
     updateTexture() {
-        /*if (this.textures != null) {
-            const texture = this.textures[this.getCurrentAvatarSpriteKey()];
-            if (texture != null)
-                this.sprite.texture = texture;
-        }*/
-    }
-
-    getCurrentAvatarSpriteKey() {
-        return getAvatarSpriteKey(this.rot, this.rot, ["std"], "std", 0);
+        if (this.loaded) {
+            this.bodySprite.texture = this.avatarContainer.getBodyTexture(this.rot, ["std"], 0);
+            this.headSprite.texture = this.avatarContainer.getHeadTexture(this.rot, "std", 0);
+        } else {
+            this.bodySprite.texture = BobbaEnvironment.getGame().ghostTextures.getBodyTexture(this.rot, ["std"], 0);
+            this.headSprite.texture = BobbaEnvironment.getGame().ghostTextures.getHeadTexture(this.rot, "std", 0);
+        }
     }
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
         const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
-        this.sprite.x = x + offsetX;
-        this.sprite.y = y + ROOM_USER_SPRITE_OFFSET_Y;
+        this.container.x = x + offsetX;
+        this.container.y = y + ROOM_USER_SPRITE_OFFSET_Y;
     }
 }

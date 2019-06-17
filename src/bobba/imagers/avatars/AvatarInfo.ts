@@ -5,6 +5,7 @@ export default class AvatarInfo {
     gesture: string;
     frame: number;
     isHeadOnly: boolean;
+    isBodyOnly: boolean;
     scale: Scale;
     isDownsampled: boolean;
     isLarge: boolean;
@@ -16,10 +17,11 @@ export default class AvatarInfo {
     handItem: number;
     drawOrder: string;
 
-    constructor(figure: string, direction: Direction, headDirection: Direction, action: string[], gesture: string, frame: number, isHeadOnly: boolean, scale: Scale) {
+    constructor(figure: string, direction: Direction, headDirection: Direction, action: string[], gesture: string, frame: number, isHeadOnly: boolean, isBodyOnly: boolean, scale: Scale) {
         this.direction = direction;
         this.headDirection = headDirection;
         this.isHeadOnly = isHeadOnly;
+        this.isBodyOnly = isBodyOnly;
         this.scale = scale;
         this.isDownsampled = false;
         this.isLarge = false;

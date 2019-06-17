@@ -128,6 +128,10 @@ export default class AvatarImager {
                             continue;
                         }
 
+                        if (activeParts.head.includes(type) && avatarInfo.isBodyOnly) {
+                            continue;
+                        }
+
                         if (!activeParts.rect.includes(type)) {
                             continue;
                         }
@@ -327,30 +331,32 @@ export default class AvatarImager {
     getPartColor(figure: FigurePart): any {
         const parts: any = {};
         let partSet = this.figuredata['settype'][figure.type];
-        if (partSet['set'][figure.id] != null && partSet['set'][figure.id]['part'] != null) {
-            for (let rawPart of partSet['set'][figure.id]['part']) {
-                const part: any = rawPart;
-                //console.log(figure);
-                //console.log(part);
-                //console.log("paletteid: " + partSet.paletteid + " colors: " + figure.colors[part.colorindex - 1]);
+        if (partSet != null) {
+            if (partSet['set'][figure.id] != null && partSet['set'][figure.id]['part'] != null) {
+                for (let rawPart of partSet['set'][figure.id]['part']) {
+                    const part: any = rawPart;
+                    //console.log(figure);
+                    //console.log(part);
+                    //console.log("paletteid: " + partSet.paletteid + " colors: " + figure.colors[part.colorindex - 1]);
 
-                let element: any = { "index": part.index, "id": part.id, "colorable": part.colorable };
-                if (part.colorable) {
-                    element.color = this.getColorByPaletteId(partSet.paletteid, figure.colors[part.colorindex - 1]);
-                }
-                if (parts[part.type] == null) {
-                    parts[part.type] = [element];
-                } else {
-                    parts[part.type].push(element);
+                    let element: any = { "index": part.index, "id": part.id, "colorable": part.colorable };
+                    if (part.colorable) {
+                        element.color = this.getColorByPaletteId(partSet.paletteid, figure.colors[part.colorindex - 1]);
+                    }
+                    if (parts[part.type] == null) {
+                        parts[part.type] = [element];
+                    } else {
+                        parts[part.type].push(element);
+                    }
                 }
             }
-        }
-        //r63 ?
+            //r63 ?
 
-        parts.hidden = [];
-        if (partSet['set'][figure.id] != null && Array.isArray(partSet['set'][figure.id]['hidden'])) {
-            for (let partType of partSet['set'][figure.id]['hidden']) {
-                parts.hidden.push(partType);
+            parts.hidden = [];
+            if (partSet['set'][figure.id] != null && Array.isArray(partSet['set'][figure.id]['hidden'])) {
+                for (let partType of partSet['set'][figure.id]['hidden']) {
+                    parts.hidden.push(partType);
+                }
             }
         }
         return parts;
