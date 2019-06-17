@@ -5,7 +5,7 @@ import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 
-const FRAME_SPEED = 5;
+const FRAME_SPEED = 100;
 
 export default class RoomItem {
     id: number;

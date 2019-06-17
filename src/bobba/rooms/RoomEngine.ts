@@ -99,7 +99,7 @@ export default class RoomEngine {
     }
 
     tileToLocal(x: number, y: number, z: number): Point {
-        return new Point((x - y) * ROOM_TILE_WIDTH, (x + y) * ROOM_TILE_HEIGHT - (z * ROOM_TILE_HEIGHT));
+        return new Point((x - y) * ROOM_TILE_WIDTH, (x + y) * ROOM_TILE_HEIGHT - (z * ROOM_TILE_HEIGHT * 2));
     }
 
     globalToTile(x: number, y: number): Point {
