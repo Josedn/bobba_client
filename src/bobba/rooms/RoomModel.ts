@@ -3,17 +3,13 @@ export default class RoomModel {
     maxY: number;
     doorX: number;
     doorY: number;
-    doorZ: number;
-    doorRot: number;
     heightMap: number[][];
 
-    constructor(maxX: number, maxY: number, doorX: number, doorY: number, doorZ: number, doorRot: number, heightMap: number[][]) {
+    constructor(maxX: number, maxY: number, doorX: number, doorY: number, heightMap: number[][]) {
         this.maxX = maxX;
         this.maxY = maxY;
         this.doorX = doorX;
         this.doorY = doorY;
-        this.doorZ = doorZ;
-        this.doorRot = doorRot;
         this.heightMap = heightMap;
     }
 
@@ -22,8 +18,6 @@ export default class RoomModel {
         const maxY = 13;
         const doorX = 0;
         const doorY = 4;
-        const doorZ = 0.0;
-        const doorRot = 2;
 
         const map: number[][] = [];
         for (let i = 0; i < maxX; i++) {
@@ -33,7 +27,7 @@ export default class RoomModel {
             }
         }
 
-        return new RoomModel(maxX, maxY, doorX, doorY, doorZ, doorRot, map);
+        return new RoomModel(maxX, maxY, doorX, doorY, map);
     }
 
     isValidTile(x: number, y: number): boolean {

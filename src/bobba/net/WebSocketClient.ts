@@ -2,28 +2,46 @@ import IMessageHandler from "./IMessageHandler";
 
 export default class WebSocketClient {
     connected: boolean;
-    ws: WebSocket;
+    ws?: WebSocket;
+    messageHandler: IMessageHandler;
     constructor(messageHandler: IMessageHandler) {
-        this.ws = new WebSocket('ws://localhost:443');
         this.connected = false;
+        this.messageHandler = messageHandler;
+    }
 
-        this.ws.onopen = () => {
-            this.connected = true;
-            messageHandler.handleOpenConnection();
-        };
+    send(data: string) {
+        if (this.connected && this.ws != null) {
+            this.ws.send(data);
+        }
+    }
 
-        this.ws.onclose = () => {
-            this.connected = false;
-            messageHandler.handleCloseConnection();
-        };
+    connect(connectionURL: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.ws = new WebSocket(connectionURL);
 
-        this.ws.onerror = () => {
-            this.connected = false;
-            messageHandler.handleConnectionError();
-        };
+            this.ws.onopen = evt => {
+                this.connected = true;
+                this.messageHandler.handleOpenConnection();
 
-        this.ws.onmessage = evt => {
-            messageHandler.handleMessage(evt.data);
-        };
+                resolve(true);
+            };
+
+            this.ws.onclose = evt => {
+                this.connected = false;
+                this.messageHandler.handleCloseConnection();
+            };
+
+            this.ws.onmessage = evt => {
+                this.messageHandler.handleMessage(evt.data);
+            };
+
+            this.ws.onerror = evt => {
+                if (!this.connected) {
+                    reject('Cannot connect to host');
+                }
+                this.connected = false;
+                this.messageHandler.handleConnectionError();
+            };
+        });
     }
 }

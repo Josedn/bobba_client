@@ -1,12 +1,15 @@
 import Room from "./rooms/Room";
-import RoomModel from "./rooms/RoomModel";
 import MainEngine from './graphics/MainEngine';
 import AvatarImager from "./imagers/avatars/AvatarImager";
-//import PromiseQueue from "./misc/PromiseQueue";
 import FurniImager from "./imagers/furniture/FurniImager";
 import BaseItemManager from "./items/BaseItemManager";
 import { ROOM_TILE, ROOM_SELECTED_TILE, FURNI_PLACEHOLDER } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
+import CommunicationManager from "./communication/CommunicationManager";
+import Login from "./communication/outgoing/generic/Login";
+import RequestMap from "./communication/outgoing/rooms/RequestMap";
+import RoomModel from "./rooms/RoomModel";
+import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
 
 export default class Game {
     currentRoom?: Room;
@@ -15,16 +18,15 @@ export default class Game {
     furniImager: FurniImager;
     baseItemManager: BaseItemManager;
     ghostTextures: AvatarContainer;
-    //promiseQueue: PromiseQueue;
+    communicationManager: CommunicationManager;
 
     constructor() {
         this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
-        //this.currentRoom = undefined;
         this.ghostTextures = new AvatarContainer(GHOST_LOOK, true);
-        //this.promiseQueue = new PromiseQueue();
         this.avatarImager = new AvatarImager();
         this.furniImager = new FurniImager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
+        this.communicationManager = new CommunicationManager();
 
         this.loadGame();
     }
@@ -40,8 +42,12 @@ export default class Game {
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
             this.engine.loadGlobalTextures(sprites)
-        ]).then(() => {
-            this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
+        ]).then(() => this.communicationManager.connect("localhost", 443, false)).then(() => {
+
+            this.doLogin();
+
+
+            /*this.currentRoom = new Room(1, "Dummy room", RoomModel.getDummyRoomModel());
             this.currentRoom.roomUserManager.addUserToRoom(1, 4, 8, 0, 2, "Relv", "hd-190-10.lg-3023-1408.ch-215-91.hr-893-45");
             this.currentRoom.roomUserManager.addUserToRoom(2, 4, 10, 0, 4, "Grav", "ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10");
             this.currentRoom.roomItemManager.addItemToRoom(256, 4, 4, 0, 2, 0, 267);
@@ -56,9 +62,27 @@ export default class Game {
             this.currentRoom.roomItemManager.addItemToRoom(263, 1, 0, 0, 4, 0, 4651);
             this.currentRoom.roomItemManager.addItemToRoom(264, 2, 0, 0, 4, 0, 4651);
 
-            this.currentRoom.roomItemManager.addItemToRoom(265, 0, 5, 0, 0, 0, 173);
-
+            this.currentRoom.roomItemManager.addItemToRoom(265, 0, 5, 0, 0, 0, 173);*/
+        }).catch(err => {
+            console.log("Cannot start game: " + err);
         });
+    }
+
+    doLogin() {
+        this.communicationManager.sendMessage(new Login('Relv', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45'));
+    }
+
+    handleLoggedIn() {
+        console.log("Logged in!");
+        this.communicationManager.sendMessage(new RequestMap());
+    }
+
+    loadRoom(id: number, name: string, model: RoomModel) {
+        this.currentRoom = new Room(id, name, model);
+        this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
+        console.log("Loaded room: " + name);
+        this.communicationManager.sendMessage(new RequestRoomData());
+
     }
 
     onMouseMove = (x: number, y: number, isMouseDragging: boolean) => {
@@ -101,5 +125,9 @@ export default class Game {
         if (this.currentRoom != null) {
             this.currentRoom.tick(delta * (1 / 60) * 1000);
         }
+    }
+
+    stop() {
+        console.log("Stopping game...");
     }
 }

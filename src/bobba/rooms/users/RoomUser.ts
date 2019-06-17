@@ -3,6 +3,7 @@ import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
 import AvatarContainer from "./AvatarContainer";
 import BobbaEnvironment from "../../BobbaEnvironment";
+import RequestLookAt from "../../communication/outgoing/rooms/RequestLookAt";
 
 const FRAME_SPEED = 100;
 const WALK_SPEED = 2; //Squares per second
@@ -104,7 +105,11 @@ export default class RoomUser {
     }
 
     handleClick = () => {
-        console.log("click on " + this.name);
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.id));
+    }
+
+    wave(seconds: number) {
+        this._waveCounter = seconds * 1000;
     }
 
     updateStatus(x: number, y: number, z: number, rot: Direction, status: StatusContainer) {
@@ -112,6 +117,7 @@ export default class RoomUser {
         this._y = y;
         this._z = z;
         this.rot = rot;
+        this.headRot = rot;
         this.updateSpritePosition();
         this.status = status;
         if (status.mv != null) {
@@ -240,7 +246,7 @@ export default class RoomUser {
     }
 }
 
-interface StatusContainer {
+export interface StatusContainer {
     sit?: string,
     mv?: string,
 };

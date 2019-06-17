@@ -26,8 +26,15 @@ export default class RoomItemManager {
         }
     }
 
+    itemSetState(itemId: number, state: number) {
+        const item = this.getItem(itemId);
+        if (item != null) {
+            item.setState(state);
+        }
+    }
+
     removeItemFromRoom(id: number) {
-        this.room.engine.removeUserSprite(id);
+        this.room.engine.removeRoomItemSprite(id);
         if (this.getItem(id) != null) {
             delete (this.items[id]);
         }

@@ -4,6 +4,7 @@ import { Container, Sprite, BLEND_MODES } from "pixi.js";
 import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
+import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
 
 const FRAME_SPEED = 100;
 
@@ -43,7 +44,7 @@ export default class RoomItem {
         this.container = new Container();
 
         const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(FURNI_PLACEHOLDER));
-        
+
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
 
@@ -82,6 +83,11 @@ export default class RoomItem {
         this.updateTextures();
     }
 
+    setState(state: number) {
+        this._state = state;
+        this.updateTextures(); // ??????????????
+    }
+
     tick(delta: number) {
         this._frameCounter += delta;
         if (this._frameCounter >= FRAME_SPEED) {
@@ -98,7 +104,7 @@ export default class RoomItem {
                 const sprite = new Sprite();
                 sprite.visible = false;
                 sprite.interactive = true;
-                sprite.on('click', this.handleClick);
+                sprite.on('click', this.handleClick); // DOUBLE CLICK ??????
                 this.sprites.push(sprite);
                 this.container.addChild(sprite);
             }
@@ -174,13 +180,7 @@ export default class RoomItem {
     }
 
     handleClick = (event: any) => {
-        if (this._state === 0) {
-            this._state = 1;
-        } else {
-            this._state = 0;
-        }
-        this.updateTextures();
-        console.log("click on furni");
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniInteract(this.id));
     }
 }
 

@@ -3,6 +3,7 @@ import { Sprite, Container, Point } from "pixi.js";
 import BobbaEnvironment from "../BobbaEnvironment";
 import MainEngine from "../graphics/MainEngine";
 import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE } from "../graphics/GenericSprites";
+import RequestMovement from "../communication/outgoing/rooms/RequestMovement";
 
 const CAMERA_CENTERED_OFFSET_X = 3;
 const CAMERA_CENTERED_OFFSET_Y = 114;
@@ -32,7 +33,6 @@ export default class RoomEngine {
         this.onResize();
         this.setFloor();
         this.setSelectedTile();
-        BobbaEnvironment.getGame().engine.getMainStage().addChild(this.container);
     }
 
     onResize() {
@@ -129,7 +129,10 @@ export default class RoomEngine {
     }
 
     handleMouseClick = (mouseX: number, mouseY: number) => {
-
+        const { x, y } = this.globalToTile(mouseX, mouseY);
+        if (this.room.model.isValidTile(x, y)) {
+            BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMovement(x, y));
+        }
     }
 
     handleTouchMove = (mouseX: number, mouseY: number) => {
@@ -160,6 +163,10 @@ export default class RoomEngine {
 
     tick(delta: number) {
 
+    }
+
+    getStage() {
+        return this.container;
     }
 }
 
