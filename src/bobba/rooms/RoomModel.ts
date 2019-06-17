@@ -12,24 +12,7 @@ export default class RoomModel {
         this.doorY = doorY;
         this.heightMap = heightMap;
     }
-
-    static getDummyRoomModel(): RoomModel {
-        const maxX = 9;
-        const maxY = 13;
-        const doorX = 0;
-        const doorY = 4;
-
-        const map: number[][] = [];
-        for (let i = 0; i < maxX; i++) {
-            map.push([]);
-            for (let j = 0; j < maxY; j++) {
-                map[i].push(1);
-            }
-        }
-
-        return new RoomModel(maxX, maxY, doorX, doorY, map);
-    }
-
+    
     isValidTile(x: number, y: number): boolean {
         return (x >= 0 && x < this.maxX && y >= 0 && y < this.maxY && this.heightMap[x][y] !== 0);
     }
