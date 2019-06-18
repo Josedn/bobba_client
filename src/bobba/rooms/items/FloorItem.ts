@@ -1,9 +1,20 @@
 import RoomItem from "./RoomItem";
-import BobbaEnvironment from "../../BobbaEnvironment";
-import { Container } from "pixi.js";
 import { calculateZIndexFloorItem } from "../RoomEngine";
+import { ItemType, Direction } from "../../imagers/furniture/FurniImager";
+import Room from "../Room";
+import { Sprite } from "pixi.js";
+import { FLOOR_ITEM_PLACEHOLDER, FLOOR_ITEM_PLACEHOLDER_OFFSET_X, FLOOR_ITEM_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
+import BobbaEnvironment from "../../BobbaEnvironment";
 
 export default class FloorItem extends RoomItem {
+    constructor(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number, room: Room) {
+        const placeholder = new Sprite();
+        placeholder.texture = BobbaEnvironment.getGame().engine.getTexture(FLOOR_ITEM_PLACEHOLDER);
+        placeholder.x = FLOOR_ITEM_PLACEHOLDER_OFFSET_X;
+        placeholder.y = FLOOR_ITEM_PLACEHOLDER_OFFSET_Y;
+        super(id, x, y, z, rot, state, baseId, room, placeholder);
+    }
+
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
         for (let container of this.containers) {
@@ -13,21 +24,12 @@ export default class FloorItem extends RoomItem {
 
     }
 
-    loadBase(): Promise<Container[]> {
-        return new Promise((resolve, reject) => {
-            BobbaEnvironment.getGame().baseItemManager.getItem('roomitem', this.baseId).then(baseItem => {
-                this.baseItem = baseItem;
-                this.setAdditionalSprites();
-                this.updateSpritePosition();
-                resolve(this.containers);
-            }).catch(err => {
-                reject(err);
-            });
-        });
-    }
-
     calculateZIndex(zIndex: number, layerIndex: number): number {
         return calculateZIndexFloorItem(this._x, this._y, this._z, zIndex, layerIndex)
+    }
+
+    getItemType(): ItemType {
+        return 'roomitem';
     }
 }
 

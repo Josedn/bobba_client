@@ -1,13 +1,22 @@
 import RoomItem from "./RoomItem";
-import { Direction } from "../../imagers/furniture/FurniImager";
+import { Direction, ItemType } from "../../imagers/furniture/FurniImager";
 import Room from "../Room";
-import BobbaEnvironment from "../../BobbaEnvironment";
-import { Container } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { calculateZIndexWallItem } from "../RoomEngine";
+import BobbaEnvironment from "../../BobbaEnvironment";
+import { WALL_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER_OFFSET_X, WALL_ITEM_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 
 export default class WallItem extends RoomItem {
     constructor(id: number, x: number, y: number, rot: Direction, state: number, baseId: number, room: Room) {
-        super(id, x, y, 0, rot, state, baseId, room);
+        const placeholder = new Sprite();
+        placeholder.texture = BobbaEnvironment.getGame().engine.getTexture(WALL_ITEM_PLACEHOLDER);
+        placeholder.x = WALL_ITEM_PLACEHOLDER_OFFSET_X;
+        placeholder.y = WALL_ITEM_PLACEHOLDER_OFFSET_Y;
+        if (rot === 4) {
+            placeholder.scale.x = -1;
+            placeholder.x = -WALL_ITEM_PLACEHOLDER_OFFSET_X;
+        }
+        super(id, x, y, 0, rot, state, baseId, room, placeholder);
     }
 
     updateSpritePosition() {
@@ -17,20 +26,11 @@ export default class WallItem extends RoomItem {
         }
     }
 
-    loadBase(): Promise<Container[]> {
-        return new Promise((resolve, reject) => {
-            BobbaEnvironment.getGame().baseItemManager.getItem('wallitem', this.baseId).then(baseItem => {
-                this.baseItem = baseItem;
-                this.setAdditionalSprites();
-                this.updateSpritePosition();
-                resolve(this.containers);
-            }).catch(err => {
-                reject(err);
-            });
-        });
-    }
-
     calculateZIndex(zIndex: number, layerIndex: number): number {
         return calculateZIndexWallItem(this.id, this._x, this._y, zIndex, layerIndex);
+    }
+
+    getItemType(): ItemType {
+        return 'wallitem';
     }
 }

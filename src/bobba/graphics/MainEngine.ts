@@ -30,7 +30,7 @@ export default class MainEngine {
         });
 
         app.renderer.autoResize = true;
-        app.renderer.backgroundColor = 0x061639;
+        //app.renderer.backgroundColor = 0x061639;
 
         app.ticker.add(delta => gameLoop(delta));
         document.body.appendChild(app.view);

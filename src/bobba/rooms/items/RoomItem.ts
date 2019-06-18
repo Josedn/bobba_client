@@ -3,8 +3,8 @@ import Room from "../Room";
 import { Container, Sprite, BLEND_MODES } from "pixi.js";
 import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
-import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
+import { ItemType } from "../../imagers/furniture/FurniImager";
 
 const FRAME_SPEED = 100;
 
@@ -26,7 +26,7 @@ export default abstract class RoomItem {
 
     room: Room;
 
-    constructor(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number, room: Room) {
+    constructor(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number, room: Room, placeholderSprite: Sprite) {
         this.id = id;
         this._x = x;
         this._y = y;
@@ -43,10 +43,6 @@ export default abstract class RoomItem {
         this.loaded = false;
 
         const placeholderContainer = new Container();
-        const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(FURNI_PLACEHOLDER));
-
-        placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
-        placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
         placeholderContainer.zIndex = this.calculateZIndex(0, 0);
 
         this.sprites = [placeholderSprite];
@@ -148,11 +144,24 @@ export default abstract class RoomItem {
         }
     }
 
+    loadBase(): Promise<Container[]> {
+        return new Promise((resolve, reject) => {
+            BobbaEnvironment.getGame().baseItemManager.getItem(this.getItemType(), this.baseId).then(baseItem => {
+                this.baseItem = baseItem;
+                this.setAdditionalSprites();
+                this.updateSpritePosition();
+                resolve(this.containers);
+            }).catch(err => {
+                reject(err);
+            });
+        });
+    }
+
     abstract calculateZIndex(zIndex: number, layerIndex: number): number;
 
-    abstract loadBase(): Promise<Container[]>;
-
     abstract updateSpritePosition(): void;
+
+    abstract getItemType(): ItemType;
 
     handleClick = (event: any) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniInteract(this.id));
