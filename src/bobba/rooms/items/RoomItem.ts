@@ -145,15 +145,11 @@ export default abstract class RoomItem {
     }
 
     loadBase(): Promise<Container[]> {
-        return new Promise((resolve, reject) => {
-            BobbaEnvironment.getGame().baseItemManager.getItem(this.getItemType(), this.baseId).then(baseItem => {
-                this.baseItem = baseItem;
-                this.setAdditionalSprites();
-                this.updateSpritePosition();
-                resolve(this.containers);
-            }).catch(err => {
-                reject(err);
-            });
+        return BobbaEnvironment.getGame().baseItemManager.getItem(this.getItemType(), this.baseId).then(baseItem => {
+            this.baseItem = baseItem;
+            this.setAdditionalSprites();
+            this.updateSpritePosition();
+            return this.containers;
         });
     }
 
