@@ -42,14 +42,16 @@ export default class RoomItem {
         this._frameCounter = 0;
 
         this.loaded = false;
-        this.containers = [new Container()];
 
+        const placeholderContainer = new Container();
         const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(FURNI_PLACEHOLDER));
 
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
+        placeholderContainer.zIndex = calculateZIndexFurni(x, y, z, 0, 0);
 
         this.sprites = [placeholderSprite];
+        this.containers = [placeholderContainer];
         this.containers[0].addChild(placeholderSprite);
         this.updateSpritePosition();
     }

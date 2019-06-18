@@ -19,7 +19,7 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new RoomItem(id, x, y, z, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemContainerSet(id, newItem.containers);
+            this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
             newItem.loadBase().then(containers => {
                 this.room.engine.removeRoomItemContainerSet(id);
                 this.room.engine.addRoomItemContainerSet(id, containers);
