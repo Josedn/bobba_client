@@ -68,7 +68,7 @@ export default abstract class RoomItem {
     tick(delta: number) {
         this._frameCounter += delta;
         if (this._frameCounter >= FRAME_SPEED) {
-            //this._nextPrivateFrame();
+            this._nextPrivateFrame();
             this._frameCounter = 0;
         }
     }
