@@ -1,8 +1,8 @@
 import Room from "./Room";
-import { Sprite, Container, Point } from "pixi.js";
+import { Sprite, Container, Point, Texture } from "pixi.js";
 import BobbaEnvironment from "../BobbaEnvironment";
 import MainEngine from "../graphics/MainEngine";
-import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE } from "../graphics/GenericSprites";
+import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_X, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_Y, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y } from "../graphics/GenericSprites";
 import RequestMovement from "../communication/outgoing/rooms/RequestMovement";
 
 const CAMERA_CENTERED_OFFSET_X = 3;
@@ -15,23 +15,28 @@ export default class RoomEngine {
     room: Room;
     container: Container;
     floorSprites: Sprite[];
+    wallSprites: Sprite[];
     selectedTileSprite?: Sprite;
     lastMousePositionX: number;
     lastMousePositionY: number;
     userSprites: ContainerDictionary;
+    shadowSprites: ContainerDictionary;
     roomItemSprites: ContainerArrayDictionary;
 
     constructor(room: Room) {
         this.room = room;
         this.container = new Container();
         this.floorSprites = [];
+        this.wallSprites = [];
         this.userSprites = {};
+        this.shadowSprites = {};
         this.roomItemSprites = {};
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
 
         this.container.sortableChildren = true;
         this.onResize();
+        this.setWalls();
         this.setFloor();
         this.setSelectedTile();
     }
@@ -53,9 +58,11 @@ export default class RoomEngine {
         this.container.addChild(this.selectedTileSprite);
     }
 
-    addUserContainer(id: number, sprite: Container) {
-        this.userSprites[id] = sprite;
-        this.container.addChild(sprite);
+    addUserContainer(id: number, container: Container, shadowSprite: Sprite) {
+        this.userSprites[id] = container;
+        this.shadowSprites[id] = shadowSprite;
+        this.container.addChild(container);
+        this.container.addChild(shadowSprite);
     }
 
     addRoomItemContainerSet(id: number, containers: Container[]) {
@@ -77,9 +84,41 @@ export default class RoomEngine {
 
     removeUserSprite(id: number) {
         const sprite = this.userSprites[id];
+        const shadowSprite = this.shadowSprites[id];
         if (sprite != null) {
             this.container.removeChild(sprite);
             delete (this.userSprites[id]);
+        }
+        if (shadowSprite != null) {
+            this.container.removeChild(shadowSprite);
+            delete (this.shadowSprites[id]);
+        }
+    }
+
+    _addWallSprite(texture: Texture, x: number, y: number, offsetX: number, offsetY: number, priority: number) {
+        const currentSprite = new Sprite(texture);
+        const localPos = this.tileToLocal(x, y, 0);
+        currentSprite.x = localPos.x + offsetX;
+        currentSprite.y = localPos.y + offsetY;
+        currentSprite.zIndex = calculateZIndex(x, y, 0, priority);
+        this.wallSprites.push(currentSprite);
+        this.container.addChild(currentSprite);
+    }
+
+    setWalls() {
+        const wall_r = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_R);
+        const wall_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_L);
+        const wall_door_extended_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_DOOR_EXTENDED_L);
+        const model = this.room.model;
+        for (let i = 0; i < model.maxY; i++) {
+            if (model.doorY === i) {
+                this._addWallSprite(wall_door_extended_l, 1, i, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_X, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_Y, PRIORITY_WALL);
+            } else if (model.doorY - 1 !== i) {
+                this._addWallSprite(wall_l, 1, i, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+            }
+        }
+        for (let i = 1; i < this.room.model.maxX; i++) {
+            this._addWallSprite(wall_r, i, 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, PRIORITY_WALL);
         }
     }
 
@@ -96,6 +135,7 @@ export default class RoomEngine {
                     currentSprite.x = localPos.x;
                     currentSprite.y = localPos.y;
 
+                    currentSprite.zIndex = calculateZIndex(i, j, 0, model.doorX === i && model.doorY === j ? PRIORITY_DOOR_FLOOR : PRIORITY_FLOOR);
                     this.floorSprites.push(currentSprite);
                     this.container.addChild(currentSprite);
                 }
@@ -163,7 +203,8 @@ export default class RoomEngine {
             this.selectedTileSprite.visible = model.isValidTile(tileX, tileY);
             this.selectedTileSprite.x = localPos.x + ROOM_SELECTED_TILE_OFFSET_X;
             this.selectedTileSprite.y = localPos.y + ROOM_SELECTED_TILE_OFFSET_Y;
-            this.selectedTileSprite.zIndex = calculateZIndexFloor(tileX, tileY, 0);
+
+            this.selectedTileSprite.zIndex = calculateZIndex(tileX, tileY, 0, model.doorX === tileX && model.doorY === tileY ? PRIORITY_DOOR_FLOOR_SELECT : PRIORITY_FLOOR_SELECT);
         }
     }
 
@@ -173,6 +214,16 @@ export default class RoomEngine {
 
     getStage() {
         return this.container;
+    }
+
+    calculateZIndexUser(x: number, y: number, z: number): number {
+        const model = this.room.model;
+        return _calculateZIndexUser(x, y, z, model.doorX === x && model.doorY === y ? PRIORITY_DOOR_FLOOR_PLAYER : PRIORITY_PLAYER);
+    }
+
+    calculateZIndexUserShadow(x: number, y: number, z: number): number {
+        const model = this.room.model;
+        return _calculateZIndexUser(x, y, z, model.doorX === x && model.doorY === y ? PRIORITY_DOOR_FLOOR_PLAYER_SHADOW : PRIORITY_PLAYER_SHADOW);
     }
 }
 
@@ -188,18 +239,18 @@ interface ContainerArrayDictionary {
     [id: number]: Container[];
 }
 
-export const calculateZIndexUser = (x: number, y: number, z: number): number => {
-    return (x + y) * (COMPARABLE_X_Y) + ((z + 0.001) * (COMPARABLE_Z));
+export const calculateZIndex = (x: number, y: number, z: number, priority: number): number => {
+    return ((x + y) * (COMPARABLE_X_Y) + (z * (COMPARABLE_Z))) + PRIORITY_MULTIPLIER * priority;
+};
+
+const _calculateZIndexUser = (x: number, y: number, z: number, priority: number): number => {
+    return calculateZIndex(x, y, z + 0.001, priority);
 };
 
 export const calculateZIndexFurni = (x: number, y: number, z: number, zIndex: number, layerId: number): number => {
     const compareY = (Math.trunc(zIndex / 100)) / 10;
-    return ((x + y + compareY) * (COMPARABLE_X_Y)) + ((z) * COMPARABLE_Z) + layerId;
-}
-
-export const calculateZIndexFloor = (x: number, y: number, z: number): number => {
-    return (x + y) * (COMPARABLE_X_Y) + (z * (COMPARABLE_Z));
-}
+    return calculateZIndex(x, y + compareY, z, PRIORITY_ROOM_ITEM);
+};
 
 export const PRIORITY_DOOR_FLOOR = 1;
 export const PRIORITY_DOOR_FLOOR_SELECT = 2;

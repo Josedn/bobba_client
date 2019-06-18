@@ -4,7 +4,7 @@ import Room from "../Room";
 import AvatarContainer from "./AvatarContainer";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestLookAt from "../../communication/outgoing/rooms/RequestLookAt";
-import { calculateZIndexUser } from "../RoomEngine";
+import { ROOM_TILE_SHADOW } from "../../graphics/GenericSprites";
 
 const FRAME_SPEED = 100;
 const WALK_SPEED = 2; //Squares per second
@@ -38,6 +38,7 @@ export default class RoomUser {
     container: Container;
     headSprite: Sprite;
     bodySprite: Sprite;
+    shadowSprite: Sprite;
     loaded: boolean;
 
     room: Room;
@@ -68,6 +69,8 @@ export default class RoomUser {
 
         this.bodySprite = new Sprite();
         this.headSprite = new Sprite();
+        this.shadowSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(ROOM_TILE_SHADOW));
+
         this.container = new Container();
         this.container.addChild(this.bodySprite);
         this.container.addChild(this.headSprite);
@@ -200,7 +203,12 @@ export default class RoomUser {
         const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
         this.container.x = x + offsetX;
         this.container.y = y + ROOM_USER_SPRITE_OFFSET_Y;
-        this.container.zIndex = calculateZIndexUser(this._x, this._y, this._z);
+
+        const shadowCoords = this.room.engine.tileToLocal(this._x, this._y, 0);
+        this.shadowSprite.x = shadowCoords.x;
+        this.shadowSprite.y = shadowCoords.y;
+        this.shadowSprite.zIndex = this.room.engine.calculateZIndexUserShadow(this._x, this._y, 0);
+        this.container.zIndex = this.room.engine.calculateZIndexUser(this._x, this._y, this._z);
     }
 
     move(delta: number) {

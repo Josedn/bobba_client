@@ -3,7 +3,7 @@ import MainEngine from './graphics/MainEngine';
 import AvatarImager from "./imagers/avatars/AvatarImager";
 import FurniImager from "./imagers/furniture/FurniImager";
 import BaseItemManager from "./items/BaseItemManager";
-import { ROOM_TILE, ROOM_SELECTED_TILE, FURNI_PLACEHOLDER } from "./graphics/GenericSprites";
+import { ROOM_TILE, ROOM_SELECTED_TILE, FURNI_PLACEHOLDER, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_TILE_SHADOW } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
 import CommunicationManager from "./communication/CommunicationManager";
 import Login from "./communication/outgoing/generic/Login";
@@ -36,6 +36,10 @@ export default class Game {
             ROOM_TILE,
             ROOM_SELECTED_TILE,
             FURNI_PLACEHOLDER,
+            ROOM_WALL_L,
+            ROOM_WALL_R,
+            ROOM_WALL_DOOR_EXTENDED_L,
+            ROOM_TILE_SHADOW
         ];
 
         Promise.all([
