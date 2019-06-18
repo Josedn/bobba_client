@@ -30,9 +30,11 @@ export default class RoomEngine {
         this.selectedTileSprite = null;
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
+
+        this.container.sortableChildren = true;
         this.onResize();
-        this.setFloor();
-        this.setSelectedTile();
+        //this.setFloor();
+        //this.setSelectedTile();
     }
 
     onResize() {
@@ -177,3 +179,30 @@ interface SpriteDictionary {
 interface ContainerDictionary {
     [id: number]: Container;
 }
+
+export const calculateZIndex = (x: number, y: number, z: number) => {
+    return (x + y) * (COMPARABLE_X_Y) + (z * (COMPARABLE_Z));
+};
+
+export const calculateZIndexFurni = (x: number, y: number, z: number, zIndex: number, layerId: number) => {
+    const compareY = (Math.trunc(zIndex / 100)) / 10;
+    return ((x + y + compareY) * (COMPARABLE_X_Y)) + ((z) * COMPARABLE_Z) + layerId;
+}
+
+export const PRIORITY_DOOR_FLOOR = 1;
+export const PRIORITY_DOOR_FLOOR_SELECT = 2;
+export const PRIORITY_DOOR_FLOOR_PLAYER_SHADOW = 3;
+export const PRIORITY_DOOR_FLOOR_PLAYER = 4;
+export const PRIORITY_DOOR_WALL = 5;
+export const PRIORITY_WALL = 6;
+export const PRIORITY_FLOOR = 7;
+export const PRIORITY_WALL_ITEM = 8;
+export const PRIORITY_PLAYER_SHADOW = 9;
+export const PRIORITY_FLOOR_SELECT = 11;
+export const PRIORITY_PLAYER = 11;
+export const PRIORITY_ROOM_ITEM = 11;
+export const PRIORITY_SIGN = 12;
+export const PRIORITY_CHAT = 13;
+
+export const COMPARABLE_X_Y = 1000000;
+export const COMPARABLE_Z = 10000;

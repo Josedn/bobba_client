@@ -34,6 +34,9 @@ export default class FurniBase {
             if (visualization.layers != null) {
                 for (let layer of visualization.layers) {
                     if (parseInt(layer.id) === i) {
+                        if (layer.z != null) {
+                            layerData.z = parseInt(layer.z);
+                        }
                         if (layer.ink != null) {
                             layerData.ink = layer.ink;
                         }

@@ -5,6 +5,7 @@ import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
+import { calculateZIndex, calculateZIndexFurni } from "../RoomEngine";
 
 const FRAME_SPEED = 100;
 
@@ -48,6 +49,7 @@ export default class RoomItem {
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
 
+        this.container.sortableChildren = true;
         this.container.addChild(placeholderSprite);
         this.sprites = [placeholderSprite];
         this.updateSpritePosition();
@@ -80,7 +82,7 @@ export default class RoomItem {
 
     _nextPrivateFrame() {
         this._frame++;
-        this.updateTextures();
+        //this.updateTextures();
     }
 
     setState(state: number) {
@@ -125,6 +127,7 @@ export default class RoomItem {
                 const texture = this.baseItem.getTexture(layer.resourceName);
                 if (texture != null) {
                     const sprite = this.sprites[layerIndex++];
+                    const zIndex = layer.z || 0;
 
                     sprite.texture = texture;
                     sprite.visible = true;
@@ -156,6 +159,8 @@ export default class RoomItem {
                     } else {
                         sprite.tint = 0xFFFFFF;
                     }
+                    
+                    sprite.zIndex = calculateZIndexFurni(this._x, this._y, this._z, zIndex, layerIndex);
                 }
             }
             for (let i = layerIndex; i < this.sprites.length; i++) {
@@ -177,6 +182,7 @@ export default class RoomItem {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
         this.container.x = x + DRAWING_OFFSET_X;
         this.container.y = y + DRAWING_OFFSET_Y;
+        this.container.zIndex = calculateZIndex(this._x, this._y, this._z);
     }
 
     handleClick = (event: any) => {
