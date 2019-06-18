@@ -32,8 +32,8 @@ export default class RoomEngine {
 
         this.container.sortableChildren = true;
         this.onResize();
-        //this.setFloor();
-        //this.setSelectedTile();
+        this.setFloor();
+        this.setSelectedTile();
     }
 
     onResize() {
@@ -163,6 +163,7 @@ export default class RoomEngine {
             this.selectedTileSprite.visible = model.isValidTile(tileX, tileY);
             this.selectedTileSprite.x = localPos.x + ROOM_SELECTED_TILE_OFFSET_X;
             this.selectedTileSprite.y = localPos.y + ROOM_SELECTED_TILE_OFFSET_Y;
+            this.selectedTileSprite.zIndex = calculateZIndexFloor(tileX, tileY, 0);
         }
     }
 
@@ -187,13 +188,17 @@ interface ContainerArrayDictionary {
     [id: number]: Container[];
 }
 
-export const calculateZIndexUser = (x: number, y: number, z: number) => {
+export const calculateZIndexUser = (x: number, y: number, z: number): number => {
     return (x + y) * (COMPARABLE_X_Y) + ((z + 0.001) * (COMPARABLE_Z));
 };
 
-export const calculateZIndexFurni = (x: number, y: number, z: number, zIndex: number, layerId: number) => {
+export const calculateZIndexFurni = (x: number, y: number, z: number, zIndex: number, layerId: number): number => {
     const compareY = (Math.trunc(zIndex / 100)) / 10;
     return ((x + y + compareY) * (COMPARABLE_X_Y)) + ((z) * COMPARABLE_Z) + layerId;
+}
+
+export const calculateZIndexFloor = (x: number, y: number, z: number): number => {
+    return (x + y) * (COMPARABLE_X_Y) + (z * (COMPARABLE_Z));
 }
 
 export const PRIORITY_DOOR_FLOOR = 1;
@@ -211,5 +216,6 @@ export const PRIORITY_ROOM_ITEM = 11;
 export const PRIORITY_SIGN = 12;
 export const PRIORITY_CHAT = 13;
 
+export const PRIORITY_MULTIPLIER = 10000000;
 export const COMPARABLE_X_Y = 1000000;
 export const COMPARABLE_Z = 10000;
