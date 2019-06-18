@@ -2,7 +2,7 @@ import IMessageHandler from "../net/IMessageHandler";
 import WebSocketClient from "../net/WebSocketClient";
 import BobbaEnvironment from "../BobbaEnvironment";
 import IIncomingEvent from "./incoming/IIncomingEvent";
-import { LOGIN_OK, MAP_DATA, ROOM_ITEM_DATA, PLAYERS_DATA, PLAYER_STATUS, PLAYER_REMOVE, CHAT, PLAYER_WAVE, ITEM_REMOVE, ITEM_STATE } from "./protocol/OpCodes/ServerOpCodes";
+import { LOGIN_OK, MAP_DATA, ROOM_ITEM_DATA, PLAYERS_DATA, PLAYER_STATUS, PLAYER_REMOVE, CHAT, PLAYER_WAVE, ITEM_REMOVE, ITEM_STATE, WALL_ITEM_DATA } from "./protocol/OpCodes/ServerOpCodes";
 import LoginOk from "./incoming/generic/LoginOk";
 import ServerMessage from "./protocol/ServerMessage";
 import ClientMessage from "./protocol/ClientMessage";
@@ -15,6 +15,7 @@ import HandleIncomingChat from "./incoming/rooms/HandleIncomingChat";
 import HandleRoomUserWave from "./incoming/rooms/HandleRoomUserWave";
 import HandleRoomItemRemove from "./incoming/rooms/HandleRoomItemRemove";
 import HandleRoomItemState from "./incoming/rooms/HandleRoomItemState";
+import HandleWallItems from "./incoming/rooms/HandleWallItems";
 
 export default class CommunicationManager implements IMessageHandler {
     client: WebSocketClient;
@@ -37,6 +38,7 @@ export default class CommunicationManager implements IMessageHandler {
         this.requestHandlers[ROOM_ITEM_DATA] = new HandleFloorItems();
         this.requestHandlers[ITEM_REMOVE] = new HandleRoomItemRemove();
         this.requestHandlers[ITEM_STATE] = new HandleRoomItemState();
+        this.requestHandlers[WALL_ITEM_DATA] = new HandleWallItems();
     }
 
     sendMessage(message: ClientMessage) {

@@ -34,15 +34,6 @@ export default class FurniImager {
         return null;
     }
 
-    /*generateItem(type: ItemType, itemId: number) {
-        this._loadItemBase(type, itemId, 64).then(furniBase => {
-            console.log(this._drawItem(furniBase, 0, 0, 0));
-
-        }).catch(err => {
-            console.log(err);
-        });
-    }*/
-
     loadItemBase(type: ItemType, itemId: number, size: Size): Promise<FurniBase> {
         const rawItemName = this.findItemNameById(type, itemId);
         if (rawItemName == null) {

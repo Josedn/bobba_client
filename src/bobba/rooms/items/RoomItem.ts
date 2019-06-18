@@ -5,11 +5,10 @@ import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
-import { calculateZIndexFurni } from "../RoomEngine";
 
 const FRAME_SPEED = 100;
 
-export default class RoomItem {
+export default abstract class RoomItem {
     id: number;
     _x: number;
     _y: number;
@@ -48,7 +47,7 @@ export default class RoomItem {
 
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
-        placeholderContainer.zIndex = calculateZIndexFurni(x, y, z, 0, 0);
+        placeholderContainer.zIndex = this.calculateZIndex(0, 0);
 
         this.sprites = [placeholderSprite];
         this.containers = [placeholderContainer];
@@ -69,7 +68,7 @@ export default class RoomItem {
     tick(delta: number) {
         this._frameCounter += delta;
         if (this._frameCounter >= FRAME_SPEED) {
-            this._nextPrivateFrame();
+            //this._nextPrivateFrame();
             this._frameCounter = 0;
         }
     }
@@ -139,8 +138,7 @@ export default class RoomItem {
                     } else {
                         sprite.tint = 0xFFFFFF;
                     }
-
-                    this.containers[layerIndex].zIndex = calculateZIndexFurni(this._x, this._y, this._z, zIndex, layerIndex);
+                    this.containers[layerIndex].zIndex = this.calculateZIndex(zIndex, layerIndex);
                     layerIndex++;
                 }
             }
@@ -150,32 +148,13 @@ export default class RoomItem {
         }
     }
 
-    loadBase(): Promise<Container[]> {
-        return new Promise((resolve, reject) => {
-            BobbaEnvironment.getGame().baseItemManager.getItem('roomitem', this.baseId).then(baseItem => {
-                this.baseItem = baseItem;
-                this.setAdditionalSprites();
-                this.updateSpritePosition();
-                resolve(this.containers);
-            }).catch(err => {
-                reject(err);
-            });
-        });
-    }
+    abstract calculateZIndex(zIndex: number, layerIndex: number): number;
 
-    updateSpritePosition() {
-        const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
-        for (let container of this.containers) {
-            container.x = x + DRAWING_OFFSET_X;
-            container.y = y + DRAWING_OFFSET_Y;
-        }
+    abstract loadBase(): Promise<Container[]>;
 
-    }
+    abstract updateSpritePosition(): void;
 
     handleClick = (event: any) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniInteract(this.id));
     }
 }
-
-const DRAWING_OFFSET_X = 32;
-const DRAWING_OFFSET_Y = 16;

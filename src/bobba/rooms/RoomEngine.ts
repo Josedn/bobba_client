@@ -247,26 +247,31 @@ const _calculateZIndexUser = (x: number, y: number, z: number, priority: number)
     return calculateZIndex(x, y, z + 0.001, priority);
 };
 
-export const calculateZIndexFurni = (x: number, y: number, z: number, zIndex: number, layerId: number): number => {
+export const calculateZIndexFloorItem = (x: number, y: number, z: number, zIndex: number, layerId: number): number => {
     const compareY = (Math.trunc(zIndex / 100)) / 10;
     return calculateZIndex(x, y + compareY, z, PRIORITY_ROOM_ITEM);
 };
 
-export const PRIORITY_DOOR_FLOOR = 1;
-export const PRIORITY_DOOR_FLOOR_SELECT = 2;
-export const PRIORITY_DOOR_FLOOR_PLAYER_SHADOW = 3;
-export const PRIORITY_DOOR_FLOOR_PLAYER = 4;
-export const PRIORITY_DOOR_WALL = 5;
-export const PRIORITY_WALL = 6;
-export const PRIORITY_FLOOR = 7;
-export const PRIORITY_WALL_ITEM = 8;
-export const PRIORITY_PLAYER_SHADOW = 9;
-export const PRIORITY_FLOOR_SELECT = 11;
-export const PRIORITY_PLAYER = 11;
-export const PRIORITY_ROOM_ITEM = 11;
-export const PRIORITY_SIGN = 12;
-export const PRIORITY_CHAT = 13;
+export const calculateZIndexWallItem = (id: number, x: number, y: number, zIndex: number, layerId: number): number => {
+    return (id * COMPARABLE_Z) + (PRIORITY_MULTIPLIER * PRIORITY_WALL_ITEM);
+    //TODO: check this
+};
 
-export const PRIORITY_MULTIPLIER = 10000000;
-export const COMPARABLE_X_Y = 1000000;
-export const COMPARABLE_Z = 10000;
+const PRIORITY_DOOR_FLOOR = 1;
+const PRIORITY_DOOR_FLOOR_SELECT = 2;
+const PRIORITY_DOOR_FLOOR_PLAYER_SHADOW = 3;
+const PRIORITY_DOOR_FLOOR_PLAYER = 4;
+//const PRIORITY_DOOR_WALL = 5;
+const PRIORITY_WALL = 6;
+const PRIORITY_FLOOR = 7;
+const PRIORITY_PLAYER_SHADOW = 8;
+const PRIORITY_WALL_ITEM = 9;
+const PRIORITY_FLOOR_SELECT = 11;
+const PRIORITY_PLAYER = 11;
+const PRIORITY_ROOM_ITEM = 11;
+//const PRIORITY_SIGN = 12;
+//const PRIORITY_CHAT = 13;
+
+const PRIORITY_MULTIPLIER = 10000000;
+const COMPARABLE_X_Y = 1000000;
+const COMPARABLE_Z = 10000;
