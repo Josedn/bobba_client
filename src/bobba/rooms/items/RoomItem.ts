@@ -23,7 +23,6 @@ export default class RoomItem {
     sprites: Sprite[];
     containers: Container[];
     baseItem: BaseItem | null;
-    //container: Container;
     loaded: boolean;
 
     room: Room;
@@ -44,46 +43,20 @@ export default class RoomItem {
 
         this.loaded = false;
         this.containers = [new Container()];
-        //this.container = new Container();
+
         const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(FURNI_PLACEHOLDER));
 
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
 
-        //this.container.sortableChildren = true;
-        //this.container.addChild(placeholderSprite);
         this.sprites = [placeholderSprite];
         this.containers[0].addChild(placeholderSprite);
         this.updateSpritePosition();
     }
-    /*
-    get x(): number {
-        return this._x;
-    }
-    set x(value: number) {
-        this._x = value;
-        this.updateSpritePosition();
-    }
 
-    get y(): number {
-        return this._y;
-    }
-    set y(value: number) {
-        this._y = value;
-        this.updateSpritePosition();
-    }
-
-    get z(): number {
-        return this._z;
-    }
-    set z(value: number) {
-        this._z = value;
-        this.updateSpritePosition();
-    }
-    */
     _nextPrivateFrame() {
         this._frame++;
-        //this.updateTextures();
+        this.updateTextures();
     }
 
     setState(state: number) {
@@ -114,7 +87,6 @@ export default class RoomItem {
 
                 this.sprites.push(sprite);
                 this.containers.push(currentContainer);
-                //this.container.addChild(sprite);
             }
             this.updateTextures();
         }

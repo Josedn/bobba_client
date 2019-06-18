@@ -19,12 +19,11 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new RoomItem(id, x, y, z, rot, state, baseId, this.room);
+            this.room.engine.addRoomItemContainerSet(id, newItem.containers);
             newItem.loadBase().then(containers => {
-                for (let container of containers) {
-                    this.room.engine.addDummyContainer(container);
-                }
+                this.room.engine.removeRoomItemContainerSet(id);
+                this.room.engine.addRoomItemContainerSet(id, containers);
             });
-            //this.room.engine.addRoomItemSpriteContainer(id, newItem.container);
             this.items[id] = newItem;
         } else {
             //item.updateParams(x, y...);
@@ -39,7 +38,7 @@ export default class RoomItemManager {
     }
 
     removeItemFromRoom(id: number) {
-        this.room.engine.removeRoomItemSprite(id);
+        this.room.engine.removeRoomItemContainerSet(id);
         if (this.getItem(id) != null) {
             delete (this.items[id]);
         }

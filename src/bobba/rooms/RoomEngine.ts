@@ -15,11 +15,11 @@ export default class RoomEngine {
     room: Room;
     container: Container;
     floorSprites: Sprite[];
-    selectedTileSprite: Sprite | null;
+    selectedTileSprite?: Sprite;
     lastMousePositionX: number;
     lastMousePositionY: number;
     userSprites: ContainerDictionary;
-    roomItemSprites: ContainerDictionary;
+    roomItemSprites: ContainerArrayDictionary;
 
     constructor(room: Room) {
         this.room = room;
@@ -27,7 +27,6 @@ export default class RoomEngine {
         this.floorSprites = [];
         this.userSprites = {};
         this.roomItemSprites = {};
-        this.selectedTileSprite = null;
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
 
@@ -59,19 +58,19 @@ export default class RoomEngine {
         this.container.addChild(sprite);
     }
 
-    addRoomItemSpriteContainer(id: number, container: Container) {
-        this.roomItemSprites[id] = container;
-        this.container.addChild(container);
+    addRoomItemContainerSet(id: number, containers: Container[]) {
+        this.roomItemSprites[id] = containers;
+        for (let container of containers) {
+            this.container.addChild(container);
+        }
     }
 
-    addDummyContainer(sprite: Container) {
-        this.container.addChild(sprite);
-    }
-
-    removeRoomItemSprite(id: number) {
-        const sprite = this.roomItemSprites[id];
-        if (sprite != null) {
-            this.container.removeChild(sprite);
+    removeRoomItemContainerSet(id: number) {
+        const containers = this.roomItemSprites[id];
+        if (containers != null) {
+            for (let container of containers) {
+                this.container.removeChild(container);
+            }
             delete (this.roomItemSprites[id]);
         }
     }
@@ -182,6 +181,10 @@ interface SpriteDictionary {
 
 interface ContainerDictionary {
     [id: number]: Container;
+}
+
+interface ContainerArrayDictionary {
+    [id: number]: Container[];
 }
 
 export const calculateZIndexUser = (x: number, y: number, z: number) => {
