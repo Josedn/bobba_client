@@ -4,7 +4,7 @@ import Room from "../Room";
 import AvatarContainer from "./AvatarContainer";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestLookAt from "../../communication/outgoing/rooms/RequestLookAt";
-import { calculateZIndex } from "../RoomEngine";
+import { calculateZIndexUser } from "../RoomEngine";
 
 const FRAME_SPEED = 100;
 const WALK_SPEED = 2; //Squares per second
@@ -200,7 +200,7 @@ export default class RoomUser {
         const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
         this.container.x = x + offsetX;
         this.container.y = y + ROOM_USER_SPRITE_OFFSET_Y;
-        this.container.zIndex = calculateZIndex(this._x, this._y, this._z);
+        this.container.zIndex = calculateZIndexUser(this._x, this._y, this._z);
     }
 
     move(delta: number) {

@@ -64,6 +64,10 @@ export default class RoomEngine {
         this.container.addChild(container);
     }
 
+    addDummyContainer(sprite: Container) {
+        this.container.addChild(sprite);
+    }
+
     removeRoomItemSprite(id: number) {
         const sprite = this.roomItemSprites[id];
         if (sprite != null) {
@@ -180,8 +184,8 @@ interface ContainerDictionary {
     [id: number]: Container;
 }
 
-export const calculateZIndex = (x: number, y: number, z: number) => {
-    return (x + y) * (COMPARABLE_X_Y) + (z * (COMPARABLE_Z));
+export const calculateZIndexUser = (x: number, y: number, z: number) => {
+    return (x + y) * (COMPARABLE_X_Y) + ((z + 0.001) * (COMPARABLE_Z));
 };
 
 export const calculateZIndexFurni = (x: number, y: number, z: number, zIndex: number, layerId: number) => {

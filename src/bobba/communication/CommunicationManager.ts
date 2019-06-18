@@ -41,7 +41,7 @@ export default class CommunicationManager implements IMessageHandler {
 
     sendMessage(message: ClientMessage) {
         if (this.client.connected) {
-            console.log('Sent [' + message.id + ']: ' + message.constructor.name)
+            //console.log('Sent [' + message.id + ']: ' + message.constructor.name);
             this.client.send(message.body);
         }
     }
@@ -50,9 +50,9 @@ export default class CommunicationManager implements IMessageHandler {
         const message = new ServerMessage(rawMessage);
         const handler = this.requestHandlers[message.id]
         if (handler == null) {
-            console.log('No handler for: ' + message.id);
+            //console.log('No handler for: ' + message.id);
         } else {
-            console.log('Handled [' + message.id + ']: ' + handler.constructor.name);
+            //console.log('Handled [' + message.id + ']: ' + handler.constructor.name);
             handler.handle(message);
         }
     }

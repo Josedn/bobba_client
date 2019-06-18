@@ -19,7 +19,12 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new RoomItem(id, x, y, z, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemSpriteContainer(id, newItem.container);
+            newItem.loadBase().then(containers => {
+                for (let container of containers) {
+                    this.room.engine.addDummyContainer(container);
+                }
+            });
+            //this.room.engine.addRoomItemSpriteContainer(id, newItem.container);
             this.items[id] = newItem;
         } else {
             //item.updateParams(x, y...);

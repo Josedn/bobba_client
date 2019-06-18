@@ -5,7 +5,7 @@ import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { FURNI_PLACEHOLDER, FURNI_PLACEHOLDER_OFFSET_X, FURNI_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
-import { calculateZIndex, calculateZIndexFurni } from "../RoomEngine";
+import { calculateZIndexFurni } from "../RoomEngine";
 
 const FRAME_SPEED = 100;
 
@@ -21,8 +21,9 @@ export default class RoomItem {
 
     baseId: number;
     sprites: Sprite[];
+    containers: Container[];
     baseItem: BaseItem | null;
-    container: Container;
+    //container: Container;
     loaded: boolean;
 
     room: Room;
@@ -42,20 +43,20 @@ export default class RoomItem {
         this._frameCounter = 0;
 
         this.loaded = false;
-        this.container = new Container();
-
+        this.containers = [new Container()];
+        //this.container = new Container();
         const placeholderSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(FURNI_PLACEHOLDER));
 
         placeholderSprite.x = FURNI_PLACEHOLDER_OFFSET_X;
         placeholderSprite.y = FURNI_PLACEHOLDER_OFFSET_Y;
 
-        this.container.sortableChildren = true;
-        this.container.addChild(placeholderSprite);
+        //this.container.sortableChildren = true;
+        //this.container.addChild(placeholderSprite);
         this.sprites = [placeholderSprite];
+        this.containers[0].addChild(placeholderSprite);
         this.updateSpritePosition();
-        this.loadBase();
     }
-
+    /*
     get x(): number {
         return this._x;
     }
@@ -79,7 +80,7 @@ export default class RoomItem {
         this._z = value;
         this.updateSpritePosition();
     }
-
+    */
     _nextPrivateFrame() {
         this._frame++;
         //this.updateTextures();
@@ -107,8 +108,13 @@ export default class RoomItem {
                 sprite.visible = false;
                 sprite.interactive = true;
                 sprite.on('click', this.handleClick); // DOUBLE CLICK ??????
+
+                const currentContainer = new Container();
+                currentContainer.addChild(sprite);
+
                 this.sprites.push(sprite);
-                this.container.addChild(sprite);
+                this.containers.push(currentContainer);
+                //this.container.addChild(sprite);
             }
             this.updateTextures();
         }
@@ -126,7 +132,7 @@ export default class RoomItem {
             for (let layer of this.baseItem.furniBase.getLayers(this.rot, actualState, actualFrame)) {
                 const texture = this.baseItem.getTexture(layer.resourceName);
                 if (texture != null) {
-                    const sprite = this.sprites[layerIndex++];
+                    const sprite = this.sprites[layerIndex];
                     const zIndex = layer.z || 0;
 
                     sprite.texture = texture;
@@ -159,8 +165,9 @@ export default class RoomItem {
                     } else {
                         sprite.tint = 0xFFFFFF;
                     }
-                    
-                    sprite.zIndex = calculateZIndexFurni(this._x, this._y, this._z, zIndex, layerIndex);
+
+                    this.containers[layerIndex].zIndex = calculateZIndexFurni(this._x, this._y, this._z, zIndex, layerIndex);
+                    layerIndex++;
                 }
             }
             for (let i = layerIndex; i < this.sprites.length; i++) {
@@ -169,20 +176,26 @@ export default class RoomItem {
         }
     }
 
-    loadBase() {
-        BobbaEnvironment.getGame().baseItemManager.getItem('roomitem', this.baseId).then(baseItem => {
-            this.baseItem = baseItem;
-            this.setAdditionalSprites();
-        }).catch(err => {
-            console.log("Error with item: " + err);
+    loadBase(): Promise<Container[]> {
+        return new Promise((resolve, reject) => {
+            BobbaEnvironment.getGame().baseItemManager.getItem('roomitem', this.baseId).then(baseItem => {
+                this.baseItem = baseItem;
+                this.setAdditionalSprites();
+                this.updateSpritePosition();
+                resolve(this.containers);
+            }).catch(err => {
+                reject(err);
+            });
         });
     }
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
-        this.container.x = x + DRAWING_OFFSET_X;
-        this.container.y = y + DRAWING_OFFSET_Y;
-        this.container.zIndex = calculateZIndex(this._x, this._y, this._z);
+        for (let container of this.containers) {
+            container.x = x + DRAWING_OFFSET_X;
+            container.y = y + DRAWING_OFFSET_Y;
+        }
+
     }
 
     handleClick = (event: any) => {
