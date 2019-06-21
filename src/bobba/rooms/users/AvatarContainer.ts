@@ -42,6 +42,8 @@ export default class AvatarContainer {
             }
         }
 
+        promises.push(this._loadChatHeadTexture());
+
         return Promise.all(promises);
     }
 
@@ -54,8 +56,7 @@ export default class AvatarContainer {
     }
 
     _loadUniqueBodyTexture(direction: Direction, action: string[], frame: number): Promise<any> {
-        const avatarImager = BobbaEnvironment.getGame().avatarImager;
-        const engine = BobbaEnvironment.getGame().engine;
+        const {avatarImager, engine} = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, direction, direction, action, "std", frame, false, true, "n"), this.isGhost)
             .then(image => {
@@ -64,12 +65,20 @@ export default class AvatarContainer {
     }
 
     _loadUniqueHeadTexture(headDirection: Direction, gesture: string, frame: number): Promise<any> {
-        const avatarImager = BobbaEnvironment.getGame().avatarImager;
-        const engine = BobbaEnvironment.getGame().engine;
+        const {avatarImager, engine} = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, headDirection, headDirection, ["std"], gesture, frame, true, false, "n"), this.isGhost)
             .then(image => {
                 this.headTextures[getHeadTextureKey(headDirection, gesture, frame)] = engine.getTextureFromImage(image);
+            });
+    }
+
+    _loadChatHeadTexture(): Promise<any> {
+        const {avatarImager, engine} = BobbaEnvironment.getGame();
+
+        return avatarImager.generateGeneric(new AvatarInfo(this.look, 2, 2, ["std"], "std", 0, true, false, "d"), this.isGhost)
+            .then(image => {
+                this.headTextures['head'] = engine.getTextureFromImage(image);
             });
     }
 

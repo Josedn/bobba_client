@@ -47,7 +47,7 @@ export default class Game {
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
             this.engine.loadGlobalTextures(sprites)
-        ]).then(() => this.communicationManager.connect("localhost", 443, false)).then(() => {
+        ]).then(() => this.communicationManager.connect("bobba.io", 8080, true)).then(() => {
 
             this.doLogin();
             
