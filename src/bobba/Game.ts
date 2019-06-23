@@ -10,7 +10,8 @@ import Login from "./communication/outgoing/generic/Login";
 import RequestMap from "./communication/outgoing/rooms/RequestMap";
 import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
-import ChatImager from "./imagers/chats/ChatImager";
+import ChatImager from "./imagers/bubbles/ChatImager";
+import MeMenuImager from "./imagers/bubbles/MeMenuImager";
 
 export default class Game {
     currentRoom?: Room;
@@ -18,6 +19,7 @@ export default class Game {
     avatarImager: AvatarImager;
     furniImager: FurniImager;
     chatImager: ChatImager;
+    meMenuImager: MeMenuImager;
     baseItemManager: BaseItemManager;
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
@@ -28,6 +30,7 @@ export default class Game {
         this.avatarImager = new AvatarImager();
         this.furniImager = new FurniImager();
         this.chatImager = new ChatImager();
+        this.meMenuImager = new MeMenuImager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
 
@@ -50,6 +53,7 @@ export default class Game {
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
             this.chatImager.initialize(),
+            this.meMenuImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
             this.communicationManager.connect("localhost", 443, false),
         ]).then(() => {
