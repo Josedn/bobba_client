@@ -104,7 +104,7 @@ export default class Game {
 
     onMouseClick = (x: number, y: number) => {
         if (this.currentRoom != null) {
-            const pixels = this.engine.pixiApp.renderer.extract.pixels(this.engine.getMainStage());
+            /*const pixels = this.engine.pixiApp.renderer.extract.pixels(this.engine.getMainStage());
 
             const bounds = this.engine.getMainStage().getBounds();
             const stageX = x - bounds.x;
@@ -115,7 +115,7 @@ export default class Game {
             } else {
                 const rgba = { r: pixels[pos], g: pixels[pos + 1], b: pixels[pos + 2], a: pixels[pos + 3] };
                 console.log(rgba);
-            }
+            }*/
             
             this.currentRoom.engine.handleMouseClick(x, y);
         }

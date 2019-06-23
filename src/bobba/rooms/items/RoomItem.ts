@@ -17,12 +17,15 @@ export default abstract class RoomItem {
     rot: Direction;
     _frame: number;
     _frameCounter: number;
-
     baseId: number;
     sprites: Sprite[];
+    selectableSprites: Sprite[];
     containers: Container[];
+    selectableContainers: Container[];
     baseItem: BaseItem | null;
     loaded: boolean;
+
+    colorId: number;
 
     room: Room;
 
@@ -41,13 +44,23 @@ export default abstract class RoomItem {
         this._frameCounter = 0;
 
         this.loaded = false;
+        this.colorId = Math.floor(Math.random() * (16777215 - 1)) + 1;
 
         const placeholderContainer = new Container();
         placeholderContainer.zIndex = this.calculateZIndex(0, 0);
 
+        const placeholderSelectableContainer = new Container();
+        placeholderSelectableContainer.zIndex = placeholderContainer.zIndex;
+
+        const placeholderSelectableSprite = new Sprite();
+
         this.sprites = [placeholderSprite];
         this.containers = [placeholderContainer];
         this.containers[0].addChild(placeholderSprite);
+
+        this.selectableSprites = [placeholderSelectableSprite];
+        this.selectableContainers = [placeholderSelectableContainer];
+        this.selectableContainers[0].addChild(placeholderSelectableSprite);
         this.updateSpritePosition();
     }
 
@@ -58,6 +71,7 @@ export default abstract class RoomItem {
 
     setState(state: number) {
         this._state = state;
+        this._frame = 0;
         this.updateTextures(); // ??????????????
     }
 
@@ -79,11 +93,20 @@ export default abstract class RoomItem {
                 //sprite.interactive = true;
                 //sprite.on('click', this.handleClick); // DOUBLE CLICK ??????
 
+                const selectableSprite = new Sprite();
+                selectableSprite.visible = false;
+
                 const currentContainer = new Container();
                 currentContainer.addChild(sprite);
 
+                const currentSelectableContainer = new Container();
+                currentSelectableContainer.addChild(selectableSprite);
+
                 this.sprites.push(sprite);
                 this.containers.push(currentContainer);
+
+                this.selectableSprites.push(selectableSprite);
+                this.selectableContainers.push(currentSelectableContainer);
             }
             this.updateTextures();
         }
@@ -100,21 +123,36 @@ export default abstract class RoomItem {
             }
             for (let layer of this.baseItem.furniBase.getLayers(this.rot, actualState, actualFrame)) {
                 const texture = this.baseItem.getTexture(layer.resourceName);
+                const selectableTexture = this.baseItem.getSolidTexture(layer.resourceName);
                 if (texture != null) {
                     const sprite = this.sprites[layerIndex];
+                    const selectableSprite = this.selectableSprites[layerIndex];
                     const zIndex = layer.z || 0;
 
                     sprite.texture = texture;
                     sprite.visible = true;
 
+                    if (selectableTexture != null && !layer.ignoreMouse) {
+                        selectableSprite.texture = selectableTexture;
+                        selectableSprite.visible = true;
+                    }
+
                     sprite.x = -layer.asset.x;
                     sprite.y = -layer.asset.y;
+
+                    selectableSprite.x = -layer.asset.x;
+                    selectableSprite.y = -layer.asset.y;
 
                     if (layer.asset.isFlipped) {
                         sprite.x = layer.asset.x;
                         sprite.scale.x = -1;
+
+                        selectableSprite.x = layer.asset.x;
+                        selectableSprite.scale.x = -1;
                     } else {
                         sprite.scale.x = 1;
+
+                        selectableSprite.scale.x = 1;
                     }
 
                     if (layer.ink != null && layer.ink === 'ADD') {
@@ -134,22 +172,29 @@ export default abstract class RoomItem {
                     } else {
                         sprite.tint = 0xFFFFFF;
                     }
+
+                    //////////////////// GENERATE A COLOR FOR EACH FURNI
+                    selectableSprite.tint = this.colorId;
+                    ////////////////////
+
                     this.containers[layerIndex].zIndex = this.calculateZIndex(zIndex, layerIndex);
+                    this.selectableContainers[layerIndex].zIndex = this.containers[layerIndex].zIndex;
                     layerIndex++;
                 }
             }
             for (let i = layerIndex; i < this.sprites.length; i++) {
                 this.sprites[i].visible = false;
+                this.selectableSprites[i].visible = false;
             }
         }
     }
 
-    loadBase(): Promise<Container[]> {
+    loadBase(): Promise<ContainerGroup> {
         return BobbaEnvironment.getGame().baseItemManager.getItem(this.getItemType(), this.baseId).then(baseItem => {
             this.baseItem = baseItem;
             this.setAdditionalSprites();
             this.updateSpritePosition();
-            return this.containers;
+            return { containers: this.containers, selectableContainers: this.selectableContainers };
         });
     }
 
@@ -162,4 +207,9 @@ export default abstract class RoomItem {
     handleClick = (event: any) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniInteract(this.id));
     }
+}
+
+interface ContainerGroup {
+    containers: Container[],
+    selectableContainers: Container[]
 }

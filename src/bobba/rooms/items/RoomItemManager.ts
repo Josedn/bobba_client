@@ -21,10 +21,10 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
-            newItem.loadBase().then(containers => {
+            this.room.engine.addRoomItemContainerSet(id, newItem.containers, newItem.selectableContainers); //placeholder
+            newItem.loadBase().then(containerGroup => {
                 this.room.engine.removeRoomItemContainerSet(id);
-                this.room.engine.addRoomItemContainerSet(id, containers);
+                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers, containerGroup.selectableContainers);
             });
             this.items[id] = newItem;
 
@@ -37,10 +37,10 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new WallItem(id, x, y, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
-            newItem.loadBase().then(containers => {
+            this.room.engine.addRoomItemContainerSet(id, newItem.containers, newItem.selectableContainers); //placeholder
+            newItem.loadBase().then(containerGroup => {
                 this.room.engine.removeRoomItemContainerSet(id);
-                this.room.engine.addRoomItemContainerSet(id, containers);
+                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers, containerGroup.selectableContainers);
             });
             this.items[id] = newItem;
 

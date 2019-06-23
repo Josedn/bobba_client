@@ -12,12 +12,18 @@ export default class FloorItem extends RoomItem {
         placeholder.texture = BobbaEnvironment.getGame().engine.getTexture(FLOOR_ITEM_PLACEHOLDER);
         placeholder.x = FLOOR_ITEM_PLACEHOLDER_OFFSET_X;
         placeholder.y = FLOOR_ITEM_PLACEHOLDER_OFFSET_Y;
+        
         super(id, x, y, z, rot, state, baseId, room, placeholder);
     }
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
         for (let container of this.containers) {
+            container.x = x + DRAWING_OFFSET_X;
+            container.y = y + DRAWING_OFFSET_Y;
+        }
+
+        for (let container of this.selectableContainers) {
             container.x = x + DRAWING_OFFSET_X;
             container.y = y + DRAWING_OFFSET_Y;
         }

@@ -14,6 +14,7 @@ const ROOM_SELECTED_TILE_OFFSET_Y = -3;
 export default class RoomEngine {
     room: Room;
     container: Container;
+    selectableContainer: Container;
     floorSprites: Sprite[];
     wallSprites: Sprite[];
     selectedTileSprite?: Sprite;
@@ -22,19 +23,23 @@ export default class RoomEngine {
     userSprites: ContainerDictionary;
     shadowSprites: ContainerDictionary;
     roomItemSprites: ContainerArrayDictionary;
+    selectableSprites: ContainerDictionary;
 
     constructor(room: Room) {
         this.room = room;
         this.container = new Container();
+        this.selectableContainer = new Container();
         this.floorSprites = [];
         this.wallSprites = [];
         this.userSprites = {};
         this.shadowSprites = {};
         this.roomItemSprites = {};
+        this.selectableSprites = {};
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
 
         this.container.sortableChildren = true;
+        this.selectableContainer.sortableChildren = true;
         this.onResize();
         this.setWalls();
         this.setFloor();
@@ -49,6 +54,9 @@ export default class RoomEngine {
         const model = this.room.model;
         this.container.x = Math.round((MainEngine.getViewportWidth() - (ROOM_TILE_WIDTH * (model.maxX - model.maxY + CAMERA_CENTERED_OFFSET_X))) / 2);
         this.container.y = Math.round((MainEngine.getViewportHeight() - ((model.maxX + model.maxY) * ROOM_TILE_HEIGHT) + CAMERA_CENTERED_OFFSET_Y) / 2);
+
+        this.selectableContainer.x = this.container.x;
+        this.selectableContainer.y = this.container.y;
     }
 
     setSelectedTile() {
@@ -65,10 +73,14 @@ export default class RoomEngine {
         this.container.addChild(shadowSprite);
     }
 
-    addRoomItemContainerSet(id: number, containers: Container[]) {
+    addRoomItemContainerSet(id: number, containers: Container[], selectableContainers: Container[]) {
         this.roomItemSprites[id] = containers;
         for (let container of containers) {
             this.container.addChild(container);
+        }
+
+        for (let selectableContainer of selectableContainers) {
+            this.selectableContainer.addChild(selectableContainer);
         }
     }
 

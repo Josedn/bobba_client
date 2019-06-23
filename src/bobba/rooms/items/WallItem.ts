@@ -24,6 +24,11 @@ export default class WallItem extends RoomItem {
             container.x = this._x;
             container.y = this._y;
         }
+
+        for (let container of this.selectableContainers) {
+            container.x = this._x;
+            container.y = this._y;
+        }
     }
 
     calculateZIndex(zIndex: number, layerIndex: number): number {
