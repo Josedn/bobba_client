@@ -1,0 +1,12 @@
+{
+    "sliceXY": [29, 17],
+    "sliceWH": [1, 1],
+    "colorXY": [0, 0],
+    "pointerY": 23,
+    "faceXY": [13, 12],
+    "textFieldMargins": [28, 4, 12, 7],
+    "textColorRGB": 0,
+    "fontFace": "Ubuntu",
+    "fontSize": 12,
+    "overlapRect": [0, -2, 0, 0]
+}

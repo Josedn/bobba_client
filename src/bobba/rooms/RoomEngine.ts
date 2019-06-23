@@ -72,6 +72,11 @@ export default class RoomEngine {
         }
     }
 
+    setChatContainer(container: Container) {
+        container.zIndex = calculateZIndexChat();
+        this.container.addChild(container);
+    }
+
     removeRoomItemContainerSet(id: number) {
         const containers = this.roomItemSprites[id];
         if (containers != null) {
@@ -257,6 +262,8 @@ export const calculateZIndexWallItem = (id: number, x: number, y: number, zIndex
     //TODO: check this
 };
 
+export const calculateZIndexChat = () => PRIORITY_CHAT * PRIORITY_MULTIPLIER;
+
 const PRIORITY_DOOR_FLOOR = 1;
 const PRIORITY_DOOR_FLOOR_SELECT = 2;
 const PRIORITY_DOOR_FLOOR_PLAYER_SHADOW = 3;
@@ -270,7 +277,7 @@ const PRIORITY_FLOOR_SELECT = 11;
 const PRIORITY_PLAYER = 11;
 const PRIORITY_ROOM_ITEM = 11;
 //const PRIORITY_SIGN = 12;
-//const PRIORITY_CHAT = 13;
+const PRIORITY_CHAT = 13;
 
 const PRIORITY_MULTIPLIER = 10000000;
 const COMPARABLE_X_Y = 1000000;

@@ -198,6 +198,10 @@ export default class RoomUser {
         }
     }
 
+    getSpriteX() {
+        return this.container.x;
+    }
+
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z + this._seatZ);
         const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;

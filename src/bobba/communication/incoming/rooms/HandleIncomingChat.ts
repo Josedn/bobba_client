@@ -9,7 +9,7 @@ export default class HandleIncomingChat implements IIncomingEvent {
 
         const room = BobbaEnvironment.getGame().currentRoom;
         if (room != null) {
-            //room.roomUserManager.addUserToRoom(id, x, y, z, rot as Direction, name, look);
+            room.chatManager.addChat(userId, text);
         }
     }
 }

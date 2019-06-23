@@ -79,6 +79,26 @@ export default class AvatarImager {
             });
     }
 
+    getChatColor(figure: string): number {
+        const avatarInfo = new AvatarInfo(figure, 0, 0, ["std"], "std", 0, false, false, "d");
+        let color = 0x000000;
+
+        for (let figurePart of avatarInfo.figure) {
+            if (figurePart.type === "ch") {
+                const parts = this.getPartColor(figurePart);
+                for (let type in parts) {
+                    const part = parts[type];
+                    for (let particle of part) {
+                        if (particle.color != null) {
+                            color = parseInt(particle.color, 16);
+                        }
+                    }
+                }
+            }
+        }
+        return color;
+    }
+
     generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLImageElement> {
         const activeParts: any = {};
         activeParts.rect = this.getActivePartSet(avatarInfo.isHeadOnly ? "head" : "figure");

@@ -10,12 +10,14 @@ import Login from "./communication/outgoing/generic/Login";
 import RequestMap from "./communication/outgoing/rooms/RequestMap";
 import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
+import ChatImager from "./imagers/chats/ChatImager";
 
 export default class Game {
     currentRoom?: Room;
     engine: MainEngine;
     avatarImager: AvatarImager;
     furniImager: FurniImager;
+    chatImager: ChatImager;
     baseItemManager: BaseItemManager;
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
@@ -25,6 +27,7 @@ export default class Game {
         this.ghostTextures = new AvatarContainer(GHOST_LOOK, true);
         this.avatarImager = new AvatarImager();
         this.furniImager = new FurniImager();
+        this.chatImager = new ChatImager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
 
@@ -46,11 +49,13 @@ export default class Game {
         Promise.all([
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
-            this.engine.loadGlobalTextures(sprites)
-        ]).then(() => this.communicationManager.connect("bobba.io", 8080, true)).then(() => {
-
-            this.doLogin();
+            this.chatImager.initialize(),
+            this.engine.loadGlobalTextures(sprites),
+            this.communicationManager.connect("localhost", 443, false),
+        ]).then(() => {
             
+            this.doLogin();
+
         }).catch(err => {
             console.log("Cannot start game: " + err);
         });
@@ -70,7 +75,13 @@ export default class Game {
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
         console.log("Loaded room: " + name);
         this.communicationManager.sendMessage(new RequestRoomData());
+    }
 
+    unloadRoom() {
+        if (this.currentRoom != null) {
+            this.currentRoom.dispose();
+        }
+        this.currentRoom = undefined;
     }
 
     onMouseMove = (x: number, y: number, isMouseDragging: boolean) => {
@@ -116,6 +127,7 @@ export default class Game {
     }
 
     stop() {
+        this.unloadRoom();
         console.log("Stopping game...");
     }
 }

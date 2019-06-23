@@ -57,7 +57,7 @@ export default class MainEngine {
         });
     }
 
-    getTextureFromImage(img: HTMLImageElement): PIXI.Texture {
+    getTextureFromImage(img: HTMLImageElement | HTMLCanvasElement): PIXI.Texture {
         let base = new PIXI.BaseTexture(img),
             texture = new PIXI.Texture(base);
         return texture;
