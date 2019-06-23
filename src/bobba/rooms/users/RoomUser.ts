@@ -75,8 +75,9 @@ export default class RoomUser {
         this.container.addChild(this.bodySprite);
         this.container.addChild(this.headSprite);
         this.avatarContainer = new AvatarContainer(look);
-        this.bodySprite.interactive = true;
-        this.bodySprite.on('click', this.handleClick);
+        //this.bodySprite.interactive = true;
+        //this.bodySprite.on('click', this.handleClick);
+        //this.bodySprite.cursor = 'pointer';
 
         this.updateTexture();
         this.updateSpritePosition();
@@ -109,6 +110,7 @@ export default class RoomUser {
     }
 
     handleClick = () => {
+        console.log("Clicked");
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.id));
     }
 

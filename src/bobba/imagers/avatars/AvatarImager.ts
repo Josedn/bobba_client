@@ -91,6 +91,7 @@ export default class AvatarImager {
                     for (let particle of part) {
                         if (particle.color != null) {
                             color = parseInt(particle.color, 16);
+                            return color;
                         }
                     }
                 }

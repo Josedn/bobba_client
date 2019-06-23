@@ -53,7 +53,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
             this.communicationManager.connect("localhost", 443, false),
         ]).then(() => {
-            
+
             this.doLogin();
 
         }).catch(err => {
@@ -104,6 +104,19 @@ export default class Game {
 
     onMouseClick = (x: number, y: number) => {
         if (this.currentRoom != null) {
+            const pixels = this.engine.pixiApp.renderer.extract.pixels(this.engine.getMainStage());
+
+            const bounds = this.engine.getMainStage().getBounds();
+            const stageX = x - bounds.x;
+            const stageY = y - bounds.y;
+            const pos = (stageY * bounds.width + stageX) * 4;
+            if (stageX < 0 || stageX < 0 || stageX > bounds.width || stageY > bounds.height) {
+                console.log("out of bounds");
+            } else {
+                const rgba = { r: pixels[pos], g: pixels[pos + 1], b: pixels[pos + 2], a: pixels[pos + 3] };
+                console.log(rgba);
+            }
+            
             this.currentRoom.engine.handleMouseClick(x, y);
         }
     }

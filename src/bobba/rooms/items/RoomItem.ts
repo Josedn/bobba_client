@@ -76,8 +76,8 @@ export default abstract class RoomItem {
             for (let i = 1; i < layerCount; i++) {
                 const sprite = new Sprite();
                 sprite.visible = false;
-                sprite.interactive = true;
-                sprite.on('click', this.handleClick); // DOUBLE CLICK ??????
+                //sprite.interactive = true;
+                //sprite.on('click', this.handleClick); // DOUBLE CLICK ??????
 
                 const currentContainer = new Container();
                 currentContainer.addChild(sprite);
