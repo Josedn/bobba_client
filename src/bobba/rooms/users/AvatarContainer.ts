@@ -2,6 +2,7 @@ import { TextureDictionary } from "../../graphics/MainEngine";
 import AvatarInfo, { Direction } from "../../imagers/avatars/AvatarInfo";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { Texture } from "pixi.js";
+import { generateSilhouette } from "../../imagers/misc/Silhouettes";
 
 export default class AvatarContainer {
 
@@ -10,6 +11,8 @@ export default class AvatarContainer {
     color: number;
     bodyTextures: TextureDictionary;
     headTextures: TextureDictionary;
+    solidBodyTextures: TextureDictionary;
+    solidHeadTextures: TextureDictionary;
     headImage: HTMLImageElement;
 
     constructor(look: string, isGhost?: boolean) {
@@ -17,6 +20,8 @@ export default class AvatarContainer {
         this.look = isGhost ? GHOST_LOOK : look;
         this.bodyTextures = {};
         this.headTextures = {};
+        this.solidBodyTextures = {};
+        this.solidHeadTextures = {};
         this.color = 0x000000;
         this.headImage = new Image();
     }
@@ -54,6 +59,14 @@ export default class AvatarContainer {
         return Promise.all(promises);
     }
 
+    getSolidHeadTexture(headDirection: Direction, gesture: string, frame: number): Texture {
+        return this.solidHeadTextures[getHeadTextureKey(headDirection, gesture, frame)];
+    }
+
+    getSolidBodyTexture(direction: Direction, action: string[], frame: number): Texture {
+        return this.solidBodyTextures[getBodyTextureKey(direction, action, frame)];
+    }
+
     getHeadTexture(headDirection: Direction, gesture: string, frame: number): Texture {
         return this.headTextures[getHeadTextureKey(headDirection, gesture, frame)];
     }
@@ -68,6 +81,7 @@ export default class AvatarContainer {
         return avatarImager.generateGeneric(new AvatarInfo(this.look, direction, direction, action, "std", frame, false, true, "n"), this.isGhost)
             .then(image => {
                 this.bodyTextures[getBodyTextureKey(direction, action, frame)] = engine.getTextureFromImage(image);
+                this.solidBodyTextures[getBodyTextureKey(direction, action, frame)] = engine.getTextureFromImage(generateSilhouette(image, 255, 255, 255));
             });
     }
 
@@ -77,6 +91,7 @@ export default class AvatarContainer {
         return avatarImager.generateGeneric(new AvatarInfo(this.look, headDirection, headDirection, ["std"], gesture, frame, true, false, "n"), this.isGhost)
             .then(image => {
                 this.headTextures[getHeadTextureKey(headDirection, gesture, frame)] = engine.getTextureFromImage(image);
+                this.solidHeadTextures[getHeadTextureKey(headDirection, gesture, frame)] = engine.getTextureFromImage(generateSilhouette(image, 255, 255, 255));
             });
     }
 

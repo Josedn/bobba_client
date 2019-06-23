@@ -27,6 +27,7 @@ export default class RoomUserManager {
         if (user == null) {
             const newUser = new RoomUser(id, name, look, x, y, z, rot, this.room);
             this.room.engine.addUserContainer(id, newUser.container, newUser.shadowSprite);
+            this.room.engine.addSelectableContainer(newUser.colorId, [newUser.selectableContainer], newUser);
             this.users[id] = newUser;
         } else {
             //user.updateParams(x, y...);
@@ -42,7 +43,9 @@ export default class RoomUserManager {
 
     removeUserFromRoom(id: number) {
         this.room.engine.removeUserSprite(id);
-        if (this.getUser(id) != null) {
+        const user = this.getUser(id);
+        if (user != null) {
+            this.room.engine.removeSelectableContainer(user.colorId);
             delete (this.users[id]);
         }
     }

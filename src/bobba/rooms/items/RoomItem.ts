@@ -5,10 +5,11 @@ import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
 import { ItemType } from "../../imagers/furniture/FurniImager";
+import { Selectable } from "../RoomEngine";
 
 const FRAME_SPEED = 100;
 
-export default abstract class RoomItem {
+export default abstract class RoomItem implements Selectable {
     id: number;
     _x: number;
     _y: number;
@@ -90,8 +91,6 @@ export default abstract class RoomItem {
             for (let i = 1; i < layerCount; i++) {
                 const sprite = new Sprite();
                 sprite.visible = false;
-                //sprite.interactive = true;
-                //sprite.on('click', this.handleClick); // DOUBLE CLICK ??????
 
                 const selectableSprite = new Sprite();
                 selectableSprite.visible = false;
@@ -204,7 +203,15 @@ export default abstract class RoomItem {
 
     abstract getItemType(): ItemType;
 
-    handleClick = (event: any) => {
+    handleClick = (id: number) => {
+        
+    }
+
+    handleHover(id: number): void {
+        
+    }
+
+    handleDoubleClick(id: number) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniInteract(this.id));
     }
 }

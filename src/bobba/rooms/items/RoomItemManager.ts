@@ -21,10 +21,11 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemContainerSet(id, newItem.containers, newItem.selectableContainers); //placeholder
+            this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
             newItem.loadBase().then(containerGroup => {
                 this.room.engine.removeRoomItemContainerSet(id);
-                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers, containerGroup.selectableContainers);
+                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
+                this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
             });
             this.items[id] = newItem;
 
@@ -37,10 +38,11 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item == null) {
             const newItem = new WallItem(id, x, y, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemContainerSet(id, newItem.containers, newItem.selectableContainers); //placeholder
+            this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
             newItem.loadBase().then(containerGroup => {
                 this.room.engine.removeRoomItemContainerSet(id);
-                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers, containerGroup.selectableContainers);
+                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
+                this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
             });
             this.items[id] = newItem;
 
@@ -58,7 +60,9 @@ export default class RoomItemManager {
 
     removeItemFromRoom(id: number) {
         this.room.engine.removeRoomItemContainerSet(id);
-        if (this.getItem(id) != null) {
+        const item = this.getItem(id);
+        if (item != null) {
+            this.room.engine.removeSelectableContainer(item.colorId);
             delete (this.items[id]);
         }
     }

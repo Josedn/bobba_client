@@ -5,6 +5,7 @@ import AvatarContainer from "./AvatarContainer";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestLookAt from "../../communication/outgoing/rooms/RequestLookAt";
 import { ROOM_TILE_SHADOW } from "../../graphics/GenericSprites";
+import { Selectable } from "../RoomEngine";
 
 const FRAME_SPEED = 100;
 const WALK_SPEED = 2; //Squares per second
@@ -12,7 +13,7 @@ const WALK_SPEED = 2; //Squares per second
 const ROOM_USER_SPRITE_OFFSET_X = 3;
 const ROOM_USER_SPRITE_OFFSET_Y = -85;
 
-export default class RoomUser {
+export default class RoomUser implements Selectable {
     id: number;
     name: string;
     look: string;
@@ -39,6 +40,13 @@ export default class RoomUser {
     headSprite: Sprite;
     bodySprite: Sprite;
     shadowSprite: Sprite;
+
+    selectableContainer: Container;
+    selectableHeadSprite: Sprite;
+    selectableBodySprite: Sprite;
+
+    colorId: number;
+    
     loaded: boolean;
 
     room: Room;
@@ -65,19 +73,26 @@ export default class RoomUser {
         this._waveCounter = 0;
         this._speakCounter = 0;
 
+        this.colorId = Math.floor(Math.random() * (16777215 - 1)) + 1;
+
         this.loaded = false;
 
         this.bodySprite = new Sprite();
         this.headSprite = new Sprite();
+        this.selectableBodySprite = new Sprite();
+        this.selectableHeadSprite = new Sprite();
+
         this.shadowSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(ROOM_TILE_SHADOW));
 
         this.container = new Container();
         this.container.addChild(this.bodySprite);
         this.container.addChild(this.headSprite);
+
+        this.selectableContainer = new Container();
+        this.selectableContainer.addChild(this.selectableBodySprite);
+        this.selectableContainer.addChild(this.selectableHeadSprite);
+
         this.avatarContainer = new AvatarContainer(look);
-        //this.bodySprite.interactive = true;
-        //this.bodySprite.on('click', this.handleClick);
-        //this.bodySprite.cursor = 'pointer';
 
         this.updateTexture();
         this.updateSpritePosition();
@@ -109,10 +124,18 @@ export default class RoomUser {
         }
     }
 
-    handleClick = () => {
-        console.log("Clicked");
+    handleClick = (id: number) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.id));
     }
+
+    handleHover = (id: number) => {
+
+    }
+
+    handleDoubleClick = (id: number) => {
+        
+    }
+
 
     wave(seconds: number) {
         this._waveCounter = seconds * 1000;
@@ -194,6 +217,12 @@ export default class RoomUser {
         if (this.loaded) {
             this.bodySprite.texture = this.avatarContainer.getBodyTexture(this.rot, action, bodyFrame);
             this.headSprite.texture = this.avatarContainer.getHeadTexture(this.headRot, gesture, headFrame);
+
+            this.selectableBodySprite.tint = this.colorId;
+            this.selectableHeadSprite.tint = this.colorId;
+
+            this.selectableBodySprite.texture = this.avatarContainer.getSolidBodyTexture(this.rot, action, bodyFrame);
+            this.selectableHeadSprite.texture = this.avatarContainer.getSolidHeadTexture(this.headRot, gesture, headFrame);
         } else {
             this.bodySprite.texture = BobbaEnvironment.getGame().ghostTextures.getBodyTexture(this.rot, action, bodyFrame);
             this.headSprite.texture = BobbaEnvironment.getGame().ghostTextures.getHeadTexture(this.headRot, gesture, headFrame);
@@ -210,11 +239,15 @@ export default class RoomUser {
         this.container.x = x + offsetX;
         this.container.y = y + ROOM_USER_SPRITE_OFFSET_Y;
 
+        this.selectableContainer.x = this.container.x;
+        this.selectableContainer.y = this.container.y;
+
         const shadowCoords = this.room.engine.tileToLocal(this._x, this._y, 0);
         this.shadowSprite.x = shadowCoords.x;
         this.shadowSprite.y = shadowCoords.y;
         this.shadowSprite.zIndex = this.room.engine.calculateZIndexUserShadow(this._x, this._y, 0);
         this.container.zIndex = this.room.engine.calculateZIndexUser(this._x, this._y, this._z);
+        this.selectableContainer.zIndex = this.container.zIndex;
     }
 
     move(delta: number) {

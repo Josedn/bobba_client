@@ -23,7 +23,8 @@ export default class RoomEngine {
     userSprites: ContainerDictionary;
     shadowSprites: ContainerDictionary;
     roomItemSprites: ContainerArrayDictionary;
-    selectableSprites: ContainerDictionary;
+    selectableSprites: ContainerArrayDictionary;
+    selectableItems: SelectableDictionary;
 
     constructor(room: Room) {
         this.room = room;
@@ -35,6 +36,7 @@ export default class RoomEngine {
         this.shadowSprites = {};
         this.roomItemSprites = {};
         this.selectableSprites = {};
+        this.selectableItems = {};
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
 
@@ -66,6 +68,11 @@ export default class RoomEngine {
         this.container.addChild(this.selectedTileSprite);
     }
 
+    setChatContainer(container: Container) {
+        container.zIndex = calculateZIndexChat();
+        this.container.addChild(container);
+    }
+
     addUserContainer(id: number, container: Container, shadowSprite: Sprite) {
         this.userSprites[id] = container;
         this.shadowSprites[id] = shadowSprite;
@@ -73,20 +80,35 @@ export default class RoomEngine {
         this.container.addChild(shadowSprite);
     }
 
-    addRoomItemContainerSet(id: number, containers: Container[], selectableContainers: Container[]) {
+    addRoomItemContainerSet(id: number, containers: Container[]) {
         this.roomItemSprites[id] = containers;
         for (let container of containers) {
             this.container.addChild(container);
         }
+    }
 
-        for (let selectableContainer of selectableContainers) {
-            this.selectableContainer.addChild(selectableContainer);
+    addSelectableContainer(colorId: number, selectableContainers: Container[], selectableElement: Selectable) {
+        this.selectableSprites[colorId] = selectableContainers;
+        this.selectableItems[colorId] = selectableElement;
+
+        for (let container of selectableContainers) {
+            this.selectableContainer.addChild(container);
         }
     }
 
-    setChatContainer(container: Container) {
-        container.zIndex = calculateZIndexChat();
-        this.container.addChild(container);
+    removeSelectableContainer(colorId: number) {
+        const containers = this.selectableSprites[colorId];
+        if (containers != null) {
+            for (let container of containers) {
+                this.selectableContainer.removeChild(container);
+            }
+            delete (this.selectableSprites[colorId]);
+        }
+
+        const items = this.selectableItems[colorId];
+        if (items != null) {
+            delete (this.selectableItems[colorId]);
+        }
     }
 
     removeRoomItemContainerSet(id: number) {
@@ -190,8 +212,29 @@ export default class RoomEngine {
         this.updateSelectedTile(x, y)
     }
 
+    getSelectableItem(mouseX: number, mouseY: number): Selectable | null {
+        const pixels = BobbaEnvironment.getGame().engine.logicPixiApp.renderer.extract.pixels(this.getLogicStage());
+
+        const bounds = this.getLogicStage().getBounds();
+        const stageX = mouseX - bounds.x;
+        const stageY = mouseY - bounds.y;
+        const pos = (stageY * bounds.width + stageX) * 4;
+        if (stageX >= 0 && stageY >= 0 && stageX <= bounds.width && stageY <= bounds.height) {
+            const colorId = rgb2int(pixels[pos], pixels[pos + 1], pixels[pos + 2]);
+            return this.selectableItems[colorId];
+        }
+
+        return null;
+    }
+
     handleMouseClick = (mouseX: number, mouseY: number) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
+        const selectable = this.getSelectableItem(mouseX, mouseY);
+
+        if (selectable != null) {
+            selectable.handleClick(0);
+        }
+
         if (this.room.model.isValidTile(x, y)) {
             BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMovement(x, y));
         }
@@ -208,6 +251,11 @@ export default class RoomEngine {
     handleMouseDoubleClick = (mouseX: number, mouseY: number) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const model = this.room.model;
+        const selectable = this.getSelectableItem(mouseX, mouseY);
+
+        if (selectable != null) {
+            selectable.handleDoubleClick(0);
+        }
         if (!model.isValidTile(x, y)) {
             this.centerCamera();
         }
@@ -233,6 +281,10 @@ export default class RoomEngine {
         return this.container;
     }
 
+    getLogicStage() {
+        return this.selectableContainer;
+    }
+
     calculateZIndexUser(x: number, y: number, z: number): number {
         const model = this.room.model;
         return _calculateZIndexUser(x, y, z, model.doorX === x && model.doorY === y ? PRIORITY_DOOR_FLOOR_PLAYER : PRIORITY_PLAYER);
@@ -244,16 +296,22 @@ export default class RoomEngine {
     }
 }
 
-interface SpriteDictionary {
-    [id: number]: Sprite;
-}
-
 interface ContainerDictionary {
     [id: number]: Container;
 }
 
 interface ContainerArrayDictionary {
     [id: number]: Container[];
+}
+
+export interface Selectable {
+    handleClick(id: number): void,
+    handleDoubleClick(id: number): void,
+    handleHover(id: number): void,
+}
+
+interface SelectableDictionary {
+    [id: number]: Selectable;
 }
 
 export const calculateZIndex = (x: number, y: number, z: number, priority: number): number => {
@@ -272,6 +330,10 @@ export const calculateZIndexFloorItem = (x: number, y: number, z: number, zIndex
 export const calculateZIndexWallItem = (id: number, x: number, y: number, zIndex: number, layerId: number): number => {
     return (id * COMPARABLE_Z) + (PRIORITY_MULTIPLIER * PRIORITY_WALL_ITEM);
     //TODO: check this
+};
+
+export const rgb2int = (r: number, g: number, b: number) => {
+    return (r << 16) + (g << 8) + (b);
 };
 
 export const calculateZIndexChat = () => PRIORITY_CHAT * PRIORITY_MULTIPLIER;

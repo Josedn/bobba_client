@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js';
 
 export default class MainEngine {
     pixiApp: PIXI.Application;
+    logicPixiApp: PIXI.Application;
     onResizeHandler: Function;
     onMouseMoveHandler: Function;
     onTouchStartHandler: Function;
@@ -21,6 +22,14 @@ export default class MainEngine {
         this.onMouseDoubleClickHandler = onMouseDoubleClick;
         this.globalTextures = {};
 
+        const logicApp = new PIXI.Application({
+            width: window.innerWidth,
+            height: window.innerHeight,
+            antialias: false,
+            transparent: false,
+            resolution: 1,
+        });
+
         const app = new PIXI.Application({
             width: window.innerWidth,
             height: window.innerHeight,
@@ -30,13 +39,14 @@ export default class MainEngine {
         });
 
         app.renderer.autoResize = true;
-        //app.renderer.backgroundColor = 0x061639;
+        logicApp.renderer.autoResize = true;
 
         app.ticker.add(delta => gameLoop(delta));
         app.ticker.minFPS = 0;
         document.body.appendChild(app.view);
 
         this.pixiApp = app;
+        this.logicPixiApp = logicApp;
 
         window.addEventListener('resize', this.onResize, false);
 
@@ -70,11 +80,16 @@ export default class MainEngine {
 
     onResize = () => {
         this.pixiApp.renderer.resize(MainEngine.getViewportWidth(), MainEngine.getViewportHeight());
+        this.logicPixiApp.renderer.resize(MainEngine.getViewportWidth(), MainEngine.getViewportHeight());
         this.onResizeHandler();
     }
 
     getMainStage(): PIXI.Container {
         return this.pixiApp.stage;
+    }
+
+    getLogicStage(): PIXI.Container {
+        return this.logicPixiApp.stage;
     }
 
     static getViewportWidth(): number {
