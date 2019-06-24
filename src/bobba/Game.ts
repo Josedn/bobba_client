@@ -12,7 +12,6 @@ import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
-import { Sprite } from "pixi.js";
 
 export default class Game {
     currentRoom?: Room;
@@ -24,6 +23,7 @@ export default class Game {
     baseItemManager: BaseItemManager;
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
+    isStarting: boolean;
 
     constructor() {
         this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
@@ -34,11 +34,11 @@ export default class Game {
         this.meMenuImager = new MeMenuImager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
-
-        this.loadGame();
+        this.isStarting = false;
     }
 
-    loadGame() {
+    loadGame(): Promise<any> {
+        this.isStarting = true;
         const sprites: string[] = [
             ROOM_TILE,
             ROOM_SELECTED_TILE,
@@ -50,24 +50,20 @@ export default class Game {
             ROOM_TILE_SHADOW
         ];
 
-        Promise.all([
+        return Promise.all([
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
             this.chatImager.initialize(),
             this.meMenuImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
             this.communicationManager.connect("localhost", 443, false),
-        ]).then(() => {
-
-            this.doLogin();
-
-        }).catch(err => {
-            console.log("Cannot start game: " + err);
+        ]).catch(err => {
+            return "Cannot start game: " + err;
         });
     }
 
-    doLogin() {
-        this.communicationManager.sendMessage(new Login('Lawyer', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45'));
+    doLogin(username: string, look: string) {
+        this.communicationManager.sendMessage(new Login(username, look));
     }
 
     handleLoggedIn() {
