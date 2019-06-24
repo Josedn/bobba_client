@@ -48,7 +48,7 @@ export default class AvatarContainer {
         for (let i = 0; i <= 7; i = i + 2) {
             promises.push(this._loadUniqueBodyTexture(i as Direction, ["sit"], 0));
             for (let j = 0; j <= 1; j++) {
-                promises.push(this._loadUniqueBodyTexture(i as Direction, ["sit", "wav"], 0));
+                promises.push(this._loadUniqueBodyTexture(i as Direction, ["sit", "wav"], j));
             }
         }
 

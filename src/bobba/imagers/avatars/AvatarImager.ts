@@ -325,9 +325,9 @@ export default class AvatarImager {
                         tempCanvas = this.downsampleImage(tempCanvas);
                     }
 
-                    //const imgFoo = document.createElement('img');
-                    //imgFoo.src = tempCanvas.toDataURL();
-                    resolve(tempCanvas);
+                    const imgFoo = document.createElement('img');
+                    imgFoo.src = tempCanvas.toDataURL();
+                    resolve(imgFoo);
                 });
             });
         });

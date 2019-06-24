@@ -1,13 +1,27 @@
-import React, { Component, SyntheticEvent } from 'react';
+import React, { Component, SyntheticEvent, RefObject } from 'react';
 import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
+import { connect } from 'react-redux';
 const initialState = {
     chat: '',
 };
 class Footer extends Component {
 
+    chatInput: RefObject<any>;
     constructor(props: object) {
         super(props);
         this.state = initialState;
+        this.chatInput = React.createRef();
+    }
+
+    componentDidMount() {
+        window.addEventListener('keydown', this.focusChatInput);
+    }
+
+    focusChatInput = () => {
+        const { loggedIn } = (this.props as any).loginContext;
+        if (loggedIn) {
+            (this.chatInput.current as any).focus();
+        }
     }
 
     handleSubmit = (event: SyntheticEvent) => {
@@ -16,7 +30,7 @@ class Footer extends Component {
 
         const room = BobbaEnvironment.getGame().currentRoom;
 
-        if (room != null) {
+        if (room != null && chat.length > 0) {
             room.chat(chat);
         }
 
@@ -53,7 +67,7 @@ class Footer extends Component {
                             <img src="images/bottom_bar/ghosthead.png" alt="Me" />
                         </button>
                         <form onSubmit={this.handleSubmit}>
-                            <input type="text" name="chat" value={chat} placeholder="Click here to chat" onChange={this.handleInputChange} />
+                            <input type="text" ref={this.chatInput} name="chat" value={chat} autoComplete="off" placeholder="Click here to chat" onChange={this.handleInputChange} />
                             <button>
                                 <img src="images/bottom_bar/chat_styles.png" alt="Chat styles" />
                             </button>
@@ -74,4 +88,8 @@ class Footer extends Component {
     }
 }
 
-export default Footer;
+const mapStateToProps = (state: any) => ({
+    loginContext: state.login,
+});
+
+export default connect(mapStateToProps)(Footer);

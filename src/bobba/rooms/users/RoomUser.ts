@@ -222,10 +222,14 @@ export default class RoomUser implements Selectable {
         if (this.isSitting()) {
             action = ["sit"];
         }
-
         if (this.isWaving()) {
             action = ["wav"];
             bodyFrame = this._frame % 2;
+
+            if (this.isSitting()) {
+                action = ["sit", "wav"];
+                bodyFrame = this._frame % 2;
+            }
         }
 
         if (this.isSpeaking()) {
@@ -238,6 +242,10 @@ export default class RoomUser implements Selectable {
         if (this.isWalking()) {
             action = ["wlk"];
             bodyFrame = this._frame % 4;
+
+            if (this.isWaving()) {
+                action = ["wlk", "wav"];
+            }
         }
 
         this.signSprite.visible = this.isShowingSign();

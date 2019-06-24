@@ -57,9 +57,7 @@ export default class Game {
             this.meMenuImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
             this.communicationManager.connect("localhost", 443, false),
-        ]).catch(err => {
-            return "Cannot start game: " + err;
-        });
+        ]);
     }
 
     doLogin(username: string, look: string) {
