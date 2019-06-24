@@ -1,6 +1,5 @@
 body {
     margin: 0 auto;
-    /*background-color: #212225;*/
     background-color: #000000;
     color: #ffffff;
     font-family: 'Ubuntu', sans-serif;
@@ -25,6 +24,7 @@ input[type=text] {
     box-sizing: border-box;
     margin: 0 0 0 12px;
     color: #000000;
+    border: 1px solid #999999;
 }
 
 footer {
@@ -67,6 +67,10 @@ footer button {
     margin: auto 0;
     background: none;
     border: none;
+}
+
+footer button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 footer input[type=text] {
@@ -169,7 +173,9 @@ button.bar_content:hover {
     min-width: 35px;
     height: 35px;
     background-color: #2c2b2c;
-    border: 1px solid #999999;
+    border: none;
+    border-top: 1px solid #444444;
+    border-bottom: 1px solid #000000;
     border-radius: 4px;
     box-sizing: border-box;
     margin-right: 5px;
@@ -188,27 +194,40 @@ button.bar_content:hover {
 }
 
 .main_wrapper {
+    background-color: rgba(24, 24, 24, 0.3);
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    width: 800px;
-    height: 800px;
+    width: 100%;
+    height: 100%;
     display: flex;
+    z-index: 100;
+}
+
+.main_container {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .main_content {
+    position: relative;
     margin: auto;
     width: 500px;
     background: rgba(24, 24, 24, 0.8);
     border: 1px solid #282722;
-    padding: 10px 10px 20px 10px;
+    padding: 10px;
     box-sizing: border-box;
     border-radius: 5px;
     text-align: center;
-    z-index: 100;
+}
+
+.main_content_footer {
+    color: #9d9ca0;
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.main_content_footer a {
+    color: inherit;
 }
 
 .main_content p {
@@ -255,6 +274,14 @@ button.bar_content:hover {
     right: 20px;
 }
 
+.main_content .loading {
+    margin-top: 20px;
+}
+
+.main_content hr {
+    border-color: #444444;
+}
+
 .logo {
     margin: auto;
 }
@@ -272,9 +299,4 @@ button.bar_content:hover {
     font-size: 3em;
     text-transform: lowercase;
     text-shadow: 0 0 2px #000000;
-    margin: auto;
-}
-
-hr {
-    border-color: #444444;
 }

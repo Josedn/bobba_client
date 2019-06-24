@@ -24,22 +24,39 @@ class MainContent extends Component {
         const { gameLoaded, loggedIn } = (this.props as any).loginContext;
 
         if (!loggedIn) {
-            let form: any = 'Loading...';
+            let form = (
+                <div className="loading">
+                    <img src="images/loading.gif" alt="Loading" />
+                    <p>Loading...</p>
+                </div>
+            );
             if (gameLoaded) {
-                form = <JoinForm />;
+                form = (
+                    <>
+                        <p>
+                            Please enter your username and pick a look!
+                        </p>
+                        <JoinForm />
+                    </>);
             }
-
             return (
                 <div className="main_wrapper">
-                    <div className="main_content">
-                        <Logo />
-                        <hr />
-                        <p>
-                            Please enter a username and pick a look
+                    <div className="main_container">
+                        <div className="main_content">
+                            <button className="close">
+                                X
+                            </button>
+                            <Logo />
+                            <hr />
+                            {form}
+                        </div>
+                        <p className="main_content_footer">
+                            Habbo is a registered trademark of Sulake Oy. All rights reserved to their respective owners.
+                            <br />
+                            Made by Relevance. Follow me on <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/josednn/">instagram</a>.
                         </p>
-                        {form}
                     </div>
-                </div>
+                </div >
             );
         } else {
             return (
