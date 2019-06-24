@@ -31,8 +31,9 @@ export default class ChatManager {
         if (roomUser != null) {
             const image = BobbaEnvironment.getGame().chatImager.generateChatBubble(0, roomUser.name, message, roomUser.avatarContainer.color, roomUser.avatarContainer.headImage);
             const sprite = new Sprite(BobbaEnvironment.getGame().engine.getTextureFromImage(image));
+            roomUser.speak(1.5);
 
-            sprite.x = roomUser.getSpriteX();
+            sprite.x = Math.floor(roomUser.getSpriteX() - (sprite.width / 2));
             sprite.y = -100;
             if (this._needsRoll) {
                 this.rollChats(1);

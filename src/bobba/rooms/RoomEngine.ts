@@ -333,7 +333,7 @@ export const calculateZIndexFloorItem = (x: number, y: number, z: number, zIndex
 };
 
 export const calculateZIndexWallItem = (id: number, x: number, y: number, zIndex: number, layerId: number): number => {
-    return (id * COMPARABLE_Z) + (PRIORITY_MULTIPLIER * PRIORITY_WALL_ITEM);
+    return (id * COMPARABLE_Z) + layerId + (PRIORITY_MULTIPLIER * PRIORITY_WALL_ITEM);
     //TODO: check this
 };
 

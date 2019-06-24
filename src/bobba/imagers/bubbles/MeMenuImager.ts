@@ -45,7 +45,7 @@ export default class MeMenuImager {
 
             const right_width = 18;
             const textMarginX = 18;
-            const textMarginY = 6;
+            const textMarginY = 7;
 
             const textWidth = Math.round(tempCtx.measureText(username).width);
 
