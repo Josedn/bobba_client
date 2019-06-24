@@ -65,6 +65,8 @@ export default class MeMenuImager {
             tempCtx.textBaseline = "top";
             tempCtx.fillStyle = "white";
 
+            tempCtx.drawImage(this.pointerImage, Math.floor(textWidth / 2) + textMarginX - 6, 24);
+
             tempCtx.fillText(username, textMarginX, textMarginY);
         }
 

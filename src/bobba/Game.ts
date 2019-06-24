@@ -12,6 +12,7 @@ import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
+import { Sprite } from "pixi.js";
 
 export default class Game {
     currentRoom?: Room;
@@ -66,7 +67,7 @@ export default class Game {
     }
 
     doLogin() {
-        this.communicationManager.sendMessage(new Login('Relv', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45'));
+        this.communicationManager.sendMessage(new Login('Lawyer', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45'));
     }
 
     handleLoggedIn() {
@@ -108,7 +109,7 @@ export default class Game {
     }
 
     onMouseClick = (x: number, y: number) => {
-        if (this.currentRoom != null) {           
+        if (this.currentRoom != null) {
             this.currentRoom.engine.handleMouseClick(x, y);
         }
     }

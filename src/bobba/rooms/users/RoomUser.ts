@@ -34,19 +34,21 @@ export default class RoomUser implements Selectable {
     _frameCounter: number;
     _waveCounter: number;
     _speakCounter: number;
+    _signCounter: number;
 
     avatarContainer: AvatarContainer;
     container: Container;
     headSprite: Sprite;
     bodySprite: Sprite;
     shadowSprite: Sprite;
+    signSprite: Sprite;
 
     selectableContainer: Container;
     selectableHeadSprite: Sprite;
     selectableBodySprite: Sprite;
 
     colorId: number;
-    
+
     loaded: boolean;
 
     room: Room;
@@ -72,6 +74,7 @@ export default class RoomUser implements Selectable {
         this._frameCounter = 0;
         this._waveCounter = 0;
         this._speakCounter = 0;
+        this._signCounter = 0;
 
         this.colorId = Math.floor(Math.random() * (16777215 - 1)) + 1;
 
@@ -84,16 +87,24 @@ export default class RoomUser implements Selectable {
 
         this.shadowSprite = new Sprite(BobbaEnvironment.getGame().engine.getTexture(ROOM_TILE_SHADOW));
 
-        this.container = new Container();
-        this.container.addChild(this.bodySprite);
-        this.container.addChild(this.headSprite);
-
         this.selectableContainer = new Container();
         this.selectableContainer.addChild(this.selectableBodySprite);
         this.selectableContainer.addChild(this.selectableHeadSprite);
 
+        const signImage = BobbaEnvironment.getGame().meMenuImager.generateSign(this.name);
+        const signTexture = BobbaEnvironment.getGame().engine.getTextureFromImage(signImage)
+
+        this.signSprite = new Sprite(signTexture);
+        this.signSprite.y = -20;
+        this.signSprite.x = Math.floor(-signImage.width / 2 + 32);
         this.avatarContainer = new AvatarContainer(look);
 
+        this.container = new Container();
+        this.container.addChild(this.bodySprite);
+        this.container.addChild(this.headSprite);
+        this.container.addChild(this.signSprite);
+
+        this.showSign(5);
         this.updateTexture();
         this.updateSpritePosition();
         this.loadTextures();
@@ -119,6 +130,10 @@ export default class RoomUser implements Selectable {
             this._speakCounter -= delta;
         }
 
+        if (this._signCounter > 0) {
+            this._signCounter -= delta;
+        }
+
         if (this.isWalking()) {
             this.move(delta);
         }
@@ -129,16 +144,23 @@ export default class RoomUser implements Selectable {
     }
 
     handleHover = (id: number) => {
-
+        this.showSign(1);
     }
 
     handleDoubleClick = (id: number) => {
-        
-    }
 
+    }
 
     wave(seconds: number) {
         this._waveCounter = seconds * 1000;
+    }
+
+    speak(seconds: number) {
+        this._speakCounter = seconds * 1000;
+    }
+
+    showSign(seconds: number) {
+        this._signCounter = seconds * 1000;
     }
 
     updateStatus(x: number, y: number, z: number, rot: Direction, status: StatusContainer) {
@@ -180,6 +202,10 @@ export default class RoomUser implements Selectable {
         return this._speakCounter > 0;
     }
 
+    isShowingSign() {
+        return this._signCounter > 0;
+    }
+
     loadTextures() {
         return this.avatarContainer.initialize().then(() => {
             this.loaded = true;
@@ -213,6 +239,8 @@ export default class RoomUser implements Selectable {
             action = ["wlk"];
             bodyFrame = this._frame % 4;
         }
+
+        this.signSprite.visible = this.isShowingSign();
 
         if (this.loaded) {
             this.bodySprite.texture = this.avatarContainer.getBodyTexture(this.rot, action, bodyFrame);
@@ -248,6 +276,9 @@ export default class RoomUser implements Selectable {
         this.shadowSprite.zIndex = this.room.engine.calculateZIndexUserShadow(this._x, this._y, 0);
         this.container.zIndex = this.room.engine.calculateZIndexUser(this._x, this._y, this._z);
         this.selectableContainer.zIndex = this.container.zIndex;
+
+        //this.signSprite.x = this.container.x;
+        //this.signSprite.x = this.container.y;
     }
 
     move(delta: number) {
