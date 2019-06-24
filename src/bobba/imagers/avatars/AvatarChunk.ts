@@ -94,7 +94,7 @@ export default class AvatarChunk {
                 };
 
                 img.onerror = () => {
-                    console.log("NOT DOWNLOADED " + this.lib + " -> " + this.getResourceName());
+                    //console.log("NOT DOWNLOADED " + this.lib + " -> " + this.getResourceName());
                     reject('Could not load image: ' + img.src);
                 };
             });

@@ -24,6 +24,10 @@ type MainContentState = {
     error: string,
 };
 
+const getPercent = (current: number, max: number) => {
+    return Math.trunc((current / max) * 100);
+};
+
 class MainContent extends Component<any, MainContentState> {
     constructor(props: object) {
         super(props);
@@ -37,13 +41,17 @@ class MainContent extends Component<any, MainContentState> {
         if (!game.isStarting) {
             game.loadGame().then(() => {
                 const avatarImager = BobbaEnvironment.getGame().avatarImager;
-                const promises = [];
+                const promises: Promise<LookGroup>[] = [];
+                let i = 0;
 
-                for (let skin of skins) {
+                BobbaEnvironment.loadingLog("Loading sample looks (0%)");
+                skins.forEach(skin => {
                     promises.push(avatarImager.generateGeneric(new AvatarInfo(skin, 4, 4, ["wlk"], "std", 2, false, false, "n"), false).then(image => {
+                        i = i + 1;
+                        BobbaEnvironment.loadingLog("Loading sample looks (" + getPercent(i, skins.length) + "%)");
                         return { figure: skin, image };
                     }));
-                }
+                });
 
                 return Promise.all(promises).then(result => {
                     this.setState({
@@ -68,6 +76,7 @@ class MainContent extends Component<any, MainContentState> {
                 <div className="loading">
                     <img src="images/loading.gif" alt="Loading" />
                     <p>Loading...</p>
+                    <p id="loading_info" className="loading_info"></p>
                 </div>
             );
             if (gameLoaded) {

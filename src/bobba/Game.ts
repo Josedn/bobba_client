@@ -12,6 +12,7 @@ import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
+import BobbaEnvironment from "./BobbaEnvironment";
 
 export default class Game {
     currentRoom?: Room;
@@ -50,14 +51,17 @@ export default class Game {
             ROOM_TILE_SHADOW
         ];
 
+        BobbaEnvironment.loadingLog("Initializing game engine");
         return Promise.all([
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
             this.chatImager.initialize(),
             this.meMenuImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
-            this.communicationManager.connect("localhost", 443, false),
-        ]);
+        ]).then(() => {
+            BobbaEnvironment.loadingLog("Connecting to server");
+            return this.communicationManager.connect("192.168.0.12", 443, false);
+        });
     }
 
     doLogin(username: string, look: string) {
@@ -65,7 +69,7 @@ export default class Game {
     }
 
     handleLoggedIn() {
-        console.log("Logged in!");
+        BobbaEnvironment.log("Logged in!");
         this.communicationManager.sendMessage(new RequestMap());
     }
 
@@ -73,7 +77,7 @@ export default class Game {
         this.currentRoom = new Room(id, name, model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
-        console.log("Loaded room: " + name);
+        BobbaEnvironment.log("Loaded room: " + name);
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 

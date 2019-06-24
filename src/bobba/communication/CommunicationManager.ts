@@ -60,7 +60,7 @@ export default class CommunicationManager implements IMessageHandler {
     }
 
     handleOpenConnection = (): void => {
-        console.log("Connected!!1");
+        BobbaEnvironment.log("Connected!!1");
     }
 
     handleCloseConnection = (): void => {

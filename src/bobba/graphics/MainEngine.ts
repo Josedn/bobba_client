@@ -101,24 +101,9 @@ export default class MainEngine {
     }
 
     setMouseInteractions = () => {
+
         this.pixiApp.view.addEventListener('mousemove', (evt) => {
             this.onMouseMoveHandler(evt.x, evt.y, this.isMouseDragging);
-        }, false);
-        this.pixiApp.view.addEventListener('mousedown', (evt) => {
-            this.isMouseDragging = true;
-        }, false);
-        this.pixiApp.view.addEventListener('mouseup', (evt) => {
-            this.isMouseDragging = false;
-        }, false);
-        this.pixiApp.view.addEventListener('touchmove', (evt) => {
-            if (evt.touches.length === 1) {
-                this.onTouchMoveHandler(evt.touches[0].clientX, evt.touches[0].clientY);
-            }
-        }, false);
-        this.pixiApp.view.addEventListener('touchstart', (evt) => {
-            if (evt.touches.length === 1) {
-                this.onTouchStartHandler(evt.touches[0].clientX, evt.touches[0].clientY);
-            }
         }, false);
         this.pixiApp.view.addEventListener('click', (evt) => {
             this.onMouseClickHandler(evt.x, evt.y);
@@ -126,6 +111,27 @@ export default class MainEngine {
         this.pixiApp.view.addEventListener('dblclick', (evt) => {
             this.onMouseDoubleClickHandler(evt.x, evt.y);
         }, false);
+        
+        this.pixiApp.view.addEventListener('touchstart', (evt) => {
+            evt.preventDefault();
+            if (evt.touches.length === 1) {
+                this.onTouchStartHandler(evt.touches[0].clientX, evt.touches[0].clientY);
+            }
+        }, false);
+        this.pixiApp.view.addEventListener('touchmove', (evt) => {
+            evt.preventDefault();
+            if (evt.touches.length === 1) {
+                this.onTouchMoveHandler(evt.touches[0].clientX, evt.touches[0].clientY);
+            }
+        }, false);
+        this.pixiApp.view.addEventListener('mousedown', (evt) => {
+            this.isMouseDragging = true;
+        }, false);
+        this.pixiApp.view.addEventListener('mouseup', (evt) => {
+            this.isMouseDragging = false;
+        }, false);
+        
+        
     }
 }
 

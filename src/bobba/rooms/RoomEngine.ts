@@ -25,6 +25,7 @@ export default class RoomEngine {
     roomItemSprites: ContainerArrayDictionary;
     selectableSprites: ContainerArrayDictionary;
     selectableItems: SelectableDictionary;
+    currentSelectedItem?: Selectable | null;
 
     constructor(room: Room) {
         this.room = room;
@@ -232,7 +233,7 @@ export default class RoomEngine {
         return null;
     }
 
-    handleMouseClick = (mouseX: number, mouseY: number) => {
+    handleMouseClick = (mouseX: number, mouseY: number): Selectable | null => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const selectable = this.getSelectableItem(mouseX, mouseY);
 
@@ -243,20 +244,34 @@ export default class RoomEngine {
         if (this.room.model.isValidTile(x, y)) {
             BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMovement(x, y));
         }
+        return selectable;
     }
 
     handleTouchMove = (mouseX: number, mouseY: number) => {
+        mouseX = Math.floor(mouseX);
+        mouseY = Math.floor(mouseY);
         this.handleMouseMovement(mouseX, mouseY, true);
     }
 
     handleTouchStart = (mouseX: number, mouseY: number) => {
+        mouseX = Math.floor(mouseX);
+        mouseY = Math.floor(mouseY);
         this.handleMouseMovement(mouseX, mouseY, false);
+        const newSelectedItem = this.handleMouseClick(mouseX, mouseY);
+
+        if (newSelectedItem === this.currentSelectedItem) {
+            this.handleMouseDoubleClick(mouseX, mouseY, newSelectedItem);
+        }
+        this.currentSelectedItem = newSelectedItem;
     }
 
-    handleMouseDoubleClick = (mouseX: number, mouseY: number) => {
+    handleMouseDoubleClick = (mouseX: number, mouseY: number, selectable?: Selectable | null) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const model = this.room.model;
-        const selectable = this.getSelectableItem(mouseX, mouseY);
+        
+        if (selectable === undefined) {
+            selectable = this.getSelectableItem(mouseX, mouseY);
+        }
 
         if (selectable != null) {
             selectable.handleDoubleClick(0);

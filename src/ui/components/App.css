@@ -1,3 +1,8 @@
+html {
+    touch-action: none;
+    user-select: none;
+}
+
 body {
     margin: 0 auto;
     background-color: #000000;
@@ -284,6 +289,11 @@ button.bar_content:hover {
 
 .main_content .loading {
     margin-top: 20px;
+}
+
+.main_content .loading .loading_info {
+    font-size: 0.7em;
+    color: #999999;
 }
 
 .main_content hr {
