@@ -3,6 +3,8 @@ import RoomEngine from "./RoomEngine";
 import RoomUserManager from "./users/RoomUserManager";
 import RoomItemManager from "./items/RoomItemManager";
 import ChatManager from "./chats/ChatManager";
+import BobbaEnvironment from "../BobbaEnvironment";
+import RequestChat from "../communication/outgoing/rooms/RequestChat";
 
 export default class Room {
     id: number;
@@ -22,6 +24,10 @@ export default class Room {
         this.roomItemManager = new RoomItemManager(this);
         this.chatManager = new ChatManager(this);
         this.engine.setChatContainer(this.chatManager.container);
+    }
+
+    chat(chat: any) {
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestChat(chat));
     }
 
     tick(delta: number) {

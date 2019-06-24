@@ -201,11 +201,11 @@ export default class RoomEngine {
 
     handleMouseMovement = (mouseX: number, mouseY: number, isDrag: boolean) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
-        const selectable = this.getSelectableItem(mouseX, mouseY);
+        //const selectable = this.getSelectableItem(mouseX, mouseY);
 
-        if (selectable != null) {
-            selectable.handleHover(0);
-        }
+        //if (selectable != null) {
+            //selectable.handleHover(0);
+        //}
         if (isDrag) {
             const diffX = Math.round(this.lastMousePositionX - mouseX);
             const diffY = Math.round(this.lastMousePositionY - mouseY);
