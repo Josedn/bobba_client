@@ -3,7 +3,7 @@ export const generateSilhouette = (img: HTMLImageElement, r: number, g: number, 
     const c = element.getContext("2d");
     const { width, height } = img;
 
-    if (c == null) {
+    if (c == null || width === 0 || height === 0) {
         return img;
     }
 
@@ -12,6 +12,7 @@ export const generateSilhouette = (img: HTMLImageElement, r: number, g: number, 
 
     c.drawImage(img, 0, 0);
     const imageData = c.getImageData(0, 0, width, height);
+
     for (let y = 0; y < height; y++) {
         let inpos = y * width * 4;
         for (let x = 0; x < width; x++) {
