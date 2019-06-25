@@ -1,4 +1,4 @@
-export const generateSilhouette = (img: HTMLImageElement, r: number, g: number, b: number): HTMLCanvasElement | HTMLImageElement => {
+export const generateSilhouette = (img: HTMLImageElement | HTMLCanvasElement, r: number, g: number, b: number): HTMLCanvasElement | HTMLImageElement => {
     const element = document.createElement('canvas');
     const c = element.getContext("2d");
     const { width, height } = img;

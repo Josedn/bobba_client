@@ -99,8 +99,10 @@ export default class AvatarContainer {
         const { avatarImager } = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, 2, 2, ["std"], "std", 0, true, false, "d"), this.isGhost)
-            .then(image => {
-                this.headImage = image;
+            .then(canvas => {
+                const imgFoo = document.createElement('img');
+                imgFoo.src = canvas.toDataURL();
+                this.headImage = imgFoo;
             });
     }
 }

@@ -100,7 +100,7 @@ export default class AvatarImager {
         return color;
     }
 
-    generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLImageElement> {
+    generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLCanvasElement> {
         const activeParts: any = {};
         activeParts.rect = this.getActivePartSet(avatarInfo.isHeadOnly ? "head" : "figure");
         activeParts.head = this.getActivePartSet("head");
@@ -325,9 +325,9 @@ export default class AvatarImager {
                         tempCanvas = this.downsampleImage(tempCanvas);
                     }
 
-                    const imgFoo = document.createElement('img');
-                    imgFoo.src = tempCanvas.toDataURL();
-                    resolve(imgFoo);
+                    //const imgFoo = document.createElement('img');
+                    //imgFoo.src = tempCanvas.toDataURL();
+                    resolve(tempCanvas);
                 });
             });
         });

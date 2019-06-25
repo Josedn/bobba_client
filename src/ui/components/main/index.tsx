@@ -46,10 +46,12 @@ class MainContent extends Component<any, MainContentState> {
 
                 BobbaEnvironment.loadingLog("Loading sample looks (0%)");
                 skins.forEach(skin => {
-                    promises.push(avatarImager.generateGeneric(new AvatarInfo(skin, 4, 4, ["wlk"], "std", 2, false, false, "n"), false).then(image => {
+                    promises.push(avatarImager.generateGeneric(new AvatarInfo(skin, 4, 4, ["wlk"], "std", 2, false, false, "n"), false).then(canvas => {
+                        const imgFoo = document.createElement('img');
+                        imgFoo.src = canvas.toDataURL();
                         i = i + 1;
                         BobbaEnvironment.loadingLog("Loading sample looks (" + getPercent(i, skins.length) + "%)");
-                        return { figure: skin, image };
+                        return { figure: skin, image: imgFoo };
                     }));
                 });
 
