@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import Footer from './footer';
+import Footer from './footer/Footer';
 import './App.css';
-import RoomInfo from './roominfo';
-import TopBar from './topbar';
-import Header from './header';
-import MainContent from './main';
+import RoomInfo from './roominfo/RoomInfo';
+import TopBar from './topbar/TopBar';
+import Header from './header/Header';
+import MainContent from './main/MainContent';
 
 class App extends Component {
+    componentDidMount() {
 
+    }
+    
     render() {
         return (
             <>

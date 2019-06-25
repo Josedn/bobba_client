@@ -13,6 +13,7 @@ import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
 import BobbaEnvironment from "./BobbaEnvironment";
+import UIManager from "./ui/UIManager";
 
 export default class Game {
     currentRoom?: Room;
@@ -24,6 +25,7 @@ export default class Game {
     baseItemManager: BaseItemManager;
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
+    uiManager: UIManager;
     isStarting: boolean;
 
     constructor() {
@@ -35,6 +37,7 @@ export default class Game {
         this.meMenuImager = new MeMenuImager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
+        this.uiManager = new UIManager(this);
         this.isStarting = false;
     }
 
@@ -60,7 +63,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             BobbaEnvironment.loadingLog("Connecting to server");
-            return this.communicationManager.connect("bobba.io", 8080, true);
+            return this.communicationManager.connect("localhost", 8080, false);
         });
     }
 

@@ -61,6 +61,9 @@ class Footer extends Component {
                         <button>
                             <img src="images/bottom_bar/shop.png" alt="Shop" />
                         </button>
+                        <button>
+                            <img src="images/bottom_bar/inventory.png" alt="Me" />
+                        </button>
                     </div>
                     <div className="middle_section">
                         <button>
@@ -72,7 +75,6 @@ class Footer extends Component {
                                 <img src="images/bottom_bar/chat_styles.png" alt="Chat styles" />
                             </button>
                         </form>
-
                     </div>
                     <div className="right_section">
                         <button>
