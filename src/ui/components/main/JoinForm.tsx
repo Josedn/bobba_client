@@ -18,12 +18,14 @@ const initialState = {
     username: '',
     look: '',
     wrongUsername: false,
+    queuedLogin: false,
 };
 
 type JoinFormState = {
     username: string,
     look: string,
     wrongUsername: boolean,
+    queuedLogin: boolean,
 };
 class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
 
@@ -47,11 +49,12 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
         event.preventDefault();
 
         if (username.length > 0) {
-
-
             BobbaEnvironment.getGame().uiManager.doLogin(username, look);
             BobbaEnvironment.getGame().uiManager.setLoggedInHandler(() => {
                 dispatch(logIn());
+            });
+            this.setState({
+                queuedLogin: true,
             });
         }
         else {
@@ -91,18 +94,20 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
     }
 
     render() {
-        const { username, wrongUsername } = this.state;
+        const { username, wrongUsername, queuedLogin } = this.state;
         const classname = wrongUsername ? "wrong" : "";
+
+        const button = queuedLogin ? <button disabled>Loading...</button> : <button>Join</button>
         return (
             <form onSubmit={this.handleSubmit}>
-                <input type="text" className={classname} placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
+                <input type="text" autoComplete="off" className={classname} placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
                 <br /><br />
                 <div className="looks">
                     {this.getLooks()}
                 </div>
                 <br />
                 <br />
-                <button>Join</button>
+                {button}
             </form>
         );
     }
