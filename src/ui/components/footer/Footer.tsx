@@ -4,10 +4,16 @@ import { connect } from 'react-redux';
 const initialState = {
     chat: '',
 };
-class Footer extends Component {
+type FooterProps = {
+    loginContext: any,
+};
+type FooterState = {
+    chat: string;
+};
+class Footer extends Component<FooterProps, FooterState> {
 
-    chatInput: RefObject<any>;
-    constructor(props: object) {
+    chatInput: RefObject<HTMLInputElement>;
+    constructor(props: FooterProps) {
         super(props);
         this.state = initialState;
         this.chatInput = React.createRef();
@@ -18,20 +24,18 @@ class Footer extends Component {
     }
 
     focusChatInput = () => {
-        const { loggedIn } = (this.props as any).loginContext;
-        if (loggedIn) {
-            (this.chatInput.current as any).focus();
+        const { loggedIn } = this.props.loginContext;
+        if (loggedIn && this.chatInput.current != null) {
+            this.chatInput.current.focus();
         }
     }
 
     handleSubmit = (event: SyntheticEvent) => {
-        const { chat } = this.state as any;
+        const { chat } = this.state;
         event.preventDefault();
 
-        const room = BobbaEnvironment.getGame().currentRoom;
-
-        if (room != null && chat.length > 0) {
-            room.chat(chat);
+        if (chat.length > 0) {
+            BobbaEnvironment.getGame().uiManager.doChat(chat);
         }
 
         this.setState(initialState);
@@ -43,11 +47,11 @@ class Footer extends Component {
         const name = target.name;
         this.setState({
             [name]: value
-        });
+        } as FooterState);
     }
 
     render() {
-        const { chat } = this.state as any;
+        const { chat } = this.state;
         return (
             <footer>
                 <div className="footer_container">

@@ -6,7 +6,6 @@ import BaseItemManager from "./items/BaseItemManager";
 import { ROOM_TILE, ROOM_SELECTED_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
 import CommunicationManager from "./communication/CommunicationManager";
-import Login from "./communication/outgoing/generic/Login";
 import RequestMap from "./communication/outgoing/rooms/RequestMap";
 import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
@@ -67,12 +66,9 @@ export default class Game {
         });
     }
 
-    doLogin(username: string, look: string) {
-        this.communicationManager.sendMessage(new Login(username, look));
-    }
-
     handleLoggedIn() {
         BobbaEnvironment.log("Logged in!");
+        this.uiManager.onLoggedInHandler();
         this.communicationManager.sendMessage(new RequestMap());
     }
 

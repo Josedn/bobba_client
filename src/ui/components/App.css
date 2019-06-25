@@ -36,6 +36,18 @@ input[type=text] {
     border: 1px solid #999999;
 }
 
+input[type=text].wrong {
+    border: 2px solid #aa0000;
+}
+
+.wrong::placeholder {
+    color: #ac4141;
+}
+
+::placeholder {
+    color: #777777;
+}
+
 footer {
     background-color: #1d1e21;
     position: absolute;
@@ -88,10 +100,6 @@ footer button:hover {
 
 footer input[type=text] {
     width: 450px;
-}
-
-footer ::placeholder {
-    color: #999999;
 }
 
 header {

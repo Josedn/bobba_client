@@ -5,6 +5,7 @@ import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
 import { connect } from 'react-redux';
 import { loadGame } from '../../actions';
 import AvatarInfo from '../../../bobba/imagers/avatars/AvatarInfo';
+import Credits from './Credits';
 const skins = [
     "hd-190-10.lg-3023-1408.ch-215-91.hr-893-45",
     "hr-828-1407.sh-3089-110.ha-1013-110.ch-3323-110-92.lg-3058-82.hd-180-10",
@@ -108,11 +109,7 @@ class MainContent extends Component<any, MainContentState> {
                             <hr />
                             {form}
                         </div>
-                        <p className="main_content_footer">
-                            Habbo is a registered trademark of Sulake Oy. All rights reserved to their respective owners.
-                            <br />
-                            Made by Relevance. Follow me on <a target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/josednn/">instagram</a>.
-                        </p>
+                        <Credits />
                     </div>
                 </div >
             );

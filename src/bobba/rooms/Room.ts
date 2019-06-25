@@ -26,7 +26,7 @@ export default class Room {
         this.engine.setChatContainer(this.chatManager.container);
     }
 
-    chat(chat: any) {
+    chat(chat: string) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestChat(chat));
     }
 

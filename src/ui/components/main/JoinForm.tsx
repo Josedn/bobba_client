@@ -2,6 +2,7 @@ import React, { SyntheticEvent } from 'react';
 import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
 import { connect } from 'react-redux';
 import { logIn } from '../../actions';
+import { Dispatch } from 'redux';
 
 export interface LookGroup {
     figure: string,
@@ -9,17 +10,20 @@ export interface LookGroup {
 };
 
 type JoinFormProps = {
-    looks: LookGroup[]
+    looks: LookGroup[],
+    dispatch: Dispatch,
 };
 
 const initialState = {
     username: '',
     look: '',
+    wrongUsername: false,
 };
 
 type JoinFormState = {
     username: string,
     look: string,
+    wrongUsername: boolean,
 };
 class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
 
@@ -39,12 +43,22 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
 
     handleSubmit = (event: SyntheticEvent) => {
         const { username, look } = this.state;
-        const { dispatch } = this.props as any;
-        const game = BobbaEnvironment.getGame();
-
+        const { dispatch } = this.props;
         event.preventDefault();
-        game.doLogin(username, look);
-        dispatch(logIn());
+
+        if (username.length > 0) {
+
+
+            BobbaEnvironment.getGame().uiManager.doLogin(username, look);
+            BobbaEnvironment.getGame().uiManager.setLoggedInHandler(() => {
+                dispatch(logIn());
+            });
+        }
+        else {
+            this.setState({
+                wrongUsername: true,
+            });
+        }
     }
 
     componentDidMount() {
@@ -77,10 +91,11 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
     }
 
     render() {
-        const { username } = this.state;
+        const { username, wrongUsername } = this.state;
+        const classname = wrongUsername ? "wrong" : "";
         return (
             <form onSubmit={this.handleSubmit}>
-                <input type="text" placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
+                <input type="text" className={classname} placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
                 <br /><br />
                 <div className="looks">
                     {this.getLooks()}
@@ -92,8 +107,5 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
         );
     }
 }
-const mapStateToProps = (state: any) => ({
-    loginContext: state.login,
-});
 
-export default connect(mapStateToProps)(JoinForm);
+export default connect()(JoinForm);
