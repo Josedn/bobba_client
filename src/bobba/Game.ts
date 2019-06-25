@@ -60,7 +60,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             BobbaEnvironment.loadingLog("Connecting to server");
-            return this.communicationManager.connect("192.168.0.12", 443, false);
+            return this.communicationManager.connect("localhost", 443, false);
         });
     }
 

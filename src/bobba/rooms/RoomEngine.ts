@@ -222,8 +222,8 @@ export default class RoomEngine {
         const pixels = BobbaEnvironment.getGame().engine.logicPixiApp.renderer.extract.pixels(this.getLogicStage());
 
         const bounds = this.getLogicStage().getBounds();
-        const stageX = mouseX - bounds.x;
-        const stageY = mouseY - bounds.y;
+        const stageX = Math.floor(mouseX - bounds.x);
+        const stageY = Math.floor(mouseY - bounds.y);
         const pos = (stageY * bounds.width + stageX) * 4;
         if (stageX >= 0 && stageY >= 0 && stageX <= bounds.width && stageY <= bounds.height) {
             const colorId = rgb2int(pixels[pos], pixels[pos + 1], pixels[pos + 2]);
@@ -268,15 +268,14 @@ export default class RoomEngine {
     handleMouseDoubleClick = (mouseX: number, mouseY: number, selectable?: Selectable | null) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const model = this.room.model;
-        
+
         if (selectable === undefined) {
             selectable = this.getSelectableItem(mouseX, mouseY);
         }
 
         if (selectable != null) {
             selectable.handleDoubleClick(0);
-        }
-        if (!model.isValidTile(x, y)) {
+        } else if (!model.isValidTile(x, y)) {
             this.centerCamera();
         }
     }
