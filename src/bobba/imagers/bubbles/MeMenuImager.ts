@@ -5,7 +5,7 @@ export default class MeMenuImager {
     baseImage?: HTMLImageElement;
     pointerImage?: HTMLImageElement;
 
-    initialize(): Promise<any> {
+    initialize(): Promise<void[]> {
         return Promise.all([
             this._downloadImageAsync(BASE_IMAGE_URL).then(img => {
                 this.baseImage = img;

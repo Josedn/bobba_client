@@ -14,7 +14,7 @@ export default class HandleRoomUserStatus implements IIncomingEvent {
             const z = request.popFloat();
             const rot = request.popInt();
             const statusesCount = request.popInt();
-            const statuses: any = {};
+            const statuses: { [key: string]: string } = {};
 
             for (let j = 0; j < statusesCount; j++) {
                 const key = request.popString();

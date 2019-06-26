@@ -70,7 +70,7 @@ export default abstract class RoomItem implements Selectable {
     _nextPrivateFrame() {
         this._frame++;
         if (this._nextState !== -1 && this.baseItem != null) {
-            if (this._frame >= parseInt(this.baseItem.furniBase.states[this._state].count)) {
+            if (this._frame >= this.baseItem.furniBase.states[this._state].count) {
                 this._actuallySetState(this._nextState);
             }
         }
@@ -79,9 +79,11 @@ export default abstract class RoomItem implements Selectable {
     }
 
     setState(state: number) {
+
         if (this.baseItem != null && this.baseItem.furniBase.states[state] != null) {
-            if (this.baseItem.furniBase.states[state].transition != null) {
-                this._state = parseInt(this.baseItem.furniBase.states[state].transition);
+            const { transition } = this.baseItem.furniBase.states[state];
+            if (transition != null) {
+                this._state = transition;
                 this._frame = 0;
                 this._nextState = state;
             } else {
@@ -108,9 +110,9 @@ export default abstract class RoomItem implements Selectable {
 
     setAdditionalSprites() {
         if (this.baseItem != null) {
-            const layerCount = parseInt(this.baseItem.furniBase.offset.visualization[this.baseItem.furniBase.size].layerCount) + 1;
+            const layerCount = this.baseItem.furniBase.offset.visualization[this.baseItem.furniBase.size].layerCount + 1;
 
-            for (let i = 1; i < layerCount; i++) {
+            for (let i = 1; i < parseInt(layerCount); i++) {
                 const sprite = new Sprite();
                 sprite.visible = false;
 

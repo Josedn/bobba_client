@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { LoaderResource } from 'pixi.js';
 
 export default class MainEngine {
     pixiApp: PIXI.Application;
@@ -53,11 +54,11 @@ export default class MainEngine {
         this.setMouseInteractions();
     }
 
-    loadGlobalTextures(texturesUrl: string[]): Promise<any> {
+    loadGlobalTextures(texturesUrl: string[]): Promise<void> {
         return new Promise((resolve, reject) => {
             const loader = PIXI.Loader.shared;
             loader.add(texturesUrl);
-            loader.load((loader: PIXI.Loader, resources: any) => {
+            loader.load((loader: PIXI.Loader, resources: { [key: string]: LoaderResource }) => {
                 for (let resourceId in resources) {
                     this.globalTextures[resourceId] = resources[resourceId].texture;
                 }
@@ -111,7 +112,7 @@ export default class MainEngine {
         this.pixiApp.view.addEventListener('dblclick', (evt) => {
             this.onMouseDoubleClickHandler(evt.x, evt.y);
         }, false);
-        
+
         this.pixiApp.view.addEventListener('touchstart', (evt) => {
             evt.preventDefault();
             if (evt.touches.length === 1) {
@@ -130,8 +131,8 @@ export default class MainEngine {
         this.pixiApp.view.addEventListener('mouseup', (evt) => {
             this.isMouseDragging = false;
         }, false);
-        
-        
+
+
     }
 }
 

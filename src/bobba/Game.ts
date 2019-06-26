@@ -43,7 +43,7 @@ export default class Game {
         this.isStarting = false;
     }
 
-    loadGame(): Promise<any> {
+    loadGame(): Promise<void> {
         this.isStarting = true;
         const sprites: string[] = [
             ROOM_TILE,

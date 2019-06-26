@@ -7,7 +7,7 @@ export default class ChatImager {
         this.chatStyles = {};
     }
 
-    initialize(): Promise<any> {
+    initialize(): Promise<void> {
         const base = "assets/normal_chat/style_normal_chat_bubble_base.png";
         const color = "assets/normal_chat/style_normal_chat_bubble_color.png";
         const pointer = "assets/normal_chat/style_normal_chat_bubble_pointer.png";

@@ -3,8 +3,8 @@ export type FurniOffsetAsset = {
     name: string,
     flipH?: string,
     source?: string,
-    x: number,
-    y: number,
+    x: string,
+    y: string,
 };
 
 export type FurniOffsetAssetDictionary = {
@@ -18,46 +18,47 @@ export type FurniOffsetType = "furniture_multistate" | "furniture_basic" | "furn
 
 export type FurniOffsetLogic = {
     dimensions: { x: string, y: string, z: string },
-    directions: number[],
+    directions: string[],
     type: FurniOffsetType,
 };
 
 //visualization
 export type FurniOffsetVisualizationColorData = {
-    layerId: number,
+    layerId: string,
     color: string,
 };
 export type FurniOffsetVisualizationColor = {
-    [colorId: number]: FurniOffsetVisualizationColorData[],
+    [colorId: string]: FurniOffsetVisualizationColorData[],
 };
 export type FurniOffsetVisualizationLayerData = {
-    id: number,
+    id: string,
     ink?: string,
-    ignoreMouse?: number,
-    z?: number,
+    alpha?: string,
+    ignoreMouse?: string,
+    z?: string,
 };
 export type FurniOffsetVisualizationLayerOverrideData = {
-    layerId: number,
+    layerId: string,
     ink?: string,
-    ignoreMouse?: number,
-    z?: number,
+    ignoreMouse?: string,
+    z?: string,
 };
 export type FurniOffsetVisualizationAnimation = {
-    id: number,
-    transitionTo?: number,
+    id: string,
+    transitionTo?: string,
     layers: {
-        layerId: number,
-        frameSequence: number[],
+        layerId: string,
+        frameSequence: string[],
     }[],
 };
 export type FurniOffsetVisualizationData = {
-    angle: number,
-    layerCount: number,
-    size: number,
-    directions: { [directionId: number]: FurniOffsetVisualizationLayerOverrideData[] },
+    angle: string,
+    layerCount: string,
+    size: string,
+    directions: { [directionId: string]: FurniOffsetVisualizationLayerOverrideData[] },
     layers: FurniOffsetVisualizationLayerData[],
     colors?: FurniOffsetVisualizationColor,
-    animations?: { [animationId: number]: FurniOffsetVisualizationAnimation },
+    animations?: { [animationId: string]: FurniOffsetVisualizationAnimation },
 };
 export type FurniOffsetVisualization = {
     type: FurniOffsetType,
@@ -68,8 +69,8 @@ export type FurniOffsetVisualization = {
 
 //furni.json
 export type FurniOffset = {
-    type: string,
-    assets: FurniOffsetAssetDictionary,
-    visualization: FurniOffsetVisualization,
-    logic: FurniOffsetLogic,
+    type: string;
+    assets: FurniOffsetAssetDictionary;
+    visualization: FurniOffsetVisualization;
+    logic: FurniOffsetLogic;
 };

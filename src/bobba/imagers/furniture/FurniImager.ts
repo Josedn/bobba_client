@@ -1,6 +1,7 @@
 import FurniBase from "./FurniBase";
 import FurniAsset from "./FurniAsset";
 import { FurniOffset } from "./FurniOffset";
+import { Furnidata, FurniDescription } from "./Furnidata";
 
 export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni/";
 
@@ -8,35 +9,41 @@ export default class FurniImager {
     ready: boolean;
     bases: { roomitem: { [id: string]: Promise<FurniBase> }, wallitem: { [id: string]: Promise<FurniBase> } };
     offsets: { [id: string]: Promise<FurniOffset> };
-    furnidata: any;
+    furnidata: Furnidata;
 
     constructor() {
         this.ready = false;
         this.bases = { roomitem: {}, wallitem: {} };
+        this.furnidata = { roomitemtypes: {}, wallitemtypes: {} };
         this.offsets = {};
     }
 
-    findItemByName(itemName: string) {
-        for (let itemTypes in this.furnidata) {
-            for (let itemId in this.furnidata[itemTypes]) {
-                const item = this.furnidata[itemTypes][itemId];
-                if (item.classname === itemName) {
-                    return { item, type: itemTypes };
-                }
+    /*findItemByName(itemName: string) {
+        for (let itemId in this.furnidata.roomitemtypes) {
+            const item = this.furnidata.roomitemtypes[itemId];
+            if (item.classname === itemName) {
+                return { item, type: 'roomitemtypes' };
+            }
+        }
+        for (let itemId in this.furnidata.wallitemtypes) {
+            const item = this.furnidata.wallitemtypes[itemId];
+            if (item.classname === itemName) {
+                return { item, type: 'wallitemtypes' };
             }
         }
         return null;
-    }
+    }*/
 
-    findItemById(type: ItemType, itemId: number): string | null {
-        if (this.furnidata[type + 'types'][itemId] != null) {
-            return this.furnidata[type + 'types'][itemId];
+    findItemById(type: ItemType, itemId: number): FurniDescription | null {
+        const furnidataType = type === 'roomitem' ? 'roomitemtypes' : 'wallitemtypes';
+        if (this.furnidata[furnidataType][itemId] != null) {
+            return this.furnidata[furnidataType][itemId];
         }
         return null;
     }
 
     loadItemBase(type: ItemType, itemId: number, size: Size): Promise<FurniBase> {
-        const rawItem = this.findItemById(type, itemId) as any;
+        const rawItem = this.findItemById(type, itemId);
         if (rawItem == null) {
             return new Promise((resolve, reject) => {
                 reject('invalid itemId ' + itemId);
@@ -46,24 +53,21 @@ export default class FurniImager {
         const { itemName } = splitItemNameAndColor(rawItemName);
 
         if (this.bases[type][itemId] == null) {
-
-
-
             this.bases[type][itemId] = new Promise((resolve, reject) => {
                 if (this.offsets[itemName] == null) {
                     this.offsets[itemName] = this._fetchOffsetAsync(itemName);
                 }
                 const offsetPromise = this.offsets[itemName];
-                const furniBase = new FurniBase(itemId, rawItem, size);
 
                 offsetPromise.then(offset => {
                     const visualization = offset.visualization[64];
-                    let states = { "0": { count: 1 } } as any;
+                    let states: { [id: number]: State } = { "0": { count: 1 } };
 
-                    furniBase.offset = offset;
+                    const furniBase = new FurniBase(itemId, rawItem, offset, size);
 
                     if (visualization.animations != null) {
-                        for (let stateId in visualization.animations) {
+                        for (let stateIdStr in visualization.animations) {
+                            const stateId = parseInt(stateIdStr);
                             let count = 1;
                             for (let animationLayer of visualization.animations[stateId].layers) {
                                 if (animationLayer.frameSequence != null) {
@@ -73,9 +77,13 @@ export default class FurniImager {
                                 }
                             }
                             states[stateId] = { count };
-                            if (visualization.animations[stateId].transitionTo != null) {
-                                states[stateId].transitionTo = visualization.animations[stateId].transitionTo;
-                                states[states[stateId].transitionTo].transition = stateId;
+                            if (visualization.animations[stateId] != null) {
+                                const { transitionTo } = visualization.animations[stateId];
+                                if (transitionTo != null) {
+                                    const allegedTransition = parseInt(transitionTo);
+                                    states[stateId].transitionTo = allegedTransition;
+                                    states[allegedTransition].transition = stateId;
+                                }
                             }
                         }
                     }
@@ -91,7 +99,7 @@ export default class FurniImager {
                                 resourceName = asset.source;
                             }
                             assetsPromises.push(this._downloadImageAsync(itemName, resourceName).then(img => {
-                                furniBase.assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === '1');
+                                furniBase.assets[asset.name] = new FurniAsset(img, parseInt(asset.x), parseInt(asset.y), asset.flipH != null && asset.flipH === '1');
                             }).catch(err => {
                                 reject(err);
                             }));
@@ -124,7 +132,7 @@ export default class FurniImager {
         return [
             this._fetchJsonAsync(LOCAL_RESOURCES_URL + "furnidata.json")
                 .then(data => {
-                    this.furnidata = data;
+                    this.furnidata = data as Furnidata;
                 }),
         ];
     }
@@ -175,6 +183,7 @@ export type Size = 32 | 64;
 export type ItemType = 'roomitem' | 'wallitem';
 export interface NameColorPair { itemName: string, colorId: number };
 export type Direction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type State = { count: number, transitionTo?: number, transition?: number, };
 
 export const splitItemNameAndColor = (itemName: string): NameColorPair => {
     let colorId = 0;

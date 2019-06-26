@@ -1,21 +1,23 @@
-import { Size, Direction, splitItemNameAndColor } from "./FurniImager";
+import { Size, Direction, splitItemNameAndColor, State } from "./FurniImager";
 import FurniAsset, { FurniAssetDictionary } from "./FurniAsset";
+import { FurniDescription } from "./Furnidata";
+import { FurniOffset } from "./FurniOffset";
 
 export default class FurniBase {
     itemId: number;
-    itemData: any;
+    itemData: FurniDescription;
     size: Size;
-    states: any;
+    states: { [id: number]: State };
     assets: FurniAssetDictionary;
-    offset: any;
+    offset: FurniOffset;
 
-    constructor(itemId: number, itemData: object, size: Size) {
+    constructor(itemId: number, itemData: FurniDescription, offset: FurniOffset, size: Size) {
         this.itemId = itemId;
         this.itemData = itemData;
         this.size = size;
         this.states = {};
         this.assets = {};
-        this.offset = {};
+        this.offset = offset;
     }
 
     getAvailableDirections(): Direction[] {
@@ -23,6 +25,7 @@ export default class FurniBase {
         const visualization = this.offset.visualization[this.size];
         const rawDirections = visualization.directions;
         for (let rawDirection in rawDirections) {
+            console.log(rawDirection); /////////////TODO: CHECK THIS
             directions.push(parseInt(rawDirection) as Direction);
         }
         return directions;
@@ -179,7 +182,7 @@ export default class FurniBase {
         const { itemName, colorId } = splitItemNameAndColor(this.itemData.classname);
 
         const visualization = this.offset.visualization[this.size];
-        for (let i = -1; i < visualization.layerCount; i++) {
+        for (let i = -1; i < parseInt(visualization.layerCount); i++) {
             let layerData: any = { id: i, frame: 0, resourceName: '' };
 
             if (i === -1) {
@@ -189,13 +192,13 @@ export default class FurniBase {
                 for (let layer of visualization.layers) {
                     if (parseInt(layer.id) === i) {
                         if (layer.z != null) {
-                            layerData.z = parseInt(layer.z);
+                            layerData.z = layer.z;
                         }
                         if (layer.ink != null) {
                             layerData.ink = layer.ink;
                         }
                         if (layer.alpha != null) {
-                            layerData.alpha = parseInt(layer.alpha);
+                            layerData.alpha = layer.alpha;
                         }
                         if (layer.ignoreMouse != null) {
                             layerData.ignoreMouse = layer.ignoreMouse;
@@ -206,7 +209,7 @@ export default class FurniBase {
             if (visualization.directions != null && visualization.directions[direction] != null) {
                 for (let overrideLayer of visualization.directions[direction]) {
                     if (parseInt(overrideLayer.layerId) === i && overrideLayer.z != null) {
-                        layerData.z = parseInt(overrideLayer.z);
+                        layerData.z = overrideLayer.z;
                     }
                 }
             }
@@ -222,7 +225,7 @@ export default class FurniBase {
             if (visualization.animations != null && visualization.animations[state] != null) {
                 for (let animationLayer of visualization.animations[state].layers) {
                     if (parseInt(animationLayer.layerId) === i && animationLayer.frameSequence != null) {
-                        layerData.frame = parseInt(animationLayer.frameSequence[frame % animationLayer.frameSequence.length]);
+                        layerData.frame = animationLayer.frameSequence[frame % animationLayer.frameSequence.length];
                     }
                 }
             }
