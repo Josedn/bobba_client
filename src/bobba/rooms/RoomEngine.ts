@@ -212,6 +212,8 @@ export default class RoomEngine {
             const diffY = Math.round(this.lastMousePositionY - mouseY);
             this.container.x -= diffX;
             this.container.y -= diffY;
+            this.selectableContainer.x = this.container.x;
+            this.selectableContainer.y = this.container.y;
         }
         this.lastMousePositionX = Math.round(mouseX);
         this.lastMousePositionY = Math.round(mouseY);
