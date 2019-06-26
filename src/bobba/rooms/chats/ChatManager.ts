@@ -31,6 +31,11 @@ export default class ChatManager {
         if (roomUser != null) {
             const image = BobbaEnvironment.getGame().chatImager.generateChatBubble(0, roomUser.user.name, message, roomUser.avatarContainer.color, roomUser.avatarContainer.headImage);
             const sprite = new Sprite(BobbaEnvironment.getGame().engine.getTextureFromImage(image));
+            sprite.interactive = true;
+            sprite.on('click', () => { roomUser.handleClick(0) });
+            sprite.on('tap', () => { roomUser.handleClick(0) });
+            sprite.cursor = 'pointer';
+
             roomUser.speak(1.5);
 
             sprite.x = Math.floor(roomUser.getSpriteX() - (sprite.width / 2));
