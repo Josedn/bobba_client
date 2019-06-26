@@ -6,7 +6,7 @@ export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni/";
 
 export default class FurniImager {
     ready: boolean;
-    bases: any;
+    bases: { roomitem: { [id: string]: Promise<FurniBase> }, wallitem: { [id: string]: Promise<FurniBase> } };
     offsets: { [id: string]: Promise<FurniOffset> };
     furnidata: any;
 
@@ -43,76 +43,74 @@ export default class FurniImager {
             });
         }
         const rawItemName = rawItem.classname;
-
         const { itemName } = splitItemNameAndColor(rawItemName);
 
-        if (this.bases[type][itemId] != null && this.bases[type][itemId].promise != null) {
-            return this.bases[type][itemId].promise;
-        }
+        if (this.bases[type][itemId] == null) {
 
-        this.bases[type][itemId] = new FurniBase(itemId, rawItem, size);
 
-        if (this.offsets[itemName] == null) {
-            this.offsets[itemName] = this._fetchOffsetAsync(itemName);
-        }
-        const offsetPromise = this.offsets[itemName];
 
-        const finalPromise: Promise<FurniBase> = new Promise((resolve, reject) => {
-            offsetPromise.then(offset => {
-                const visualization = offset.visualization[64];
-                let states = { "0": { count: 1 } } as any;
+            this.bases[type][itemId] = new Promise((resolve, reject) => {
+                if (this.offsets[itemName] == null) {
+                    this.offsets[itemName] = this._fetchOffsetAsync(itemName);
+                }
+                const offsetPromise = this.offsets[itemName];
+                const furniBase = new FurniBase(itemId, rawItem, size);
 
-                this.bases[type][itemId].offset = offset;
+                offsetPromise.then(offset => {
+                    const visualization = offset.visualization[64];
+                    let states = { "0": { count: 1 } } as any;
 
-                if (visualization.animations != null) {
-                    for (let stateId in visualization.animations) {
-                        let count = 1;
-                        for (let animationLayer of visualization.animations[stateId].layers) {
-                            if (animationLayer.frameSequence != null) {
-                                if (count < animationLayer.frameSequence.length) {
-                                    count = animationLayer.frameSequence.length;
+                    furniBase.offset = offset;
+
+                    if (visualization.animations != null) {
+                        for (let stateId in visualization.animations) {
+                            let count = 1;
+                            for (let animationLayer of visualization.animations[stateId].layers) {
+                                if (animationLayer.frameSequence != null) {
+                                    if (count < animationLayer.frameSequence.length) {
+                                        count = animationLayer.frameSequence.length;
+                                    }
                                 }
                             }
-                        }
-                        states[stateId] = { count };
-                        if (visualization.animations[stateId].transitionTo != null) {
-                            states[stateId].transitionTo = visualization.animations[stateId].transitionTo;
-                            states[states[stateId].transitionTo].transition = stateId;
+                            states[stateId] = { count };
+                            if (visualization.animations[stateId].transitionTo != null) {
+                                states[stateId].transitionTo = visualization.animations[stateId].transitionTo;
+                                states[states[stateId].transitionTo].transition = stateId;
+                            }
                         }
                     }
-                }
 
-                const assetsPromises = [];
+                    const assetsPromises = [];
 
-                for (let assetId in offset.assets) {
-                    const asset = offset.assets[assetId];
-                    const fixedName = asset.name.split(itemName + '_')[1] as String;
-                    if (fixedName.startsWith(size.toString())) {
-                        let resourceName = asset.name;
-                        if (asset.source != null) {
-                            resourceName = asset.source;
+                    for (let assetId in offset.assets) {
+                        const asset = offset.assets[assetId];
+                        const fixedName = asset.name.split(itemName + '_')[1] as String;
+                        if (fixedName.startsWith(size.toString())) {
+                            let resourceName = asset.name;
+                            if (asset.source != null) {
+                                resourceName = asset.source;
+                            }
+                            assetsPromises.push(this._downloadImageAsync(itemName, resourceName).then(img => {
+                                furniBase.assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === '1');
+                            }).catch(err => {
+                                reject(err);
+                            }));
                         }
-                        assetsPromises.push(this._downloadImageAsync(itemName, resourceName).then(img => {
-                            this.bases[type][itemId].assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === '1');
-                        }).catch(err => {
-                            reject(err);
-                        }));
                     }
-                }
-                this.bases[type][itemId].states = states;
+                    furniBase.states = states;
 
-                Promise.all(assetsPromises).then(() => {
-                    resolve(this.bases[type][itemId]);
+                    Promise.all(assetsPromises).then(() => {
+                        resolve(furniBase);
+                    }).catch(err => {
+                        reject(err);
+                    });
+
                 }).catch(err => {
-                    reject(err);
+                    reject("Error downloading offset for " + itemName + " reason: " + err);
                 });
-
-            }).catch(err => {
-                reject("Error downloading offset for " + itemName + " reason: " + err);
             });
-        });
-        this.bases[type][itemId].promise = finalPromise;
-        return finalPromise;
+        }
+        return this.bases[type][itemId];
     }
 
     initialize(): Promise<void> {

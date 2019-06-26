@@ -5,7 +5,6 @@ export default class FurniBase {
     itemId: number;
     itemData: any;
     size: Size;
-    promise: Promise<any> | null;
     states: any;
     assets: FurniAssetDictionary;
     offset: any;
@@ -14,7 +13,6 @@ export default class FurniBase {
         this.itemId = itemId;
         this.itemData = itemData;
         this.size = size;
-        this.promise = null;
         this.states = {};
         this.assets = {};
         this.offset = {};
