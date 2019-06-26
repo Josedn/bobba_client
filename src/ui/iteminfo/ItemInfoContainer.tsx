@@ -44,33 +44,35 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         });
     }
 
-    componentDidUpdate() {
+    showFurniView = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => {
+        this.setState({
+            furniProps: {
+                itemId: id,
+                name,
+                description,
+                image: canvas2Image(image),
+            },
+            showing: Showing.FURNI
+        });
+    }
+
+    showUserView = (id: number, name: string, motto: string, look: string, image: HTMLCanvasElement) => {
         const { currentUserId } = this.props;
-        BobbaEnvironment.getGame().uiManager.onSelectFurni = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => {
-            this.setState({
-                furniProps: {
-                    itemId: id,
-                    name,
-                    description,
-                    image: canvas2Image(image),
-                },
-                showing: Showing.FURNI
-            });
-        };
+        this.setState({
+            userProps: {
+                userId: id,
+                name,
+                motto,
+                image: canvas2Image(image),
+                isMe: id === currentUserId,
+            },
+            showing: Showing.USER
+        });
+    }
 
-        BobbaEnvironment.getGame().uiManager.onSelectUser = (id: number, name: string, motto: string, look: string, image: HTMLCanvasElement) => {
-            this.setState({
-                userProps: {
-                    userId: id,
-                    name,
-                    motto,
-                    image: canvas2Image(image),
-                    isMe: id === currentUserId,
-                },
-                showing: Showing.USER
-            });
-        };
-
+    componentDidMount() {
+        BobbaEnvironment.getGame().uiManager.onSelectFurni = this.showFurniView;
+        BobbaEnvironment.getGame().uiManager.onSelectUser = this.showUserView;
     }
 
     render() {
