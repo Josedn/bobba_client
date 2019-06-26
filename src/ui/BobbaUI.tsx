@@ -87,7 +87,6 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     }
 
     render() {
-
         const { gameLoaded, error, loggedIn, loadingInfo, userData } = this.state;
 
         let mainPage = <></>;
@@ -105,7 +104,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 {mainPage}
                 <TopBar />
                 <RoomInfo />
-                <ItemInfoContainer currentUserId={userData.id} />
+                <ItemInfoContainer />
                 <Footer focuser={this.updateChatFocuser} headImage={userData.image} />
             </>
         );

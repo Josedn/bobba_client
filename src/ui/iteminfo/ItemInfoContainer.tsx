@@ -6,9 +6,7 @@ import { canvas2Image } from '../misc/GraphicsUtilities';
 enum Showing {
     USER, FURNI, NONE
 }
-type ItemInfoContainerProps = {
-    currentUserId: number,
-};
+type ItemInfoContainerProps = {};
 type ItemInfoContainerState = {
     showing: Showing,
     furniProps: FurniInfoProps,
@@ -56,15 +54,14 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         });
     }
 
-    showUserView = (id: number, name: string, motto: string, look: string, image: HTMLCanvasElement) => {
-        const { currentUserId } = this.props;
+    showUserView = (id: number, name: string, motto: string, look: string, isMe: boolean, image: HTMLCanvasElement) => {
         this.setState({
             userProps: {
                 userId: id,
                 name,
                 motto,
                 image: canvas2Image(image),
-                isMe: id === currentUserId,
+                isMe,
             },
             showing: Showing.USER
         });
