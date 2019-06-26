@@ -60,6 +60,12 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             this.setState({
                 gameLoaded: true,
             });
+
+            game.uiManager.setOnGameStopHandler(() => {
+                this.setState({
+                    error: 'Game has stoppped!',
+                });
+            });
         }).catch(err => {
             this.setState({
                 gameLoaded: false,
@@ -76,12 +82,6 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                         id: user.id, name: user.name, look: user.look, motto: user.motto, image: canvas2Image(canvas),
                     }
                 });
-            });
-        });
-
-        game.uiManager.setOnGameStopHandler(() => {
-            this.setState({
-                error: 'Game has stoppped!',
             });
         });
 
