@@ -1,12 +1,13 @@
 import FurniBase from "./FurniBase";
 import FurniAsset from "./FurniAsset";
+import { FurniOffset } from "./FurniOffset";
 
 export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni/";
 
 export default class FurniImager {
     ready: boolean;
     bases: any;
-    offsets: any;
+    offsets: { [id: string]: Promise<FurniOffset> };
     furnidata: any;
 
     constructor() {
@@ -52,9 +53,9 @@ export default class FurniImager {
         this.bases[type][itemId] = new FurniBase(itemId, rawItem, size);
 
         if (this.offsets[itemName] == null) {
-            this.offsets[itemName] = { promise: this._fetchOffsetAsync(itemName), data: {} };
+            this.offsets[itemName] = this._fetchOffsetAsync(itemName);
         }
-        const offsetPromise = this.offsets[itemName].promise as Promise<any>;
+        const offsetPromise = this.offsets[itemName];
 
         const finalPromise: Promise<FurniBase> = new Promise((resolve, reject) => {
             offsetPromise.then(offset => {
@@ -163,11 +164,10 @@ export default class FurniImager {
         });
     }
 
-    _fetchOffsetAsync(uniqueName: string): Promise<object> {
+    _fetchOffsetAsync(uniqueName: string): Promise<FurniOffset> {
         return new Promise((resolve, reject) => {
             this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
-                this.offsets[uniqueName].data = data;
-                resolve(data);
+                resolve(data as FurniOffset);
             }).catch(err => reject(err));
         });
     }
