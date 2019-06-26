@@ -28,8 +28,8 @@ export default class AvatarContainer {
         this.userInfoImage = document.createElement('canvas');
     }
 
-    initialize(): Promise<any> {
-        const promises: Promise<any>[] = [];
+    initialize(): Promise<void[]> {
+        const promises: Promise<void>[] = [];
         const { avatarImager } = BobbaEnvironment.getGame();
 
         for (let i = 0; i <= 7; i++) {
@@ -78,7 +78,7 @@ export default class AvatarContainer {
         return this.bodyTextures[getBodyTextureKey(direction, action, frame)];
     }
 
-    _loadUniqueBodyTexture(direction: Direction, action: string[], frame: number): Promise<any> {
+    _loadUniqueBodyTexture(direction: Direction, action: string[], frame: number): Promise<void> {
         const { avatarImager, engine } = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, direction, direction, action, "std", frame, false, true, "n"), this.isGhost)
@@ -88,7 +88,7 @@ export default class AvatarContainer {
             });
     }
 
-    _loadUniqueHeadTexture(headDirection: Direction, gesture: string, frame: number): Promise<any> {
+    _loadUniqueHeadTexture(headDirection: Direction, gesture: string, frame: number): Promise<void> {
         const { avatarImager, engine } = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, headDirection, headDirection, ["std"], gesture, frame, true, false, "n"), this.isGhost)
@@ -98,7 +98,7 @@ export default class AvatarContainer {
             });
     }
 
-    _loadChatHeadImage(): Promise<any> {
+    _loadChatHeadImage(): Promise<void> {
         const { avatarImager } = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, 2, 2, ["std"], "std", 0, true, false, "d"), this.isGhost)
@@ -107,7 +107,7 @@ export default class AvatarContainer {
             });
     }
 
-    _loadUserInfoImage(): Promise<any> {
+    _loadUserInfoImage(): Promise<void> {
         const { avatarImager } = BobbaEnvironment.getGame();
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, 4, 4, ["std"], "std", 0, false, false, "n"), this.isGhost)

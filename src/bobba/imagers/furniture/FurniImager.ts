@@ -18,7 +18,7 @@ export default class FurniImager {
         this.offsets = {};
     }
 
-    /*findItemByName(itemName: string) {
+    findItemByName(itemName: string) {
         for (let itemId in this.furnidata.roomitemtypes) {
             const item = this.furnidata.roomitemtypes[itemId];
             if (item.classname === itemName) {
@@ -32,7 +32,7 @@ export default class FurniImager {
             }
         }
         return null;
-    }*/
+    }
 
     findItemById(type: ItemType, itemId: number): FurniDescription | null {
         const furnidataType = type === 'roomitem' ? 'roomitemtypes' : 'wallitemtypes';

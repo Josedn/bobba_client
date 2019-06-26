@@ -178,7 +178,7 @@ export default class FurniBase {
     }
 
     getLayers(direction: Direction, state: number, frame: number): LayerData[] {
-        const chunks: any[] = [];
+        const chunks: LayerData[] = [];
         const { itemName, colorId } = splitItemNameAndColor(this.itemData.classname);
 
         const visualization = this.offset.visualization[this.size];
@@ -201,7 +201,7 @@ export default class FurniBase {
                             layerData.alpha = layer.alpha;
                         }
                         if (layer.ignoreMouse != null) {
-                            layerData.ignoreMouse = layer.ignoreMouse;
+                            layerData.ignoreMouse = layer.ignoreMouse === '1';
                         }
                     }
                 }
@@ -249,7 +249,7 @@ export interface LayerData {
     alpha?: number,
     color?: number,
     ink?: string,
-    ignoreMouse?: string,
+    ignoreMouse?: boolean,
     z?: number,
 };
 

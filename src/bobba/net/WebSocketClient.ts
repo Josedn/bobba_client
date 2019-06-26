@@ -15,15 +15,14 @@ export default class WebSocketClient {
         }
     }
 
-    connect(connectionURL: string): Promise<any> {
+    connect(connectionURL: string): Promise<void> {
         return new Promise((resolve, reject) => {
             this.ws = new WebSocket(connectionURL);
 
             this.ws.onopen = evt => {
                 this.connected = true;
                 this.messageHandler.handleOpenConnection();
-
-                resolve(true);
+                resolve();
             };
 
             this.ws.onclose = evt => {
