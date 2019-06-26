@@ -15,16 +15,22 @@ export default class BaseItem {
         this.furniBase = furniBase;
         this.textures = {};
         this.solidTextures = {};
-        
+
         for (let assetId in this.furniBase.assets) {
             const asset = this.furniBase.assets[assetId];
             this._loadTexture(asset.image, assetId);
         }
 
-        this.infoImage = this.furniBase.draw(this._getBestDirection(this.furniBase.getAvailableDirections()), 0, 0);
+        this.infoImage = this.furniBase.draw(this._getUIViewDirection(this.furniBase.getAvailableDirections()), 0, 0);
     }
 
-    _getBestDirection(directions: Direction[]): Direction {
+    calculateNextDirection(current: Direction): Direction {
+        const available = this.furniBase.getAvailableDirections();
+        const pos = available.indexOf(current);
+        return available[(pos + 1) % available.length];
+    }
+
+    _getUIViewDirection(directions: Direction[]): Direction {
         if (directions.includes(4)) {
             return 4;
         }

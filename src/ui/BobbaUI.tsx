@@ -79,6 +79,12 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             });
         });
 
+        game.uiManager.setOnGameStopHandler(() => {
+            this.setState({
+                error: 'Game has stoppped!',
+            });
+        });
+
     }
 
     updateChatFocuser = (handler: () => void) => {

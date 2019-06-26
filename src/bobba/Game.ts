@@ -133,6 +133,7 @@ export default class Game {
 
     stop() {
         this.unloadRoom();
+        this.uiManager.onGameStop();
         console.log("Stopping game...");
     }
 }

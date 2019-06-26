@@ -1,6 +1,8 @@
 import Game from "../Game";
 import Login from "../communication/outgoing/generic/Login";
 import User from "../users/User";
+import RequestFurniRotate from "../communication/outgoing/rooms/RequestFurniMove";
+import RequestFurniMove from "../communication/outgoing/rooms/RequestFurniMove";
 
 export default class UIManager {
     game: Game;
@@ -10,6 +12,7 @@ export default class UIManager {
     onSelectUser: UserInfo;
     onLoadPost: (text: string) => void;
     onFocusChat: () => void;
+    onGameStop: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -18,6 +21,7 @@ export default class UIManager {
         this.onSelectUser = () => { };
         this.onLoadPost = () => { };
         this.onFocusChat = () => { };
+        this.onGameStop = () => { };
     }
 
     log(text: string) {
@@ -63,8 +67,8 @@ export default class UIManager {
         const { currentRoom } = this.game;
         if (currentRoom != null) {
             const item = currentRoom.roomItemManager.getItem(itemId);
-            if (item != null) {
-                //item.handleDoubleClick(0);
+            if (item != null && item.baseItem != null) {
+                this.game.communicationManager.sendMessage(new RequestFurniMove(item.id, item._x, item._y, item.baseItem.calculateNextDirection(item.rot)));
             }
         }
     }
@@ -103,6 +107,10 @@ export default class UIManager {
 
     setOnFocusChatHandler(handler: () => void) {
         this.onFocusChat = handler;
+    }
+
+    setOnGameStopHandler(handler: () => void) {
+        this.onGameStop = handler;
     }
 }
 

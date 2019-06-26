@@ -6,3 +6,4 @@ export const REQUEST_LOOK_AT = 12;
 export const REQUEST_WAVE = 13;
 export const REQUEST_ROOM_DATA = 15;
 export const REQUEST_ITEM_INTERACT = 18;
+export const REQUEST_ITEM_MOVE = 19;
