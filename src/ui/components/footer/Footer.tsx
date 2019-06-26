@@ -1,15 +1,13 @@
 import React, { Component, SyntheticEvent, RefObject } from 'react';
 import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
-import { connect } from 'react-redux';
+
 const MAX_CHAT_LENGTH = 95;
 const initialState = {
     chat: '',
 };
-type FooterProps = {
-    loginContext: any,
-};
+type FooterProps = {};
 type FooterState = {
-    chat: string;
+    chat: string,
 };
 class Footer extends Component<FooterProps, FooterState> {
 
@@ -20,13 +18,8 @@ class Footer extends Component<FooterProps, FooterState> {
         this.chatInput = React.createRef();
     }
 
-    componentDidMount() {
-        window.addEventListener('keydown', this.focusChatInput);
-    }
-
-    focusChatInput = () => {
-        const { loggedIn } = this.props.loginContext;
-        if (loggedIn && this.chatInput.current != null) {
+    focusChatInput = (event: Event) => {
+        if (this.chatInput.current != null) {
             this.chatInput.current.focus();
         }
     }
@@ -95,8 +88,4 @@ class Footer extends Component<FooterProps, FooterState> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    loginContext: state.login,
-});
-
-export default connect(mapStateToProps)(Footer);
+export default Footer;

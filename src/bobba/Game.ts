@@ -52,8 +52,7 @@ export default class Game {
             ROOM_WALL_DOOR_EXTENDED_L,
             ROOM_TILE_SHADOW
         ];
-
-        BobbaEnvironment.loadingLog("Initializing game engine");
+        BobbaEnvironment.getGame().uiManager.postLoading("Initializing game engine");
         return Promise.all([
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
@@ -61,13 +60,13 @@ export default class Game {
             this.meMenuImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
-            BobbaEnvironment.loadingLog("Connecting to server");
+            BobbaEnvironment.getGame().uiManager.postLoading("Connecting to server");
             return this.communicationManager.connect("localhost", 8080, false);
         });
     }
 
     handleLoggedIn() {
-        BobbaEnvironment.log("Logged in!");
+        BobbaEnvironment.getGame().uiManager.log("Logged in!");
         this.uiManager.onLoggedIn();
         this.communicationManager.sendMessage(new RequestMap());
     }
@@ -76,7 +75,7 @@ export default class Game {
         this.currentRoom = new Room(id, name, model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
-        BobbaEnvironment.log("Loaded room: " + name);
+        BobbaEnvironment.getGame().uiManager.log("Loaded room: " + name);
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 

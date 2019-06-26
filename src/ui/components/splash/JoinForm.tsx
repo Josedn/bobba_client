@@ -1,8 +1,6 @@
 import React, { SyntheticEvent } from 'react';
 import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
-import { connect } from 'react-redux';
-import { logIn } from '../../actions';
-import { Dispatch } from 'redux';
+
 const MAX_NAME_LENGTH = 20;
 export interface LookGroup {
     figure: string,
@@ -11,7 +9,6 @@ export interface LookGroup {
 
 type JoinFormProps = {
     looks: LookGroup[],
-    dispatch: Dispatch,
 };
 
 const initialState = {
@@ -45,14 +42,10 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
 
     handleSubmit = (event: SyntheticEvent) => {
         const { username, look } = this.state;
-        const { dispatch } = this.props;
         event.preventDefault();
 
         if (username.length > 0 || username.length > MAX_NAME_LENGTH) {
             BobbaEnvironment.getGame().uiManager.doLogin(username, look);
-            BobbaEnvironment.getGame().uiManager.setLoggedInHandler(() => {
-                dispatch(logIn());
-            });
             this.setState({
                 queuedLogin: true,
             });
@@ -70,9 +63,11 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
 
         if (look === '') {
             const randomElement = looks[Math.floor(Math.random() * looks.length)];
-            this.setState({
-                look: randomElement.figure,
-            });
+            if (randomElement != null) {
+                this.setState({
+                    look: randomElement.figure,
+                });
+            }
         }
     }
 
@@ -113,4 +108,4 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
     }
 }
 
-export default connect()(JoinForm);
+export default JoinForm;

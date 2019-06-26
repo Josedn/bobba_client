@@ -7,12 +7,23 @@ export default class UIManager {
     onLoggedIn: () => void;
     onSelectFurni: FurniInfo;
     onSelectUser: UserInfo;
+    onLoadPost: (text: string) => void;
 
     constructor(game: Game) {
         this.game = game;
         this.onLoggedIn = () => { };
         this.onSelectFurni = () => { };
         this.onSelectUser = () => { };
+        this.onLoadPost = () => { };
+    }
+
+    log(text: string) {
+        console.log("Log: " + text);
+    }
+
+    postLoading(text: string) {
+        console.log("Loading: " + text);
+        this.onLoadPost(text);
     }
 
     doChat(chat: string) {
@@ -81,6 +92,10 @@ export default class UIManager {
 
     setOnSelectUser(handler: UserInfo) {
         this.onSelectUser = handler;
+    }
+
+    setOnLoadHandler(handler: (text: string) => void) {
+        this.onLoadPost = handler;
     }
 }
 
