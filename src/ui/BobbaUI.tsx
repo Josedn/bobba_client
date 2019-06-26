@@ -68,12 +68,12 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             });
         });
 
-        game.uiManager.setLoggedInHandler((id: number, name: string, motto: string, look: string) => {
-            game.avatarImager.generateGeneric(new AvatarInfo(look, 2, 2, ["std"], "std", 0, true, false, "n"), false).then(canvas => {
+        game.uiManager.setLoggedInHandler(user => {
+            game.avatarImager.generateGeneric(new AvatarInfo(user.look, 2, 2, ["std"], "std", 0, true, false, "n"), false).then(canvas => {
                 this.setState({
                     loggedIn: true,
                     userData: {
-                        id, name, look, motto, image: canvas2Image(canvas),
+                        id: user.id, name: user.name, look: user.look, motto: user.motto, image: canvas2Image(canvas),
                     }
                 });
             });

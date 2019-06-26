@@ -13,6 +13,7 @@ import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
 import BobbaEnvironment from "./BobbaEnvironment";
 import UIManager from "./ui/UIManager";
+import UserManager from "./users/UserManager";
 
 export default class Game {
     currentRoom?: Room;
@@ -22,6 +23,7 @@ export default class Game {
     chatImager: ChatImager;
     meMenuImager: MeMenuImager;
     baseItemManager: BaseItemManager;
+    userManager: UserManager;
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
     uiManager: UIManager;
@@ -34,6 +36,7 @@ export default class Game {
         this.furniImager = new FurniImager();
         this.chatImager = new ChatImager();
         this.meMenuImager = new MeMenuImager();
+        this.userManager = new UserManager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
         this.uiManager = new UIManager(this);
@@ -67,7 +70,7 @@ export default class Game {
 
     handleLoggedIn(id: number, name: string, look: string, motto: string) {
         BobbaEnvironment.getGame().uiManager.log("Logged in!");
-        this.uiManager.onLoggedIn(id, name, motto, look);
+        this.uiManager.onLoggedIn(this.userManager.setCurrentUser(id, name, motto, look));
         this.communicationManager.sendMessage(new RequestMap());
     }
 

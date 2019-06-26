@@ -29,7 +29,7 @@ export default class ChatManager {
     addChat(userId: number, message: string) {
         const roomUser = this.room.roomUserManager.getUser(userId);
         if (roomUser != null) {
-            const image = BobbaEnvironment.getGame().chatImager.generateChatBubble(0, roomUser.name, message, roomUser.avatarContainer.color, roomUser.avatarContainer.headImage);
+            const image = BobbaEnvironment.getGame().chatImager.generateChatBubble(0, roomUser.user.name, message, roomUser.avatarContainer.color, roomUser.avatarContainer.headImage);
             const sprite = new Sprite(BobbaEnvironment.getGame().engine.getTextureFromImage(image));
             roomUser.speak(1.5);
 

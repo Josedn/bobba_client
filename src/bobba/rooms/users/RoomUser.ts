@@ -6,6 +6,7 @@ import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestLookAt from "../../communication/outgoing/rooms/RequestLookAt";
 import { ROOM_TILE_SHADOW } from "../../graphics/GenericSprites";
 import { Selectable } from "../RoomEngine";
+import User from "../../users/User";
 
 const FRAME_SPEED = 100;
 const WALK_SPEED = 2; //Squares per second
@@ -14,11 +15,7 @@ const ROOM_USER_SPRITE_OFFSET_X = 3;
 const ROOM_USER_SPRITE_OFFSET_Y = -85;
 
 export default class RoomUser implements Selectable {
-    id: number;
-    name: string;
-    look: string;
-    motto: string;
-
+    user: User;
     _x: number;
     _y: number;
     _z: number;
@@ -54,12 +51,8 @@ export default class RoomUser implements Selectable {
 
     room: Room;
 
-    constructor(id: number, name: string, motto: string, look: string, x: number, y: number, z: number, rot: Direction, room: Room) {
-        this.id = id;
-        this.name = name;
-        this.look = look;
-        this.motto = motto;
-
+    constructor(user: User, x: number, y: number, z: number, rot: Direction, room: Room) {
+        this.user = user;
         this._x = x;
         this._y = y;
         this._z = z;
@@ -93,13 +86,13 @@ export default class RoomUser implements Selectable {
         this.selectableContainer.addChild(this.selectableBodySprite);
         this.selectableContainer.addChild(this.selectableHeadSprite);
 
-        const signImage = BobbaEnvironment.getGame().meMenuImager.generateSign(this.name);
+        const signImage = BobbaEnvironment.getGame().meMenuImager.generateSign(this.user.name);
         const signTexture = BobbaEnvironment.getGame().engine.getTextureFromImage(signImage)
 
         this.signSprite = new Sprite(signTexture);
         this.signSprite.y = -20;
         this.signSprite.x = Math.floor(-signImage.width / 2 + 32);
-        this.avatarContainer = new AvatarContainer(look);
+        this.avatarContainer = new AvatarContainer(this.user.look);
 
         this.container = new Container();
         this.container.addChild(this.bodySprite);
@@ -142,8 +135,8 @@ export default class RoomUser implements Selectable {
     }
 
     handleClick = (id: number) => {
-        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.id));
-        BobbaEnvironment.getGame().uiManager.onSelectUser(this.id, this.name, this.motto, this.look, this.avatarContainer.userInfoImage);
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.user.id));
+        BobbaEnvironment.getGame().uiManager.onSelectUser(this.user.id, this.user.name, this.user.motto, this.user.look, this.avatarContainer.userInfoImage);
     }
 
     handleHover = (id: number) => {

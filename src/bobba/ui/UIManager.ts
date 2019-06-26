@@ -1,10 +1,11 @@
 import Game from "../Game";
 import Login from "../communication/outgoing/generic/Login";
+import User from "../users/User";
 
 export default class UIManager {
     game: Game;
 
-    onLoggedIn: LoggedUserInfo;
+    onLoggedIn: (user: User) => void;
     onSelectFurni: FurniInfo;
     onSelectUser: UserInfo;
     onLoadPost: (text: string) => void;
@@ -82,7 +83,7 @@ export default class UIManager {
         }
     }
 
-    setLoggedInHandler(handler: LoggedUserInfo) {
+    setLoggedInHandler(handler: (user: User) => void) {
         this.onLoggedIn = handler;
     }
 
@@ -101,4 +102,3 @@ export default class UIManager {
 
 export type FurniInfo = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => void;
 export type UserInfo = (id: number, name: string, motto: string, look: string, image: HTMLCanvasElement) => void;
-export type LoggedUserInfo = (id: number, name: string, motto: string, look: string) => void;

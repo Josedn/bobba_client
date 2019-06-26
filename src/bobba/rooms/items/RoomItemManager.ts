@@ -19,19 +19,17 @@ export default class RoomItemManager {
 
     addFloorItemToRoom(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number) {
         const item = this.getItem(id);
-        if (item == null) {
-            const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
-            this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
-            newItem.loadBase().then(containerGroup => {
-                this.room.engine.removeRoomItemContainerSet(id);
-                this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
-                this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
-            });
-            this.items[id] = newItem;
-
-        } else {
-            //item.updateParams(x, y...);
+        if (item != null) {
+            this.removeItemFromRoom(id);
         }
+        const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
+        this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
+        newItem.loadBase().then(containerGroup => {
+            this.room.engine.removeRoomItemContainerSet(id);
+            this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
+            this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
+        });
+        this.items[id] = newItem;
     }
 
     addWallItemToRoom(id: number, x: number, y: number, rot: Direction, state: number, baseId: number) {
