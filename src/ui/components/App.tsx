@@ -5,7 +5,7 @@ import RoomInfo from './roominfo/RoomInfo';
 import TopBar from './topbar/TopBar';
 import Header from './header/Header';
 import MainContent from './main/MainContent';
-import ItemInfo from './iteminfo/ItemInfo';
+import ItemInfoContainer from './iteminfo/ItemInfoContainer';
 
 class App extends Component {
     componentDidMount() {
@@ -19,7 +19,7 @@ class App extends Component {
                 <MainContent />
                 <TopBar />
                 <RoomInfo />
-                <ItemInfo />
+                <ItemInfoContainer />
                 <Footer />
             </>
         );

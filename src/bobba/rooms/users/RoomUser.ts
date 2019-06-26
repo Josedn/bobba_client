@@ -141,6 +141,7 @@ export default class RoomUser implements Selectable {
 
     handleClick = (id: number) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.id));
+        BobbaEnvironment.getGame().uiManager.onSelectUser(this.id, this.name, "I \uD83D\uDC96 bobba", this.avatarContainer.userInfoImage);
     }
 
     handleHover = (id: number) => {

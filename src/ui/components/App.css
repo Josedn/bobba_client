@@ -10,9 +10,6 @@ body {
     font-family: 'Ubuntu', sans-serif;
 }
 
-::selection {
-    background: inherit;
-}
 
 canvas {
     position: absolute;

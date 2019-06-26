@@ -6,11 +6,13 @@ export default class UIManager {
 
     onLoggedIn: () => void;
     onSelectFurni: FurniInfo;
+    onSelectUser: UserInfo;
 
     constructor(game: Game) {
         this.game = game;
         this.onLoggedIn = () => { };
         this.onSelectFurni = () => { };
+        this.onSelectUser = () => { };
     }
 
     doChat(chat: string) {
@@ -62,6 +64,13 @@ export default class UIManager {
         }
     }
 
+    doWave() {
+        const { currentRoom } = this.game;
+        if (currentRoom != null) {
+            currentRoom.wave();
+        }
+    }
+
     setLoggedInHandler(handler: () => void) {
         this.onLoggedIn = handler;
     }
@@ -69,6 +78,11 @@ export default class UIManager {
     setOnSelectFurni(handler: FurniInfo) {
         this.onSelectFurni = handler;
     }
+
+    setOnSelectUser(handler: UserInfo) {
+        this.onSelectUser = handler;
+    }
 }
 
 export type FurniInfo = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => void;
+export type UserInfo = (id: number, name: string, motto: string, image: HTMLCanvasElement) => void;

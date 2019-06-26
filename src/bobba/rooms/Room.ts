@@ -5,6 +5,7 @@ import RoomItemManager from "./items/RoomItemManager";
 import ChatManager from "./chats/ChatManager";
 import BobbaEnvironment from "../BobbaEnvironment";
 import RequestChat from "../communication/outgoing/rooms/RequestChat";
+import RequestWave from "../communication/outgoing/rooms/RequestWave";
 
 export default class Room {
     id: number;
@@ -28,6 +29,10 @@ export default class Room {
 
     chat(chat: string) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestChat(chat));
+    }
+
+    wave() {
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestWave());
     }
 
     tick(delta: number) {

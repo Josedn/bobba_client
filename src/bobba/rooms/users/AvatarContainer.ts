@@ -13,7 +13,8 @@ export default class AvatarContainer {
     headTextures: TextureDictionary;
     solidBodyTextures: TextureDictionary;
     solidHeadTextures: TextureDictionary;
-    headImage: HTMLImageElement;
+    headImage: HTMLCanvasElement;
+    userInfoImage: HTMLCanvasElement;
 
     constructor(look: string, isGhost?: boolean) {
         this.isGhost = isGhost !== undefined && isGhost;
@@ -23,7 +24,8 @@ export default class AvatarContainer {
         this.solidBodyTextures = {};
         this.solidHeadTextures = {};
         this.color = 0x000000;
-        this.headImage = new Image();
+        this.headImage = document.createElement('canvas');
+        this.userInfoImage = document.createElement('canvas');
     }
 
     initialize(): Promise<any> {
@@ -53,6 +55,7 @@ export default class AvatarContainer {
         }
 
         promises.push(this._loadChatHeadImage());
+        promises.push(this._loadUserInfoImage());
 
         this.color = avatarImager.getChatColor(this.look);
 
@@ -100,9 +103,16 @@ export default class AvatarContainer {
 
         return avatarImager.generateGeneric(new AvatarInfo(this.look, 2, 2, ["std"], "std", 0, true, false, "d"), this.isGhost)
             .then(canvas => {
-                const imgFoo = document.createElement('img');
-                imgFoo.src = canvas.toDataURL();
-                this.headImage = imgFoo;
+                this.headImage = canvas;
+            });
+    }
+
+    _loadUserInfoImage(): Promise<any> {
+        const { avatarImager } = BobbaEnvironment.getGame();
+
+        return avatarImager.generateGeneric(new AvatarInfo(this.look, 4, 4, ["std"], "std", 0, false, false, "n"), this.isGhost)
+            .then(canvas => {
+                this.userInfoImage = canvas;
             });
     }
 }

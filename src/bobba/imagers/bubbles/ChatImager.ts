@@ -65,7 +65,7 @@ export default class ChatImager {
         return this.chatStyles[0];
     }
 
-    generateChatBubble(id: number, username: string, message: string, color: number, headImage: HTMLImageElement): HTMLCanvasElement {
+    generateChatBubble(id: number, username: string, message: string, color: number, headImage: HTMLCanvasElement): HTMLCanvasElement {
         const style = this._getStyle(id);
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
