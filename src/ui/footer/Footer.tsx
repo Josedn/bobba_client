@@ -5,7 +5,9 @@ const MAX_CHAT_LENGTH = 95;
 const initialState = {
     chat: '',
 };
-type FooterProps = {};
+type FooterProps = {
+    headImage?: HTMLImageElement,
+};
 type FooterState = {
     chat: string,
 };
@@ -37,15 +39,28 @@ class Footer extends Component<FooterProps, FooterState> {
 
     handleInputChange = (event: SyntheticEvent) => {
         const target = event.target as HTMLInputElement;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        const value = target.value;
         this.setState({
-            [name]: value
-        } as FooterState);
+            chat: value,
+        });
     }
 
     render() {
         const { chat } = this.state;
+        const { headImage } = this.props;
+
+        let userface = (
+            <button>
+                <img src="images/bottom_bar/ghosthead.png" alt="Me" />
+            </button>
+        );
+        if (headImage !== undefined) {
+            userface = (
+                <button className="user_face">
+                    <img src={headImage.src} alt="Me" />
+                </button>
+            );
+        }
         return (
             <footer>
                 <div className="footer_container">
@@ -64,9 +79,7 @@ class Footer extends Component<FooterProps, FooterState> {
                         </button>
                     </div>
                     <div className="middle_section">
-                        <button>
-                            <img src="images/bottom_bar/ghosthead.png" alt="Me" />
-                        </button>
+                        {userface}
                         <form onSubmit={this.handleSubmit}>
                             <input type="text" ref={this.chatInput} maxLength={MAX_CHAT_LENGTH} name="chat" value={chat} autoComplete="off" placeholder="Click here to chat" onChange={this.handleInputChange} />
                             <button>

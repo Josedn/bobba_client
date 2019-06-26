@@ -14,10 +14,11 @@ export default class HandleRoomUsers implements IIncomingEvent {
             const rot = request.popInt();
             const name = request.popString();
             const look = request.popString();
+            const motto = request.popString();
 
             const room = BobbaEnvironment.getGame().currentRoom;
             if (room != null) {
-                room.roomUserManager.addUserToRoom(id, x, y, z, rot as Direction, name, look);
+                room.roomUserManager.addUserToRoom(id, x, y, z, rot as Direction, name, look, motto);
             }
         }
     }

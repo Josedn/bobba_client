@@ -22,10 +22,10 @@ export default class RoomUserManager {
         }
     }
 
-    addUserToRoom(id: number, x: number, y: number, z: number, rot: Direction, name: string, look: string) {
+    addUserToRoom(id: number, x: number, y: number, z: number, rot: Direction, name: string, look: string, motto: string) {
         const user = this.getUser(id);
         if (user == null) {
-            const newUser = new RoomUser(id, name, look, x, y, z, rot, this.room);
+            const newUser = new RoomUser(id, name, motto, look, x, y, z, rot, this.room);
             this.room.engine.addUserContainer(id, newUser.container, newUser.shadowSprite);
             this.room.engine.addSelectableContainer(newUser.colorId, [newUser.selectableContainer], newUser);
             this.users[id] = newUser;

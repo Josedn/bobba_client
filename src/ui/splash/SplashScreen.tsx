@@ -4,6 +4,7 @@ import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import AvatarInfo from '../../bobba/imagers/avatars/AvatarInfo';
 import GenericSplash from './GenericSplash';
 import Loading from './Loading';
+import { canvas2Image } from '../misc/GraphicsUtilities';
 
 const skins = [
     "hd-190-10.lg-3023-1408.ch-215-91.hr-893-45",
@@ -39,9 +40,7 @@ class SplashScreen extends Component<SplashScreenProps, SplashScreenState> {
 
         skins.forEach(skin => {
             avatarImager.generateGeneric(new AvatarInfo(skin, 4, 4, ["wlk"], "std", 2, false, false, "n"), false).then(canvas => {
-                const imgFoo = document.createElement('img');
-                imgFoo.src = canvas.toDataURL();
-                const looks = this.state.looks.concat({ figure: skin, image: imgFoo });
+                const looks = this.state.looks.concat({ figure: skin, image: canvas2Image(canvas) });
                 this.setState({
                     looks,
                 });

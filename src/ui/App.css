@@ -71,6 +71,15 @@ footer .middle_section {
     width: 50%;
     justify-content: center;
 }
+footer button.user_face {
+    padding: 0;
+}
+footer button.user_face img {
+    object-fit: none;
+    object-position: 42% 27%;
+    width: 40px;
+    height: 37px;
+}
 
 footer .right_section {
     display: flex;

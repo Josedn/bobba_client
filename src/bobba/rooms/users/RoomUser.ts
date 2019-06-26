@@ -17,6 +17,7 @@ export default class RoomUser implements Selectable {
     id: number;
     name: string;
     look: string;
+    motto: string;
 
     _x: number;
     _y: number;
@@ -53,10 +54,11 @@ export default class RoomUser implements Selectable {
 
     room: Room;
 
-    constructor(id: number, name: string, look: string, x: number, y: number, z: number, rot: Direction, room: Room) {
+    constructor(id: number, name: string, motto: string, look: string, x: number, y: number, z: number, rot: Direction, room: Room) {
         this.id = id;
         this.name = name;
         this.look = look;
+        this.motto = motto;
 
         this._x = x;
         this._y = y;
@@ -141,7 +143,7 @@ export default class RoomUser implements Selectable {
 
     handleClick = (id: number) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.id));
-        BobbaEnvironment.getGame().uiManager.onSelectUser(this.id, this.name, "I \uD83D\uDC96 bobba", this.avatarContainer.userInfoImage);
+        BobbaEnvironment.getGame().uiManager.onSelectUser(this.id, this.name, this.motto, this.look, this.avatarContainer.userInfoImage);
     }
 
     handleHover = (id: number) => {

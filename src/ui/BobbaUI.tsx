@@ -9,6 +9,22 @@ import ItemInfoContainer from './iteminfo/ItemInfoContainer';
 import BobbaEnvironment from '../bobba/BobbaEnvironment';
 import Loading from './splash/Loading';
 import ErrorSplash from './splash/ErrorSplash';
+import AvatarInfo from '../bobba/imagers/avatars/AvatarInfo';
+import { canvas2Image } from './misc/GraphicsUtilities';
+
+type UserData = {
+    id: number,
+    name: string,
+    motto: string,
+    look: string,
+    image?: HTMLImageElement,
+};
+const initialUserData = {
+    id: -1,
+    name: '',
+    motto: '',
+    look: '',
+};
 
 type BobbaUIProps = {};
 type BobbaUIState = {
@@ -16,12 +32,14 @@ type BobbaUIState = {
     loggedIn: boolean,
     error: string,
     loadingInfo: string,
+    userData: UserData,
 };
 const initialState = {
     gameLoaded: false,
     loggedIn: false,
     error: '',
     loadingInfo: '',
+    userData: initialUserData,
 };
 class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     constructor(props: BobbaUIProps) {
@@ -50,17 +68,22 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             });
         });
 
-        game.uiManager.setLoggedInHandler(() => {
-            this.setState({
-                loggedIn: true,
+        game.uiManager.setLoggedInHandler((id: number, name: string, motto: string, look: string) => {
+            game.avatarImager.generateGeneric(new AvatarInfo(look, 2, 2, ["std"], "std", 0, true, false, "n"), false).then(canvas => {
+                this.setState({
+                    loggedIn: true,
+                    userData: {
+                        id, name, look, motto, image: canvas2Image(canvas),
+                    }
+                });
             });
         });
-        
+
     }
 
     render() {
 
-        const { gameLoaded, error, loggedIn, loadingInfo } = this.state;
+        const { gameLoaded, error, loggedIn, loadingInfo, userData } = this.state;
 
         let mainPage = <></>;
         if (error !== '') {
@@ -78,7 +101,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <TopBar />
                 <RoomInfo />
                 <ItemInfoContainer />
-                <Footer />
+                <Footer headImage={userData.image} />
             </>
         );
     }

@@ -4,6 +4,11 @@ import BobbaEnvironment from "../../../BobbaEnvironment";
 
 export default class LoginOk implements IIncomingEvent {
     handle(request: ServerMessage) {
-        BobbaEnvironment.getGame().handleLoggedIn();
+
+        const id = request.popInt();
+        const name = request.popString();
+        const look = request.popString();
+        const motto = request.popString();
+        BobbaEnvironment.getGame().handleLoggedIn(id, name, look, motto);
     }
 }

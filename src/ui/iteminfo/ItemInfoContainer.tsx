@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import FurniInfo, { FurniInfoProps } from './FurniInfo';
 import UserInfo, { UserInfoProps } from './UserInfo';
+import { canvas2Image } from '../misc/GraphicsUtilities';
 enum Showing {
     USER, FURNI, NONE
 }
@@ -42,28 +43,24 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
 
     componentDidMount() {
         BobbaEnvironment.getGame().uiManager.onSelectFurni = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => {
-            const imgFoo = document.createElement('img');
-            imgFoo.src = image.toDataURL();
             this.setState({
                 furniProps: {
                     itemId: id,
                     name,
                     description,
-                    image: imgFoo
+                    image: canvas2Image(image),
                 },
                 showing: Showing.FURNI
             });
         };
 
-        BobbaEnvironment.getGame().uiManager.onSelectUser = (id: number, name: string, motto: string, image: HTMLCanvasElement) => {
-            const imgFoo = document.createElement('img');
-            imgFoo.src = image.toDataURL();
+        BobbaEnvironment.getGame().uiManager.onSelectUser = (id: number, name: string, motto: string, look: string, image: HTMLCanvasElement) => {
             this.setState({
                 userProps: {
                     userId: id,
                     name,
                     motto,
-                    image: imgFoo
+                    image: canvas2Image(image),
                 },
                 showing: Showing.USER
             });

@@ -65,9 +65,9 @@ export default class Game {
         });
     }
 
-    handleLoggedIn() {
+    handleLoggedIn(id: number, name: string, look: string, motto: string) {
         BobbaEnvironment.getGame().uiManager.log("Logged in!");
-        this.uiManager.onLoggedIn();
+        this.uiManager.onLoggedIn(id, name, motto, look);
         this.communicationManager.sendMessage(new RequestMap());
     }
 
