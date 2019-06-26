@@ -7,7 +7,7 @@ import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurn
 import { ItemType } from "../../imagers/furniture/FurniImager";
 import { Selectable } from "../RoomEngine";
 
-const FRAME_SPEED = 100;
+const FRAME_SPEED = 80;
 
 export default abstract class RoomItem implements Selectable {
     id: number;
@@ -15,6 +15,7 @@ export default abstract class RoomItem implements Selectable {
     _y: number;
     _z: number;
     _state: number;
+    _nextState: number;
     rot: Direction;
     _frame: number;
     _frameCounter: number;
@@ -36,6 +37,7 @@ export default abstract class RoomItem implements Selectable {
         this._y = y;
         this._z = z;
         this._state = state;
+        this._nextState = -1;
         this.rot = rot;
         this.baseId = baseId;
         this.baseItem = null;
@@ -67,11 +69,31 @@ export default abstract class RoomItem implements Selectable {
 
     _nextPrivateFrame() {
         this._frame++;
+        if (this._nextState !== -1 && this.baseItem != null) {
+            if (this._frame >= parseInt(this.baseItem.furniBase.states[this._state].count)) {
+                this._actuallySetState(this._nextState);
+            }
+        }
+
         this.updateTextures();
     }
 
     setState(state: number) {
+        if (this.baseItem != null && this.baseItem.furniBase.states[state] != null) {
+            if (this.baseItem.furniBase.states[state].transition != null) {
+                this._state = parseInt(this.baseItem.furniBase.states[state].transition);
+                this._frame = 0;
+                this._nextState = state;
+            } else {
+                this._actuallySetState(state);
+            }
+        }
+    }
+
+
+    _actuallySetState(state: number) {
         this._state = state;
+        this._nextState = -1;
         this._frame = 0;
         this.updateTextures(); // ??????????????
     }
