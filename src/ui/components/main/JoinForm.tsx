@@ -3,7 +3,7 @@ import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
 import { connect } from 'react-redux';
 import { logIn } from '../../actions';
 import { Dispatch } from 'redux';
-
+const MAX_NAME_LENGTH = 20;
 export interface LookGroup {
     figure: string,
     image: HTMLImageElement,
@@ -48,7 +48,7 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
         const { dispatch } = this.props;
         event.preventDefault();
 
-        if (username.length > 0) {
+        if (username.length > 0 || username.length > MAX_NAME_LENGTH) {
             BobbaEnvironment.getGame().uiManager.doLogin(username, look);
             BobbaEnvironment.getGame().uiManager.setLoggedInHandler(() => {
                 dispatch(logIn());
@@ -100,7 +100,7 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
         const button = queuedLogin ? <button disabled>Loading...</button> : <button>Join</button>
         return (
             <form onSubmit={this.handleSubmit}>
-                <input type="text" autoComplete="off" className={classname} placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
+                <input type="text" autoComplete="off" maxLength={MAX_NAME_LENGTH} className={classname} placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
                 <br /><br />
                 <div className="looks">
                     {this.getLooks()}

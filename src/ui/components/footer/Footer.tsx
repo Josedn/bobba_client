@@ -1,6 +1,7 @@
 import React, { Component, SyntheticEvent, RefObject } from 'react';
 import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
 import { connect } from 'react-redux';
+const MAX_CHAT_LENGTH = 95;
 const initialState = {
     chat: '',
 };
@@ -34,7 +35,7 @@ class Footer extends Component<FooterProps, FooterState> {
         const { chat } = this.state;
         event.preventDefault();
 
-        if (chat.length > 0) {
+        if (chat.length > 0 && chat.length <= MAX_CHAT_LENGTH) {
             BobbaEnvironment.getGame().uiManager.doChat(chat);
         }
 
@@ -74,7 +75,7 @@ class Footer extends Component<FooterProps, FooterState> {
                             <img src="images/bottom_bar/ghosthead.png" alt="Me" />
                         </button>
                         <form onSubmit={this.handleSubmit}>
-                            <input type="text" ref={this.chatInput} name="chat" value={chat} autoComplete="off" placeholder="Click here to chat" onChange={this.handleInputChange} />
+                            <input type="text" ref={this.chatInput} maxLength={MAX_CHAT_LENGTH} name="chat" value={chat} autoComplete="off" placeholder="Click here to chat" onChange={this.handleInputChange} />
                             <button>
                                 <img src="images/bottom_bar/chat_styles.png" alt="Chat styles" />
                             </button>
