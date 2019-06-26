@@ -7,6 +7,7 @@ export type FurniInfoProps = {
     description: string,
     itemId: number,
     image?: HTMLImageElement,
+    onClose?: () => void,
 };
 
 class FurniInfo extends Component<FurniInfoProps> {
@@ -40,7 +41,7 @@ class FurniInfo extends Component<FurniInfoProps> {
     }
 
     render() {
-        const { name, description, image } = this.props;
+        const { name, description, image, onClose } = this.props;
         let src = FLOOR_ITEM_PLACEHOLDER;
         if (image != null && image.src != null) {
             src = image.src;
@@ -48,6 +49,9 @@ class FurniInfo extends Component<FurniInfoProps> {
         return (
             <>
                 <div className="item_info">
+                    <button className="close" onClick={onClose}>
+                        X
+                    </button>
                     <h2 className="title">{name}</h2>
                     <hr />
                     <div className="image_container">

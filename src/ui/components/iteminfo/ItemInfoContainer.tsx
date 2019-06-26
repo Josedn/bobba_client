@@ -34,6 +34,12 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         this.state = initialState;
     }
 
+    close = () => {
+        this.setState({
+            showing: Showing.NONE,
+        });
+    }
+
     componentDidMount() {
         BobbaEnvironment.getGame().uiManager.onSelectFurni = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => {
             const imgFoo = document.createElement('img');
@@ -70,11 +76,11 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
 
         if (showing === Showing.FURNI) {
             return (
-                <FurniInfo {...furniProps} />
+                <FurniInfo {...furniProps} onClose={this.close} />
             );
         } else if (showing === Showing.USER) {
             return (
-                <UserInfo {...userProps} />
+                <UserInfo {...userProps} onClose={this.close} />
             )
         }
         return (

@@ -10,7 +10,6 @@ body {
     font-family: 'Ubuntu', sans-serif;
 }
 
-
 canvas {
     position: absolute;
     width: 100%;
@@ -196,6 +195,24 @@ button.bar_content:hover {
     bottom: 70px;
     right: 20px;
     display: flex;
+}
+
+.item_info button.close {
+    position: absolute;
+    font: inherit;
+    top: 8px;
+    right: 10px;
+    font-size: 0.5em;
+    color: #eeeeee;
+    min-width: 20px;
+    height: 20px;
+    background-color: #282729;
+    border: none;
+    border-top: 1px solid #444444;
+    border-bottom: 1px solid #000000;
+}
+.item_info button.close:hover {
+    background-color: #383739;
 }
 
 .item_info_button_container button {

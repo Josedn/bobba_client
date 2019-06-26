@@ -7,6 +7,7 @@ export type UserInfoProps = {
     motto: string,
     userId: number,
     image?: HTMLImageElement,
+    onClose?: () => void,
 };
 
 class UserInfo extends Component<UserInfoProps> {
@@ -27,6 +28,9 @@ class UserInfo extends Component<UserInfoProps> {
         return (
             <>
                 <div className="item_info">
+                    <button className="close">
+                        X
+                    </button>
                     <h2 className="title">{name}</h2>
                     <hr />
                     <div className="image_container">
