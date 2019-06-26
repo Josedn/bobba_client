@@ -20,7 +20,7 @@ class UserInfo extends Component<UserInfoProps> {
     }
 
     render() {
-        const { name, motto, image } = this.props;
+        const { name, motto, image, onClose } = this.props;
         let src = FLOOR_ITEM_PLACEHOLDER;
         if (image != null && image.src != null) {
             src = image.src;
@@ -28,7 +28,7 @@ class UserInfo extends Component<UserInfoProps> {
         return (
             <>
                 <div className="item_info">
-                    <button className="close">
+                    <button className="close" onClick={onClose}>
                         X
                     </button>
                     <h2 className="title">{name}</h2>
