@@ -202,11 +202,16 @@ export default class RoomEngine {
 
     handleMouseMovement = (mouseX: number, mouseY: number, isDrag: boolean) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
-        const selectable = this.getSelectableItem(mouseX, mouseY);
+        const colorId = this.getSelectableColorId(mouseX, mouseY);
+        let selectable = null;
+        if (colorId !== -1) {
+            selectable = this.selectableItems[colorId];
 
-        if (selectable != null) {
-            selectable.handleHover(0);
+            if (selectable != null) {
+                selectable.handleHover(colorId);
+            }
         }
+
         if (isDrag) {
             const diffX = Math.round(this.lastMousePositionX - mouseX);
             const diffY = Math.round(this.lastMousePositionY - mouseY);
@@ -220,7 +225,7 @@ export default class RoomEngine {
         this.updateSelectedTile(x, y)
     }
 
-    getSelectableItem(mouseX: number, mouseY: number): Selectable | null {
+    getSelectableColorId(mouseX: number, mouseY: number): number {
         const pixels = BobbaEnvironment.getGame().engine.logicPixiApp.renderer.extract.pixels(this.getLogicStage());
 
         const bounds = this.getLogicStage().getBounds();
@@ -229,18 +234,21 @@ export default class RoomEngine {
         const pos = (stageY * bounds.width + stageX) * 4;
         if (stageX >= 0 && stageY >= 0 && stageX <= bounds.width && stageY <= bounds.height) {
             const colorId = rgb2int(pixels[pos], pixels[pos + 1], pixels[pos + 2]);
-            return this.selectableItems[colorId];
+            return colorId;
         }
-
-        return null;
+        return -1;
     }
 
     handleMouseClick = (mouseX: number, mouseY: number): Selectable | null => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
-        const selectable = this.getSelectableItem(mouseX, mouseY);
+        const colorId = this.getSelectableColorId(mouseX, mouseY);
+        let selectable = null;
+        if (colorId !== -1) {
+            selectable = this.selectableItems[colorId];
 
-        if (selectable != null) {
-            selectable.handleClick(0);
+            if (selectable != null) {
+                selectable.handleClick(colorId);
+            }
         }
 
         if (this.room.model.isValidTile(x, y)) {
@@ -264,22 +272,21 @@ export default class RoomEngine {
         const newSelectedItem = this.handleMouseClick(mouseX, mouseY);
 
         if (newSelectedItem === this.currentSelectedItem) {
-            this.handleMouseDoubleClick(mouseX, mouseY, newSelectedItem);
+            this.handleMouseDoubleClick(mouseX, mouseY);
         }
         this.currentSelectedItem = newSelectedItem;
     }
 
-    handleMouseDoubleClick = (mouseX: number, mouseY: number, selectable?: Selectable | null) => {
+    handleMouseDoubleClick = (mouseX: number, mouseY: number) => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
-        const model = this.room.model;
-
-        if (selectable === undefined) {
-            selectable = this.getSelectableItem(mouseX, mouseY);
-        }
-
-        if (selectable != null) {
-            selectable.handleDoubleClick(0);
-        } else if (!model.isValidTile(x, y)) {
+        const colorId = this.getSelectableColorId(mouseX, mouseY);
+        let selectable = null;
+        if (colorId !== -1) {
+            selectable = this.selectableItems[colorId];
+            if (selectable != null) {
+                selectable.handleDoubleClick(colorId);
+            }
+        } else if (!this.room.model.isValidTile(x, y)) {
             this.centerCamera();
         }
     }
