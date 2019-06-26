@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import FurniInfo, { FurniInfoProps } from './FurniInfo';
 import UserInfo, { UserInfoProps } from './UserInfo';
 enum Showing {

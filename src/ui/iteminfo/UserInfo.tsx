@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
-import { FLOOR_ITEM_PLACEHOLDER } from '../../../bobba/graphics/GenericSprites';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
+import { FLOOR_ITEM_PLACEHOLDER } from '../../bobba/graphics/GenericSprites';
 
 export type UserInfoProps = {
     name: string,

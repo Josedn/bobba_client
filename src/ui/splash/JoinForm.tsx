@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 
 const MAX_NAME_LENGTH = 20;
 export interface LookGroup {

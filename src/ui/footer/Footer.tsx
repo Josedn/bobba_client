@@ -1,5 +1,5 @@
 import React, { Component, SyntheticEvent, RefObject } from 'react';
-import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 
 const MAX_CHAT_LENGTH = 95;
 const initialState = {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import JoinForm, { LookGroup } from './JoinForm';
-import BobbaEnvironment from '../../../bobba/BobbaEnvironment';
-import AvatarInfo from '../../../bobba/imagers/avatars/AvatarInfo';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
+import AvatarInfo from '../../bobba/imagers/avatars/AvatarInfo';
 import GenericSplash from './GenericSplash';
 import Loading from './Loading';
 

@@ -6,12 +6,12 @@ import TopBar from './topbar/TopBar';
 import Header from './header/Header';
 import SplashScreen from './splash/SplashScreen';
 import ItemInfoContainer from './iteminfo/ItemInfoContainer';
-import BobbaEnvironment from '../../bobba/BobbaEnvironment';
+import BobbaEnvironment from '../bobba/BobbaEnvironment';
 import Loading from './splash/Loading';
 import ErrorSplash from './splash/ErrorSplash';
 
-type AppProps = {};
-type AppState = {
+type BobbaUIProps = {};
+type BobbaUIState = {
     gameLoaded: boolean,
     loggedIn: boolean,
     error: string,
@@ -23,8 +23,8 @@ const initialState = {
     error: '',
     loadingInfo: '',
 };
-class App extends Component<AppProps, AppState> {
-    constructor(props: AppProps) {
+class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
+    constructor(props: BobbaUIProps) {
         super(props);
         this.state = initialState;
     }
@@ -84,4 +84,4 @@ class App extends Component<AppProps, AppState> {
     }
 }
 
-export default App;
+export default BobbaUI;
