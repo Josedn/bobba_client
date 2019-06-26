@@ -246,6 +246,8 @@ export default class RoomEngine {
         if (this.room.model.isValidTile(x, y)) {
             BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMovement(x, y));
         }
+
+        BobbaEnvironment.getGame().uiManager.onFocusChat();
         return selectable;
     }
 

@@ -81,6 +81,11 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
 
     }
 
+    updateChatFocuser = (handler: () => void) => {
+        const game = BobbaEnvironment.getGame();
+        game.uiManager.setOnFocusChatHandler(handler);
+    }
+
     render() {
 
         const { gameLoaded, error, loggedIn, loadingInfo, userData } = this.state;
@@ -101,7 +106,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <TopBar />
                 <RoomInfo />
                 <ItemInfoContainer currentUserId={userData.id} />
-                <Footer headImage={userData.image} />
+                <Footer focuser={this.updateChatFocuser} headImage={userData.image} />
             </>
         );
     }

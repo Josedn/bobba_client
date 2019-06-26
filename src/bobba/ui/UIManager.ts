@@ -9,6 +9,7 @@ export default class UIManager {
     onSelectFurni: FurniInfo;
     onSelectUser: UserInfo;
     onLoadPost: (text: string) => void;
+    onFocusChat: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -16,6 +17,7 @@ export default class UIManager {
         this.onSelectFurni = () => { };
         this.onSelectUser = () => { };
         this.onLoadPost = () => { };
+        this.onFocusChat = () => { };
     }
 
     log(text: string) {
@@ -97,6 +99,10 @@ export default class UIManager {
 
     setOnLoadHandler(handler: (text: string) => void) {
         this.onLoadPost = handler;
+    }
+
+    setOnFocusChatHandler(handler: () => void) {
+        this.onFocusChat = handler;
     }
 }
 

@@ -7,6 +7,7 @@ const initialState = {
 };
 type FooterProps = {
     headImage?: HTMLImageElement,
+    focuser: (handler: () => void) => void;
 };
 type FooterState = {
     chat: string,
@@ -20,7 +21,11 @@ class Footer extends Component<FooterProps, FooterState> {
         this.chatInput = React.createRef();
     }
 
-    focusChatInput = (event: Event) => {
+    componentDidMount() {
+        this.props.focuser(this.focusChatInput);
+    }
+
+    focusChatInput = () => {
         if (this.chatInput.current != null) {
             this.chatInput.current.focus();
         }
