@@ -7,6 +7,7 @@ export type UserInfoProps = {
     motto: string,
     userId: number,
     image?: HTMLImageElement,
+    isMe: boolean,
     onClose?: () => void,
 };
 
@@ -20,14 +21,28 @@ class UserInfo extends Component<UserInfoProps> {
     }
 
     render() {
-        const { name, motto, image, onClose } = this.props;
+        const { name, motto, image, onClose, isMe } = this.props;
         let src = FLOOR_ITEM_PLACEHOLDER;
         if (image != null && image.src != null) {
             src = image.src;
         }
+        let className = "item_info no_buttons";
+        let buttons = (
+            <></>
+        );
+
+        if (isMe) {
+            buttons = (
+                <button onClick={this.wave}>
+                    Wave
+                </button>
+            );
+            className = "item_info";
+        }
+
         return (
             <>
-                <div className="item_info">
+                <div className={className}>
                     <button className="close" onClick={onClose}>
                         X
                     </button>
@@ -42,9 +57,7 @@ class UserInfo extends Component<UserInfoProps> {
                     </p>
                 </div >
                 <div className="item_info_button_container">
-                    <button onClick={this.wave}>
-                        Wave
-                    </button>
+                    {buttons}
                 </div>
             </>
         );

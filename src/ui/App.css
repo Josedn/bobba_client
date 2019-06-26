@@ -171,6 +171,9 @@ button.bar_content:hover {
     box-sizing: border-box;
     color: #eeeeee;
 }
+.item_info.no_buttons {
+    bottom: 70px;
+}
 
 .item_info .title {
     font: inherit;

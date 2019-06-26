@@ -100,7 +100,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 {mainPage}
                 <TopBar />
                 <RoomInfo />
-                <ItemInfoContainer />
+                <ItemInfoContainer currentUserId={userData.id} />
                 <Footer headImage={userData.image} />
             </>
         );

@@ -6,7 +6,9 @@ import { canvas2Image } from '../misc/GraphicsUtilities';
 enum Showing {
     USER, FURNI, NONE
 }
-type ItemInfoContainerProps = {};
+type ItemInfoContainerProps = {
+    currentUserId: number,
+};
 type ItemInfoContainerState = {
     showing: Showing,
     furniProps: FurniInfoProps,
@@ -23,6 +25,7 @@ const initialUserProps = {
     name: '',
     motto: '',
     userId: -1,
+    isMe: false,
 };
 const initialState: ItemInfoContainerState = {
     showing: Showing.FURNI,
@@ -41,7 +44,8 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         });
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
+        const { currentUserId } = this.props;
         BobbaEnvironment.getGame().uiManager.onSelectFurni = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => {
             this.setState({
                 furniProps: {
@@ -61,6 +65,7 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
                     name,
                     motto,
                     image: canvas2Image(image),
+                    isMe: id === currentUserId,
                 },
                 showing: Showing.USER
             });
