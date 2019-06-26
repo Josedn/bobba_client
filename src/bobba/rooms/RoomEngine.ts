@@ -342,7 +342,7 @@ export const calculateZIndex = (x: number, y: number, z: number, priority: numbe
 };
 
 const _calculateZIndexUser = (x: number, y: number, z: number, priority: number): number => {
-    return calculateZIndex(x, y, z + 0.001, priority);
+    return calculateZIndex(Math.floor(x), Math.floor(y), z + 0.001, priority);
 };
 
 export const calculateZIndexFloorItem = (x: number, y: number, z: number, zIndex: number, layerId: number): number => {
