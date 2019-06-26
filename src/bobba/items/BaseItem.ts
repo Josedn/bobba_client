@@ -3,21 +3,35 @@ import { Texture } from "pixi.js";
 import BobbaEnvironment from "../BobbaEnvironment";
 import { TextureDictionary } from "../graphics/MainEngine";
 import { generateSilhouette } from "../imagers/misc/Silhouettes";
+import { Direction } from "../imagers/furniture/FurniImager";
 
 export default class BaseItem {
     furniBase: FurniBase;
     textures: TextureDictionary;
     solidTextures: TextureDictionary;
+    infoImage: HTMLCanvasElement;
 
     constructor(furniBase: FurniBase) {
         this.furniBase = furniBase;
         this.textures = {};
         this.solidTextures = {};
-
+        
         for (let assetId in this.furniBase.assets) {
             const asset = this.furniBase.assets[assetId];
             this._loadTexture(asset.image, assetId);
         }
+
+        this.infoImage = this.furniBase.draw(this._getBestDirection(this.furniBase.getAvailableDirections()), 0, 0);
+    }
+
+    _getBestDirection(directions: Direction[]): Direction {
+        if (directions.includes(4)) {
+            return 4;
+        }
+        if (directions.includes(2)) {
+            return 2;
+        }
+        return directions[0];
     }
 
     getTexture(key: string): Texture | null {

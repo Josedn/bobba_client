@@ -204,11 +204,13 @@ export default abstract class RoomItem implements Selectable {
     abstract getItemType(): ItemType;
 
     handleClick = (id: number) => {
-        
+        if (this.baseItem != null) {
+            BobbaEnvironment.getGame().uiManager.onSelectFurni(this.id, this.baseId, this.baseItem.furniBase.itemData.name, this.baseItem.furniBase.itemData.description, this.baseItem.infoImage);
+        }
     }
 
     handleHover(id: number): void {
-        
+
     }
 
     handleDoubleClick(id: number) {

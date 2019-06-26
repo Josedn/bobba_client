@@ -68,7 +68,7 @@ export default class Game {
 
     handleLoggedIn() {
         BobbaEnvironment.log("Logged in!");
-        this.uiManager.onLoggedInHandler();
+        this.uiManager.onLoggedIn();
         this.communicationManager.sendMessage(new RequestMap());
     }
 

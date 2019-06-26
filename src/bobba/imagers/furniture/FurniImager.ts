@@ -27,20 +27,21 @@ export default class FurniImager {
         return null;
     }
 
-    findItemNameById(type: ItemType, itemId: number): string | null {
+    findItemById(type: ItemType, itemId: number): string | null {
         if (this.furnidata[type + 'types'][itemId] != null) {
-            return this.furnidata[type + 'types'][itemId].classname;
+            return this.furnidata[type + 'types'][itemId];
         }
         return null;
     }
 
     loadItemBase(type: ItemType, itemId: number, size: Size): Promise<FurniBase> {
-        const rawItemName = this.findItemNameById(type, itemId);
-        if (rawItemName == null) {
+        const rawItem = this.findItemById(type, itemId) as any;
+        if (rawItem == null) {
             return new Promise((resolve, reject) => {
                 reject('invalid itemId ' + itemId);
             });
         }
+        const rawItemName = rawItem.classname;
 
         const { itemName } = splitItemNameAndColor(rawItemName);
 
@@ -48,7 +49,7 @@ export default class FurniImager {
             return this.bases[type][itemId].promise;
         }
 
-        this.bases[type][itemId] = new FurniBase(itemId, rawItemName, size);
+        this.bases[type][itemId] = new FurniBase(itemId, rawItem, size);
 
         if (this.offsets[itemName] == null) {
             this.offsets[itemName] = { promise: this._fetchOffsetAsync(itemName), data: {} };

@@ -5,12 +5,13 @@ import RoomInfo from './roominfo/RoomInfo';
 import TopBar from './topbar/TopBar';
 import Header from './header/Header';
 import MainContent from './main/MainContent';
+import ItemInfo from './iteminfo/ItemInfo';
 
 class App extends Component {
     componentDidMount() {
 
     }
-    
+
     render() {
         return (
             <>
@@ -18,6 +19,7 @@ class App extends Component {
                 <MainContent />
                 <TopBar />
                 <RoomInfo />
+                <ItemInfo />
                 <Footer />
             </>
         );
