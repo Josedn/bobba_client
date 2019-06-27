@@ -4,16 +4,21 @@ import { LoaderResource } from 'pixi.js';
 export default class MainEngine {
     pixiApp: PIXI.Application;
     logicPixiApp: PIXI.Application;
-    onResizeHandler: Function;
-    onMouseMoveHandler: Function;
-    onTouchStartHandler: Function;
-    onTouchMoveHandler: Function;
-    onMouseClickHandler: Function;
-    onMouseDoubleClickHandler: Function;
+    onResizeHandler: () => void;
+    onMouseMoveHandler: (mouseX: number, mouseY: number, isDrag: boolean) => void;
+    onTouchStartHandler: (mouseX: number, mouseY: number) => void;
+    onTouchMoveHandler: (mouseX: number, mouseY: number) => void;
+    onMouseClickHandler: (mouseX: number, mouseY: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean) => void;
+    onMouseDoubleClickHandler: (mouseX: number, mouseY: number) => void;
     isMouseDragging: boolean;
     globalTextures: TextureDictionary;
 
-    constructor(gameLoop: Function, onResize: Function, onMouseMove: Function, onTouchStart: Function, onTouchMove: Function, onMouseClick: Function, onMouseDoubleClick: Function) {
+    constructor(gameLoop: Function, onResize: () => void,
+        onMouseMove: (mouseX: number, mouseY: number, isDrag: boolean) => void,
+        onTouchStart: (mouseX: number, mouseY: number) => void,
+        onTouchMove: (mouseX: number, mouseY: number) => void,
+        onMouseClick: (mouseX: number, mouseY: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean) => void,
+        onMouseDoubleClick: (mouseX: number, mouseY: number) => void) {
         this.isMouseDragging = false;
         this.onResizeHandler = onResize;
         this.onMouseMoveHandler = onMouseMove;
@@ -107,7 +112,7 @@ export default class MainEngine {
             this.onMouseMoveHandler(evt.x, evt.y, this.isMouseDragging);
         }, false);
         this.pixiApp.view.addEventListener('click', (evt) => {
-            this.onMouseClickHandler(evt.x, evt.y);
+            this.onMouseClickHandler(evt.x, evt.y, evt.shiftKey, evt.ctrlKey, evt.altKey);
         }, false);
         this.pixiApp.view.addEventListener('dblclick', (evt) => {
             this.onMouseDoubleClickHandler(evt.x, evt.y);

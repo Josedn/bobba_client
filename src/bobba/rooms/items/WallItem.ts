@@ -38,4 +38,19 @@ export default class WallItem extends RoomItem {
     getItemType(): ItemType {
         return 'wallitem';
     }
+
+    rotate() {
+
+    }
+
+    updatePosition(screenX: number, screenY: number, rot: Direction, notifyServer: boolean) {
+        this._x = screenX;
+        this._y = screenY;
+        this.rot = rot;
+        this.updateSpritePosition();
+        this.updateTextures();
+        if (notifyServer) {
+            //BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.rot));
+        }
+    }
 }

@@ -19,20 +19,6 @@ export default class FloorItem extends RoomItem {
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
-        this.setContainerPosition(x, y);
-    }
-
-    updatePosition(tileX: number, tileY: number, tileZ: number, notifyServer: boolean) {
-        this._x = tileX;
-        this._y = tileY;
-        this._z = tileZ;
-        this.updateSpritePosition();
-        if (notifyServer) {
-            BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.rot));
-        }
-    }
-
-    setContainerPosition(x: number, y: number) {
         for (let container of this.containers) {
             container.x = x + DRAWING_OFFSET_X;
             container.y = y + DRAWING_OFFSET_Y;
@@ -42,7 +28,17 @@ export default class FloorItem extends RoomItem {
             container.x = x + DRAWING_OFFSET_X;
             container.y = y + DRAWING_OFFSET_Y;
         }
+    }
+
+    updatePosition(tileX: number, tileY: number, tileZ: number, notifyServer: boolean) {
+        this._x = tileX;
+        this._y = tileY;
+        this._z = tileZ;
+        this.updateSpritePosition();
         this.updateTextures();
+        if (notifyServer) {
+            BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.rot));
+        }
     }
 
     calculateZIndex(zIndex: number, layerIndex: number): number {
@@ -51,6 +47,12 @@ export default class FloorItem extends RoomItem {
 
     getItemType(): ItemType {
         return 'roomitem';
+    }
+
+    rotate() {
+        if (this.baseItem != null) {
+            BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.baseItem.calculateNextDirection(this.rot)));
+        }
     }
 }
 

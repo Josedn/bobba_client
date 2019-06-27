@@ -6,6 +6,7 @@ import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
 import { ItemType } from "../../imagers/furniture/FurniImager";
 import { Selectable } from "../RoomEngine";
+import RequestFurniPickUp from "../../communication/outgoing/rooms/RequestFurniPickUp";
 
 const FRAME_SPEED = 80;
 
@@ -232,6 +233,8 @@ export default abstract class RoomItem implements Selectable {
         }
     }
 
+    abstract rotate(): void;
+
     abstract calculateZIndex(zIndex: number, layerIndex: number): number;
 
     abstract updateSpritePosition(): void;
@@ -250,6 +253,10 @@ export default abstract class RoomItem implements Selectable {
 
     handleDoubleClick(id: number) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniInteract(this.id));
+    }
+
+    pickUp() {
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniPickUp(this.id));
     }
 }
 

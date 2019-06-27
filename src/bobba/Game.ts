@@ -107,9 +107,9 @@ export default class Game {
         }
     }
 
-    onMouseClick = (x: number, y: number) => {
+    onMouseClick = (x: number, y: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean) => {
         if (this.currentRoom != null) {
-            this.currentRoom.engine.handleMouseClick(x, y);
+            this.currentRoom.engine.handleMouseClick(x, y, shiftKey, ctrlKey, altKey);
         }
     }
 

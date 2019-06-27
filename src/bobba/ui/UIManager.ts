@@ -1,7 +1,6 @@
 import Game from "../Game";
 import Login from "../communication/outgoing/generic/Login";
 import User from "../users/User";
-import RequestFurniMove from "../communication/outgoing/rooms/RequestFurniMove";
 
 export default class UIManager {
     game: Game;
@@ -58,7 +57,7 @@ export default class UIManager {
         if (currentRoom != null) {
             const item = currentRoom.roomItemManager.getItem(itemId);
             if (item != null) {
-                //item.handleDoubleClick(0);
+                item.pickUp();
             }
         }
     }
@@ -66,8 +65,8 @@ export default class UIManager {
         const { currentRoom } = this.game;
         if (currentRoom != null) {
             const item = currentRoom.roomItemManager.getItem(itemId);
-            if (item != null && item.baseItem != null) {
-                this.game.communicationManager.sendMessage(new RequestFurniMove(item.id, item._x, item._y, item.baseItem.calculateNextDirection(item.rot)));
+            if (item != null) {
+                item.rotate();
             }
         }
     }
