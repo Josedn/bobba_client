@@ -25,7 +25,6 @@ export default class FurniBase {
         const visualization = this.offset.visualization[this.size];
         const rawDirections = visualization.directions;
         for (let rawDirection in rawDirections) {
-            console.log(rawDirection); /////////////TODO: CHECK THIS
             directions.push(parseInt(rawDirection) as Direction);
         }
         return directions;

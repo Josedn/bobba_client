@@ -1,7 +1,6 @@
 import Game from "../Game";
 import Login from "../communication/outgoing/generic/Login";
 import User from "../users/User";
-import RequestFurniRotate from "../communication/outgoing/rooms/RequestFurniMove";
 import RequestFurniMove from "../communication/outgoing/rooms/RequestFurniMove";
 
 export default class UIManager {
@@ -75,10 +74,7 @@ export default class UIManager {
     doFurniMove(itemId: number) {
         const { currentRoom } = this.game;
         if (currentRoom != null) {
-            const item = currentRoom.roomItemManager.getItem(itemId);
-            if (item != null) {
-                //item.handleDoubleClick(0);
-            }
+            currentRoom.roomItemManager.startFloorItemMovement(itemId);
         }
     }
 

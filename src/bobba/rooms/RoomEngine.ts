@@ -4,6 +4,7 @@ import BobbaEnvironment from "../BobbaEnvironment";
 import MainEngine from "../graphics/MainEngine";
 import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_X, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_Y, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y } from "../graphics/GenericSprites";
 import RequestMovement from "../communication/outgoing/rooms/RequestMovement";
+import FloorItem from "./items/FloorItem";
 
 const CAMERA_CENTERED_OFFSET_X = 3;
 const CAMERA_CENTERED_OFFSET_Y = 114;
@@ -26,6 +27,8 @@ export default class RoomEngine {
     selectableSprites: ContainerArrayDictionary;
     selectableItems: SelectableDictionary;
     currentSelectedItem?: Selectable | null;
+    currentMovingItem: FloorItem | null;
+    currentMovingItemPosition: { x: number, y: number, z: number };
 
     constructor(room: Room) {
         this.room = room;
@@ -40,6 +43,8 @@ export default class RoomEngine {
         this.selectableItems = {};
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
+        this.currentMovingItem = null;
+        this.currentMovingItemPosition = { x: 0, y: 0, z: 0 };
 
         this.container.sortableChildren = true;
         this.selectableContainer.sortableChildren = true;
@@ -94,6 +99,68 @@ export default class RoomEngine {
 
         for (let container of selectableContainers) {
             this.selectableContainer.addChild(container);
+        }
+    }
+
+    startFloorItemMove(roomItem: FloorItem) {
+        this.currentMovingItem = roomItem;
+        this.currentMovingItemPosition = { x: roomItem._x, y: roomItem._y, z: roomItem._z };
+        this.currentMovingItem.startMovement();
+    }
+
+    cancelFloorItemMove() {
+        if (this.currentMovingItem != null) {
+            const { x, y, z } = this.currentMovingItemPosition;
+            this.currentMovingItem.updatePosition(x, y, z, false);
+            this.currentMovingItem.stopMovement();
+            this.currentMovingItem = null;
+        }
+    }
+
+    finishFloorItemMovement(tileX: number, tileY: number) {
+        if (this.currentMovingItem != null && this.canPlaceFurni(tileX, tileY, this.currentMovingItem)) {
+            this.currentMovingItem.updatePosition(tileX, tileY, 0, true);
+            this.currentMovingItem.stopMovement();
+            this.currentMovingItem = null;
+        } else {
+            this.cancelFloorItemMove();
+        }
+    }
+
+    isMovingItem() {
+        return this.currentMovingItem != null;
+    }
+
+    canPlaceFurni(x: number, y: number, floorItem: FloorItem): boolean {
+        const { model } = this.room;
+        let maxX = x;
+        let maxY = y;
+        if (floorItem.baseItem != null) {
+            const first = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.x);
+            const second = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.y);
+            if (first > 1) {
+                if (floorItem.rot === 0 || floorItem.rot === 4) {
+                    maxX += first - 1;
+                }
+                if (floorItem.rot === 2 || floorItem.rot === 6) {
+                    maxY += first - 1;
+                }
+            }
+            if (second > 1) {
+                if (floorItem.rot === 0 || floorItem.rot === 4) {
+                    maxY += first - 1;
+                }
+                if (floorItem.rot === 2 || floorItem.rot === 6) {
+                    maxX += first - 1;
+                }
+            }
+        }
+        return model.isValidTile(x, y) && model.isValidTile(maxX, maxY);
+    }
+
+    updateMovingItemPosition(tileX: number, tileY: number) {
+        if (this.currentMovingItem != null && this.canPlaceFurni(tileX, tileY, this.currentMovingItem)) {
+            this.currentMovingItem.updatePosition(tileX, tileY, 0, false);
         }
     }
 
@@ -223,6 +290,7 @@ export default class RoomEngine {
         this.lastMousePositionX = Math.round(mouseX);
         this.lastMousePositionY = Math.round(mouseY);
         this.updateSelectedTile(x, y)
+        this.updateMovingItemPosition(x, y);
     }
 
     getSelectableColorId(mouseX: number, mouseY: number): number {
@@ -241,8 +309,18 @@ export default class RoomEngine {
 
     handleMouseClick = (mouseX: number, mouseY: number): Selectable | null => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
+        const isValidTile = this.room.model.isValidTile(x, y);
+        if (this.isMovingItem()) {
+            if (isValidTile) {
+                this.finishFloorItemMovement(x, y);
+            } else {
+                this.cancelFloorItemMove();
+            }
+            return null;
+        }
         const colorId = this.getSelectableColorId(mouseX, mouseY);
         let selectable = null;
+
         if (colorId !== -1) {
             selectable = this.selectableItems[colorId];
 
@@ -251,7 +329,7 @@ export default class RoomEngine {
             }
         }
 
-        if (this.room.model.isValidTile(x, y)) {
+        if (isValidTile) {
             BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMovement(x, y));
         }
 

@@ -17,6 +17,13 @@ export default class RoomItemManager {
         return (id in this.items) ? this.items[id] : null;
     }
 
+    startFloorItemMovement(id: number) {
+        const item = this.getItem(id) as FloorItem;
+        if (item != null && item instanceof FloorItem) {
+            this.room.engine.startFloorItemMove(item);
+        }
+    }
+
     addFloorItemToRoom(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number) {
         const item = this.getItem(id);
         if (item != null) {

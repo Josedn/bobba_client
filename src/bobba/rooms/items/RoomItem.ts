@@ -79,7 +79,6 @@ export default abstract class RoomItem implements Selectable {
     }
 
     setState(state: number) {
-
         if (this.baseItem != null && this.baseItem.furniBase.states[state] != null) {
             const { transition } = this.baseItem.furniBase.states[state];
             if (transition != null) {
@@ -219,6 +218,18 @@ export default abstract class RoomItem implements Selectable {
             this.updateSpritePosition();
             return { containers: this.containers, selectableContainers: this.selectableContainers };
         });
+    }
+
+    startMovement() {
+        for (let container of this.containers) {
+            container.alpha = 0.7;
+        }
+    }
+
+    stopMovement() {
+        for (let container of this.containers) {
+            container.alpha = 1.0;
+        }
     }
 
     abstract calculateZIndex(zIndex: number, layerIndex: number): number;
