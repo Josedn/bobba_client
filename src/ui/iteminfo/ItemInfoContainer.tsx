@@ -3,6 +3,7 @@ import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import FurniInfo, { FurniInfoProps } from './FurniInfo';
 import UserInfo, { UserInfoProps } from './UserInfo';
 import { canvas2Image } from '../misc/GraphicsUtilities';
+import './iteminfo.css';
 enum Showing {
     USER, FURNI, NONE
 }

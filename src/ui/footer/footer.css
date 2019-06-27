@@ -1,0 +1,64 @@
+footer {
+    background-color: #1d1e21;
+    position: absolute;
+    bottom: 0;
+    height: 60px;
+    width: 100%;
+    display: flex;
+}
+
+footer .footer_container {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+}
+
+footer .left_section {
+    display: flex;
+    margin: auto;
+    width: 20%;
+}
+
+footer .middle_section {
+    display: flex;
+    margin: auto;
+    width: 50%;
+    justify-content: center;
+}
+
+footer button.user_face {
+    padding: 0;
+}
+
+footer button.user_face img {
+    object-fit: none;
+    object-position: 42% 27%;
+    width: 40px;
+    height: 37px;
+}
+
+footer .right_section {
+    display: flex;
+    margin: auto;
+    width: 20%;
+    justify-content: flex-end;
+}
+
+footer button {
+    padding: 0 12px;
+    margin: auto 0;
+    background: none;
+    border: none;
+}
+
+footer form {
+    display: inline-flex;
+}
+
+footer button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+footer input[type=text] {
+    width: 450px;
+}

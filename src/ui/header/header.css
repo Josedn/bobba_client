@@ -1,0 +1,51 @@
+header {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 300px;
+    height: 50px;
+    background-color: #1d1e21;
+    margin: 0 auto;
+    padding: 10px;
+    border: 1px solid #19181c;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #eeeeee;
+    display: flex;
+}
+
+.bar_content {
+    margin: auto;
+    display: flex;
+}
+
+.bar_content span, .bar_content img {
+    margin: auto 3px;
+}
+
+button.bar_content {
+    background: none;
+    border: none;
+}
+
+button.bar_content:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.top_bar {
+    width: 100px;
+    height: 50px;
+    background-color: #1d1e21;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 10px;
+    border: 1px solid #19181c;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #eeeeee;
+    display: flex;
+}

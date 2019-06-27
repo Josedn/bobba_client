@@ -1,0 +1,59 @@
+.room_info {
+    width: 300px;
+    height: 100px;
+    background-color: #1d1e21;
+    position: absolute;
+    bottom: 80px;
+    left: 20px;
+    padding: 10px;
+    border: 1px solid #19181c;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #eeeeee;
+}
+
+.room_info .title {
+    font: inherit;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.room_info .owner_info {
+    margin: 0;
+    font-size: 0.9em;
+    color: #9d9ca0;
+}
+
+.room_info .owner_info .owner_name {
+    color: #8fc8cd;
+}
+
+.room_info .buttons_container {
+    display: flex;
+    bottom: 10px;
+    position: absolute;
+}
+
+.room_info button {
+    min-width: 35px;
+    height: 35px;
+    background-color: #2c2b2c;
+    border: none;
+    border-top: 1px solid #444444;
+    border-bottom: 1px solid #000000;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-right: 5px;
+    display: flex;
+    color: inherit;
+    font: inherit;
+    font-size: 0.9em;
+}
+
+.room_info button img {
+    margin: auto auto;
+}
+
+.room_info button:hover {
+    background-color: #373539;
+}

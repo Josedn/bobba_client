@@ -392,7 +392,6 @@ export default class RoomEngine {
                 } else if (altKey) {
                     if (selectable instanceof RoomItem) {
                         this.startRoomItemMove(selectable);
-                        //this.startFloorItemMove(selectable as FloorItem);
                     }
                 }
 

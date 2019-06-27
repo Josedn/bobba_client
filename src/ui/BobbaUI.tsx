@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Footer from './footer/Footer';
 import './App.css';
 import RoomInfo from './roominfo/RoomInfo';
-import TopBar from './topbar/TopBar';
+import TopBar from './header/TopBar';
 import Header from './header/Header';
 import SplashScreen from './splash/SplashScreen';
 import ItemInfoContainer from './iteminfo/ItemInfoContainer';
@@ -11,6 +11,7 @@ import Loading from './splash/Loading';
 import ErrorSplash from './splash/ErrorSplash';
 import AvatarInfo from '../bobba/imagers/avatars/AvatarInfo';
 import { canvas2Image } from './misc/GraphicsUtilities';
+import ChangeLook from './changelooks/ChangeLook';
 
 type UserData = {
     id: number,
@@ -95,6 +96,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     render() {
         const { gameLoaded, error, loggedIn, loadingInfo, userData } = this.state;
 
+        
         let mainPage = <></>;
         if (error !== '') {
             mainPage = <ErrorSplash errorText={error} />
