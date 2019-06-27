@@ -34,7 +34,7 @@ export default class RoomEngine {
     currentMovingItemPosition: { x: number, y: number, z: number };
 
     currentMovingItemWall: WallItem | null;
-    currentMovingItemPositionWall: { x: number, y: number, z: number };
+    currentMovingItemPositionWall: { x: number, y: number, rot: Direction };
 
     constructor(room: Room) {
         this.room = room;
@@ -53,7 +53,7 @@ export default class RoomEngine {
         this.currentMovingItemPosition = { x: 0, y: 0, z: 0 };
 
         this.currentMovingItemWall = null;
-        this.currentMovingItemPositionWall = { x: 0, y: 0, z: 0 };
+        this.currentMovingItemPositionWall = { x: 0, y: 0, rot: 2 };
 
         this.container.sortableChildren = true;
         this.selectableContainer.sortableChildren = true;
@@ -113,14 +113,25 @@ export default class RoomEngine {
 
     startWallItemMove(roomItem: WallItem) {
         this.currentMovingItemWall = roomItem;
-        this.currentMovingItemPositionWall = { x: roomItem._x, y: roomItem._y, z: roomItem._z };
+        this.currentMovingItemPositionWall = { x: roomItem._x, y: roomItem._y, rot: roomItem.rot };
         this.currentMovingItemWall.startMovement();
     }
 
     startFloorItemMove(roomItem: FloorItem) {
+        this.cancelFloorItemMove();
+        this.cancelWallItemMove();
         this.currentMovingItem = roomItem;
         this.currentMovingItemPosition = { x: roomItem._x, y: roomItem._y, z: roomItem._z };
         this.currentMovingItem.startMovement();
+    }
+
+    cancelWallItemMove() {
+        if (this.currentMovingItemWall != null) {
+            const { x, y, rot } = this.currentMovingItemPositionWall;
+            this.currentMovingItemWall.updatePosition(x, y, rot, false);
+            this.currentMovingItemWall.stopMovement();
+            this.currentMovingItemWall = null;
+        }
     }
 
     cancelFloorItemMove() {
@@ -142,8 +153,23 @@ export default class RoomEngine {
         }
     }
 
-    isMovingItem() {
+    finishWallItemMovement(globalX: number, globalY: number) {
+
+        if (this.currentMovingItemWall != null && this.canPlaceWallItem(globalX, globalY)) {
+            const { x, y } = this.globalToLocal(globalX, globalY);
+            this.currentMovingItemWall.updatePosition(x, y, this.calculateWallDirection(globalX, globalY), true);
+            this.currentMovingItemWall = null;
+        } else {
+            this.cancelWallItemMove();
+        }
+    }
+
+    isMovingFloorItem() {
         return this.currentMovingItem != null;
+    }
+
+    isMovingWallItem() {
+        return this.currentMovingItemWall != null;
     }
 
     canPlaceFloorItem(x: number, y: number, floorItem: FloorItem): boolean {
@@ -180,7 +206,8 @@ export default class RoomEngine {
     }
 
     calculateWallDirection(globalX: number, globalY: number): Direction {
-        const { x } = this.globalToWall(globalX, globalY);
+        const local = this.globalToLocal(globalX, globalY);
+        const { x } = this.localToWall(local.x, local.y);
         if (x < 2) {
             return 2;
         }
@@ -188,12 +215,16 @@ export default class RoomEngine {
     }
 
     canPlaceWallItem(globalX: number, globalY: number): boolean {
-        const { x, y } = this.globalToWall(globalX, globalY);
+        const local = this.globalToLocal(globalX, globalY);
+        const wall = this.localToWall(local.x, local.y);
+        const invertedWall = this.localToWall(-local.x, local.y);
         const { model } = this.room;
 
-        const resp = ((y >= -3 && y <= -0.5) && (x >= 2 && x <= 9.3)) || (x <= -2 && x >= -11);
-        console.log(x + ", " + y + " = " + resp );
-        return resp;
+        if (wall.x > 2) {
+            return wall.x < model.maxX + 0.5 && wall.y > -3 && wall.y < -1;
+        } else {
+            return invertedWall.x < model.maxY - 2.5 && invertedWall.y > -1 && invertedWall.y < 1;
+        }
     }
 
     updateMovingItemPositionWall(globalX: number, globalY: number) {
@@ -306,15 +337,9 @@ export default class RoomEngine {
         return new Point(tileX, tileY);
     }
 
-    globalToWall(globalX: number, globalY: number): Point {
-        const offsetX = this.container.x;
-        const offsetY = this.container.y;
-
-        const xminusy = (globalX - ROOM_TILE_WIDTH - offsetX) / ROOM_TILE_WIDTH;
-        const xplusy = (globalY - offsetY) / ROOM_TILE_HEIGHT;
-
-        const x = (globalX - offsetX) / ROOM_TILE_WIDTH;
-        const y = ((xplusy - xminusy) / 2);
+    localToWall(localX: number, localY: number): Point {
+        const x = localX / 32;
+        const y = (localY / 32) - (localX / 64);
 
         return new Point(x, y);
     }
@@ -369,13 +394,12 @@ export default class RoomEngine {
     handleMouseClick = (mouseX: number, mouseY: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean): Selectable | null => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const isValidTile = this.room.model.isValidTile(x, y);
-        if (this.isMovingItem()) {
-            if (isValidTile) {
-                this.finishFloorItemMovement(x, y);
-            } else {
-                this.cancelFloorItemMove();
-            }
+        if (this.isMovingFloorItem()) {
+            this.finishFloorItemMovement(x, y);
             return null;
+        }
+        if (this.isMovingWallItem()) {
+            this.finishWallItemMovement(mouseX, mouseY);
         }
         const colorId = this.getSelectableColorId(mouseX, mouseY);
         let selectable = null;

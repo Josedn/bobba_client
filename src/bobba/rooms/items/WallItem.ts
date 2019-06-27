@@ -5,6 +5,7 @@ import { Sprite } from "pixi.js";
 import { calculateZIndexWallItem } from "../RoomEngine";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { WALL_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER_OFFSET_X, WALL_ITEM_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
+import RequestFurniMove from "../../communication/outgoing/rooms/RequestFurniMove";
 
 export default class WallItem extends RoomItem {
     constructor(id: number, x: number, y: number, rot: Direction, state: number, baseId: number, room: Room) {
@@ -50,7 +51,7 @@ export default class WallItem extends RoomItem {
         this.updateSpritePosition();
         this.updateTextures();
         if (notifyServer) {
-            //BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.rot));
+            BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.rot));
         }
     }
 }
