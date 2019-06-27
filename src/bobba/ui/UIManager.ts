@@ -8,6 +8,8 @@ export default class UIManager {
     onLoggedIn: (user: User) => void;
     onSelectFurni: FurniInfo;
     onSelectUser: UserInfo;
+    onCloseSelectFurni: (furniId: number) => void;
+    onCloseSelectUser: (userId: number) => void;
     onLoadPost: (text: string) => void;
     onFocusChat: () => void;
     onGameStop: () => void;
@@ -20,6 +22,8 @@ export default class UIManager {
         this.onLoadPost = () => { };
         this.onFocusChat = () => { };
         this.onGameStop = () => { };
+        this.onCloseSelectFurni = () => { };
+        this.onCloseSelectUser = () => { };
     }
 
     log(text: string) {
@@ -94,6 +98,14 @@ export default class UIManager {
 
     setOnSelectUser(handler: UserInfo) {
         this.onSelectUser = handler;
+    }
+
+    setOnCloseSelectFurniHandler(handler: () => void) {
+        this.onCloseSelectFurni = handler;
+    }
+
+    setOnCloseSelectUserHandler(handler: () => void) {
+        this.onCloseSelectUser = handler;
     }
 
     setOnLoadHandler(handler: (text: string) => void) {

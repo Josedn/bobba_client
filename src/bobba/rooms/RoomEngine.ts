@@ -6,7 +6,6 @@ import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE, ROOM_
 import RequestMovement from "../communication/outgoing/rooms/RequestMovement";
 import FloorItem from "./items/FloorItem";
 import RoomItem from "./items/RoomItem";
-import WallItem from "./items/WallItem";
 import { Direction } from "../imagers/furniture/FurniImager";
 
 const CAMERA_CENTERED_OFFSET_X = 3;
@@ -30,11 +29,8 @@ export default class RoomEngine {
     selectableSprites: ContainerArrayDictionary;
     selectableItems: SelectableDictionary;
     currentSelectedItem?: Selectable | null;
-    currentMovingItem: FloorItem | null;
-    currentMovingItemPosition: { x: number, y: number, z: number };
-
-    currentMovingItemWall: WallItem | null;
-    currentMovingItemPositionWall: { x: number, y: number, rot: Direction };
+    movingItem: RoomItem | null;
+    movingItemPosition: { x: number, y: number, z: number, rot: Direction };
 
     constructor(room: Room) {
         this.room = room;
@@ -49,11 +45,9 @@ export default class RoomEngine {
         this.selectableItems = {};
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
-        this.currentMovingItem = null;
-        this.currentMovingItemPosition = { x: 0, y: 0, z: 0 };
 
-        this.currentMovingItemWall = null;
-        this.currentMovingItemPositionWall = { x: 0, y: 0, rot: 2 };
+        this.movingItem = null;
+        this.movingItemPosition = { x: 0, y: 0, z: 0, rot: 0 };
 
         this.container.sortableChildren = true;
         this.selectableContainer.sortableChildren = true;
@@ -111,97 +105,60 @@ export default class RoomEngine {
         }
     }
 
-    startWallItemMove(roomItem: WallItem) {
-        this.currentMovingItemWall = roomItem;
-        this.currentMovingItemPositionWall = { x: roomItem._x, y: roomItem._y, rot: roomItem.rot };
-        this.currentMovingItemWall.startMovement();
+    startRoomItemMove(roomItem: RoomItem) {
+        this.cancelRoomItemMove();
+        this.movingItem = roomItem;
+        this.movingItemPosition = { x: roomItem._x, y: roomItem._y, z: roomItem._z, rot: roomItem.rot };
+        this.movingItem.startMovement();
     }
 
-    startFloorItemMove(roomItem: FloorItem) {
-        this.cancelFloorItemMove();
-        this.cancelWallItemMove();
-        this.currentMovingItem = roomItem;
-        this.currentMovingItemPosition = { x: roomItem._x, y: roomItem._y, z: roomItem._z };
-        this.currentMovingItem.startMovement();
-    }
-
-    cancelWallItemMove() {
-        if (this.currentMovingItemWall != null) {
-            const { x, y, rot } = this.currentMovingItemPositionWall;
-            this.currentMovingItemWall.updatePosition(x, y, rot, false);
-            this.currentMovingItemWall.stopMovement();
-            this.currentMovingItemWall = null;
+    cancelRoomItemMove() {
+        if (this.movingItem != null) {
+            const { x, y, z, rot } = this.movingItemPosition;
+            this.movingItem.updatePosition2(x, y, z, rot, false);
+            this.movingItem.stopMovement();
+            this.movingItem = null;
         }
     }
 
-    cancelFloorItemMove() {
-        if (this.currentMovingItem != null) {
-            const { x, y, z } = this.currentMovingItemPosition;
-            this.currentMovingItem.updatePosition(x, y, z, false);
-            this.currentMovingItem.stopMovement();
-            this.currentMovingItem = null;
-        }
-    }
-
-    finishFloorItemMovement(tileX: number, tileY: number) {
-        if (this.currentMovingItem != null && this.canPlaceFloorItem(tileX, tileY, this.currentMovingItem)) {
-            this.currentMovingItem.updatePosition(tileX, tileY, 0, true);
-            //this.currentMovingItem.stopMovement();
-            this.currentMovingItem = null;
-        } else {
-            this.cancelFloorItemMove();
-        }
-    }
-
-    finishWallItemMovement(globalX: number, globalY: number) {
-
-        if (this.currentMovingItemWall != null && this.canPlaceWallItem(globalX, globalY)) {
-            const { x, y } = this.globalToLocal(globalX, globalY);
-            this.currentMovingItemWall.updatePosition(x, y, this.calculateWallDirection(globalX, globalY), true);
-            this.currentMovingItemWall = null;
-        } else {
-            this.cancelWallItemMove();
-        }
-    }
-
-    isMovingFloorItem() {
-        return this.currentMovingItem != null;
-    }
-
-    isMovingWallItem() {
-        return this.currentMovingItemWall != null;
-    }
-
-    canPlaceFloorItem(x: number, y: number, floorItem: FloorItem): boolean {
-        const { model } = this.room;
-        let maxX = x;
-        let maxY = y;
-        if (floorItem.baseItem != null) {
-            const first = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.x);
-            const second = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.y);
-            if (first > 1) {
-                if (floorItem.rot === 0 || floorItem.rot === 4) {
-                    maxX += first - 1;
+    finishRoomItemMovement(globalX: number, globalY: number) {
+        if (this.movingItem != null) {
+            if (this.movingItem instanceof FloorItem) {
+                const { x, y } = this.globalToTile(globalX, globalY);
+                if (this.canPlaceFloorItem(x, y, this.movingItem)) {
+                    this.movingItem.updatePosition2(x, y, 0, this.movingItemPosition.rot, true);
+                } else {
+                    this.cancelRoomItemMove();
                 }
-                if (floorItem.rot === 2 || floorItem.rot === 6) {
-                    maxY += first - 1;
+            } else {
+                const { x, y } = this.globalToLocal(globalX, globalY);
+                if (this.canPlaceWallItem(globalX, globalY)) {
+                    this.movingItem.updatePosition2(x, y, 0, this.calculateWallDirection(globalX, globalY), true);
+                } else {
+                    this.cancelRoomItemMove();
                 }
             }
-            if (second > 1) {
-                if (floorItem.rot === 0 || floorItem.rot === 4) {
-                    maxY += first - 1;
-                }
-                if (floorItem.rot === 2 || floorItem.rot === 6) {
-                    maxX += first - 1;
-                }
-            }
+            this.movingItem = null;
         }
-        return model.isValidTile(x, y) && model.isValidTile(maxX, maxY);
     }
 
-    updateMovingItemPosition(tileX: number, tileY: number) {
-        if (this.currentMovingItem != null && this.canPlaceFloorItem(tileX, tileY, this.currentMovingItem)) {
-            this.currentMovingItem.updatePosition(tileX, tileY, 0, false);
+    isMovingRoomItem() {
+        return this.movingItem != null;
+    }
+
+    updateMovingItem(globalX: number, globalY: number) {
+        if (this.movingItem != null) {
+            if (this.movingItem instanceof FloorItem) {
+                const { x, y } = this.globalToTile(globalX, globalY);
+                if (this.canPlaceFloorItem(x, y, this.movingItem)) {
+                    this.movingItem.updatePosition2(x, y, 0, this.movingItemPosition.rot, false);
+                }
+            } else {
+                const { x, y } = this.globalToLocal(globalX, globalY);
+                if (this.canPlaceWallItem(globalX, globalY)) {
+                    this.movingItem.updatePosition2(x, y, 0, this.calculateWallDirection(globalX, globalY), false);
+                }
+            }
         }
     }
 
@@ -227,11 +184,31 @@ export default class RoomEngine {
         }
     }
 
-    updateMovingItemPositionWall(globalX: number, globalY: number) {
-        if (this.currentMovingItemWall != null && this.canPlaceWallItem(globalX, globalY)) {
-            const { x, y } = this.globalToLocal(globalX, globalY);
-            this.currentMovingItemWall.updatePosition(x, y, this.calculateWallDirection(globalX, globalY), false);
+    canPlaceFloorItem(tileX: number, tileY: number, floorItem: FloorItem): boolean {
+        const { model } = this.room;
+        let maxX = tileX;
+        let maxY = tileY;
+        if (floorItem.baseItem != null) {
+            const first = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.x);
+            const second = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.y);
+            if (first > 1) {
+                if (floorItem.rot === 0 || floorItem.rot === 4) {
+                    maxX += first - 1;
+                }
+                if (floorItem.rot === 2 || floorItem.rot === 6) {
+                    maxY += first - 1;
+                }
+            }
+            if (second > 1) {
+                if (floorItem.rot === 0 || floorItem.rot === 4) {
+                    maxY += first - 1;
+                }
+                if (floorItem.rot === 2 || floorItem.rot === 6) {
+                    maxX += first - 1;
+                }
+            }
         }
+        return model.isValidTile(tileX, tileY) && model.isValidTile(maxX, maxY);
     }
 
     removeSelectableContainer(colorId: number) {
@@ -373,8 +350,7 @@ export default class RoomEngine {
         this.lastMousePositionX = Math.round(mouseX);
         this.lastMousePositionY = Math.round(mouseY);
         this.updateSelectedTile(x, y);
-        this.updateMovingItemPosition(x, y);
-        this.updateMovingItemPositionWall(mouseX, mouseY);
+        this.updateMovingItem(mouseX, mouseY);
     }
 
     getSelectableColorId(mouseX: number, mouseY: number): number {
@@ -394,12 +370,9 @@ export default class RoomEngine {
     handleMouseClick = (mouseX: number, mouseY: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean): Selectable | null => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const isValidTile = this.room.model.isValidTile(x, y);
-        if (this.isMovingFloorItem()) {
-            this.finishFloorItemMovement(x, y);
+        if (this.isMovingRoomItem()) {
+            this.finishRoomItemMovement(mouseX, mouseY);
             return null;
-        }
-        if (this.isMovingWallItem()) {
-            this.finishWallItemMovement(mouseX, mouseY);
         }
         const colorId = this.getSelectableColorId(mouseX, mouseY);
         let selectable = null;
@@ -410,15 +383,16 @@ export default class RoomEngine {
             if (selectable != null) {
                 if (shiftKey) {
                     if (selectable instanceof FloorItem) {
-                        (selectable as FloorItem).rotate();
+                        selectable.rotate();
                     }
                 } else if (ctrlKey) {
                     if (selectable instanceof RoomItem) {
-                        (selectable as RoomItem).pickUp();
+                        selectable.pickUp();
                     }
                 } else if (altKey) {
-                    if (selectable instanceof FloorItem) {
-                        this.startFloorItemMove(selectable as FloorItem);
+                    if (selectable instanceof RoomItem) {
+                        this.startRoomItemMove(selectable);
+                        //this.startFloorItemMove(selectable as FloorItem);
                     }
                 }
 

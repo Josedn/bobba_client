@@ -30,10 +30,11 @@ export default class FloorItem extends RoomItem {
         }
     }
 
-    updatePosition(tileX: number, tileY: number, tileZ: number, notifyServer: boolean) {
+    updatePosition2(tileX: number, tileY: number, tileZ: number, rot: Direction, notifyServer: boolean) {
         this._x = tileX;
         this._y = tileY;
         this._z = tileZ;
+        this.rot = rot;
         this.updateSpritePosition();
         this.updateTextures();
         if (notifyServer) {

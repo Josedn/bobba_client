@@ -47,6 +47,7 @@ export default class RoomUserManager {
         const user = this.getUser(id);
         if (user != null) {
             this.room.engine.removeSelectableContainer(user.colorId);
+            BobbaEnvironment.getGame().uiManager.onCloseSelectUser(id);
             delete (this.users[id]);
         }
     }

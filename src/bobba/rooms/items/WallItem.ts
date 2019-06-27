@@ -44,9 +44,10 @@ export default class WallItem extends RoomItem {
 
     }
 
-    updatePosition(screenX: number, screenY: number, rot: Direction, notifyServer: boolean) {
+    updatePosition2(screenX: number, screenY: number, screenZ: number, rot: Direction, notifyServer: boolean) {
         this._x = screenX;
         this._y = screenY;
+        this._z = screenZ;
         this.rot = rot;
         this.updateSpritePosition();
         this.updateTextures();

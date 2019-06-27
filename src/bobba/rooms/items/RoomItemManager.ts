@@ -3,6 +3,7 @@ import { Direction } from "../../imagers/avatars/AvatarInfo";
 import RoomItem from "./RoomItem";
 import FloorItem from "./FloorItem";
 import WallItem from "./WallItem";
+import BobbaEnvironment from "../../BobbaEnvironment";
 
 export default class RoomItemManager {
     room: Room;
@@ -20,11 +21,7 @@ export default class RoomItemManager {
     startFloorItemMovement(id: number) {
         const item = this.getItem(id);
         if (item != null) {
-            if (item instanceof WallItem) {
-                this.room.engine.startWallItemMove(item);
-            } else if (item instanceof FloorItem) {
-                this.room.engine.startFloorItemMove(item);
-            }
+            this.room.engine.startRoomItemMove(item);
         }
     }
 
@@ -72,6 +69,7 @@ export default class RoomItemManager {
         const item = this.getItem(id);
         if (item != null) {
             this.room.engine.removeSelectableContainer(item.colorId);
+            BobbaEnvironment.getGame().uiManager.onCloseSelectFurni(id);
             delete (this.items[id]);
         }
     }

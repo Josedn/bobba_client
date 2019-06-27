@@ -67,9 +67,25 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         });
     }
 
+    tryCloseFurniView = (itemId: number) => {
+        const id = this.state.furniProps.itemId;
+        if (itemId === id) {
+            this.close();
+        }
+    }
+
+    tryCloseUserView = (userId: number) => {
+        const id = this.state.userProps.userId;
+        if (userId === id) {
+            this.close();
+        }
+    }
+
     componentDidMount() {
         BobbaEnvironment.getGame().uiManager.onSelectFurni = this.showFurniView;
         BobbaEnvironment.getGame().uiManager.onSelectUser = this.showUserView;
+        BobbaEnvironment.getGame().uiManager.onCloseSelectFurni = this.tryCloseFurniView;
+        BobbaEnvironment.getGame().uiManager.onCloseSelectUser = this.tryCloseUserView;
     }
 
     render() {
