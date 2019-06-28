@@ -93,7 +93,7 @@ export default class UIManager {
     doChangeLooks(look: string, gender: string) {
         const { currentRoom } = this.game;
         if (currentRoom != null) {
-            console.log("new look: " + look);
+            
         }
     }
 

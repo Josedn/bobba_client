@@ -15,6 +15,7 @@ type SecondaryTab = {
     type: string,
     name: string,
     image: string,
+    required: boolean,
 };
 
 const avatarMainTabs: MainTab[] = [
@@ -24,7 +25,8 @@ const avatarMainTabs: MainTab[] = [
             {
                 type: "hd",
                 name: "Skin",
-                image: "avatar_editor_download_icon"
+                image: "avatar_editor_download_icon",
+                required: true,
             }
         ]
     },
@@ -34,27 +36,32 @@ const avatarMainTabs: MainTab[] = [
             {
                 type: "hr",
                 name: "Hair",
-                image: "head_hair"
+                image: "head_hair",
+                required: false,
             },
             {
                 type: "ha",
                 name: "Hat",
-                image: "head_hats"
+                image: "head_hats",
+                required: false,
             },
             {
                 type: "he",
                 name: "Accesories",
-                image: "head_accessories"
+                image: "head_accessories",
+                required: false,
             },
             {
                 type: "ea",
                 name: "Glass",
-                image: "head_eyewear"
+                image: "head_eyewear",
+                required: false,
             },
             {
                 type: "fa",
                 name: "Masks",
-                image: "head_face_accessories"
+                image: "head_face_accessories",
+                required: false,
             }
         ]
     },
@@ -64,22 +71,26 @@ const avatarMainTabs: MainTab[] = [
             {
                 type: "ch",
                 name: "Top",
-                image: "top_shirt"
+                image: "top_shirt",
+                required: true,
             },
             {
                 type: "cc",
                 name: "Jacket",
-                image: "top_jacket"
+                image: "top_jacket",
+                required: false,
             },
             {
                 type: "ca",
                 name: "Collar",
-                image: "top_accessories"
+                image: "top_accessories",
+                required: false,
             },
             {
                 type: "cp",
                 name: "More",
-                image: "top_prints"
+                image: "top_prints",
+                required: false,
             }
         ]
     },
@@ -89,17 +100,20 @@ const avatarMainTabs: MainTab[] = [
             {
                 type: "lg",
                 name: "Pants",
-                image: "bottom_trousers"
+                image: "bottom_trousers",
+                required: true,
             },
             {
                 type: "sh",
                 name: "Shoes",
-                image: "bottom_shoes"
+                image: "bottom_shoes",
+                required: false,
             },
             {
                 type: "wa",
                 name: "Belts",
-                image: "bottom_accessories"
+                image: "bottom_accessories",
+                required: false,
             }
         ]
     }
@@ -299,6 +313,13 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
                 const parts: ReactNode[] = [];
                 const currentColor = this.calculateCurrentColor();
                 const currentPart = this.calculateCurrentPart();
+                if (!typeId.required) {
+                    parts.push(
+                        <button onClick={this.handleRemovePart(typeId.type)} key={-1} className={(currentPart == null ? 'selected ' : '')}>
+                            <img src="images/avatar_editor/removeSelection.png" />
+                        </button>
+                    );
+                }
                 for (let partId in partSet) {
                     const part = partSet[partId];
                     const selected = currentPart != null && currentPart.id === partId;
@@ -350,6 +371,15 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
                 look: newLook,
             });
         }
+    }
+
+    handleRemovePart = (type: string) => () => {
+        const { look } = this.state;
+        const newLook = generateFigureString(extractFigureParts(look).filter(value => value.type !== type));
+
+        this.setState({
+            look: newLook,
+        });
     }
 
     handleToggleGender = (gender: Gender) => () => {
