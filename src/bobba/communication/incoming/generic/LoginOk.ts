@@ -9,6 +9,6 @@ export default class LoginOk implements IIncomingEvent {
         const name = request.popString();
         const look = request.popString();
         const motto = request.popString();
-        BobbaEnvironment.getGame().handleLoggedIn(id, name, look, motto);
+        BobbaEnvironment.getGame().handleUserData(id, name, look, motto);
     }
 }

@@ -1,6 +1,7 @@
 import Game from "../Game";
 import Login from "../communication/outgoing/generic/Login";
 import User from "../users/User";
+import RequestChangeLooks from "../communication/outgoing/rooms/RequestChangeLooks";
 
 export default class UIManager {
     game: Game;
@@ -93,7 +94,7 @@ export default class UIManager {
     doChangeLooks(look: string, gender: string) {
         const { currentRoom } = this.game;
         if (currentRoom != null) {
-            
+            this.game.communicationManager.sendMessage(new RequestChangeLooks(look, gender));
         }
     }
 

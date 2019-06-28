@@ -8,3 +8,4 @@ export const REQUEST_ROOM_DATA = 15;
 export const REQUEST_ITEM_INTERACT = 18;
 export const REQUEST_ITEM_MOVE = 19;
 export const REQUEST_ITEM_PICK_UP = 20;
+export const REQUEST_CHANGE_LOOKS = 21;

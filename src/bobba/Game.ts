@@ -68,10 +68,12 @@ export default class Game {
         });
     }
 
-    handleLoggedIn(id: number, name: string, look: string, motto: string) {
+    handleUserData(id: number, name: string, look: string, motto: string) {
         BobbaEnvironment.getGame().uiManager.log("Logged in!");
         this.uiManager.onLoggedIn(this.userManager.setCurrentUser(id, name, motto, look));
-        this.communicationManager.sendMessage(new RequestMap());
+        if (this.currentRoom == null) {
+            this.communicationManager.sendMessage(new RequestMap());
+        }
     }
 
     loadRoom(id: number, name: string, model: RoomModel) {
