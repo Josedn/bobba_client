@@ -51,6 +51,10 @@ class Footer extends Component<FooterProps, FooterState> {
         });
     }
 
+    changeLooks = () => {
+        BobbaEnvironment.getGame().uiManager.doOpenChangeLooks();
+    }
+
     render() {
         const { chat } = this.state;
         const { headImage } = this.props;
@@ -62,7 +66,7 @@ class Footer extends Component<FooterProps, FooterState> {
         );
         if (headImage !== undefined) {
             userface = (
-                <button className="user_face">
+                <button className="user_face" onClick={this.changeLooks}>
                     <img src={headImage.src} alt="Me" />
                 </button>
             );

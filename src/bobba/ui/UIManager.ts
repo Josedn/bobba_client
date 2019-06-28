@@ -13,6 +13,7 @@ export default class UIManager {
     onLoadPost: (text: string) => void;
     onFocusChat: () => void;
     onGameStop: () => void;
+    onOpenChangeLooks: (figure: string) => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -24,6 +25,7 @@ export default class UIManager {
         this.onGameStop = () => { };
         this.onCloseSelectFurni = () => { };
         this.onCloseSelectUser = () => { };
+        this.onOpenChangeLooks = () => { };
     }
 
     log(text: string) {
@@ -88,6 +90,20 @@ export default class UIManager {
         }
     }
 
+    doChangeLooks(look: string, gender: string) {
+        const { currentRoom } = this.game;
+        if (currentRoom != null) {
+            console.log("new look: " + look);
+        }
+    }
+
+    doOpenChangeLooks() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenChangeLooks(currentUser.look);
+        }
+    }
+
     setLoggedInHandler(handler: (user: User) => void) {
         this.onLoggedIn = handler;
     }
@@ -118,6 +134,10 @@ export default class UIManager {
 
     setOnGameStopHandler(handler: () => void) {
         this.onGameStop = handler;
+    }
+
+    setOnOpenChangeLooksHandler(handler: (figure: string) => void) {
+        this.onOpenChangeLooks = handler;
     }
 }
 

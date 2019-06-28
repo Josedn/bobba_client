@@ -11,7 +11,7 @@ import Loading from './splash/Loading';
 import ErrorSplash from './splash/ErrorSplash';
 import AvatarInfo from '../bobba/imagers/avatars/AvatarInfo';
 import { canvas2Image } from './misc/GraphicsUtilities';
-import ChangeLook from './changelooks/ChangeLook';
+import ChangeLooks from './changelooks/ChangeLooks';
 
 type UserData = {
     id: number,
@@ -96,7 +96,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     render() {
         const { gameLoaded, error, loggedIn, loadingInfo, userData } = this.state;
 
-        
+
         let mainPage = <></>;
         if (error !== '') {
             mainPage = <ErrorSplash errorText={error} />
@@ -109,8 +109,9 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
         return (
             <>
                 <Header />
-                {mainPage}
                 <TopBar />
+                {mainPage}
+                <ChangeLooks />
                 <RoomInfo />
                 <ItemInfoContainer />
                 <Footer focuser={this.updateChatFocuser} headImage={userData.image} />

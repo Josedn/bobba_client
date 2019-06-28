@@ -79,12 +79,12 @@ export default class AvatarImager {
             });
     }
 
-    getChatColor(figure: string): number {
+    getTypeColorId(figure: string, part: string): number {
         const avatarInfo = new AvatarInfo(figure, 0, 0, ["std"], "std", 0, false, false, "d");
         let color = 0x000000;
 
         for (let figurePart of avatarInfo.figure) {
-            if (figurePart.type === "ch") {
+            if (figurePart.type === part) {
                 const parts = this.getPartColor(figurePart);
                 for (let type in parts) {
                     const part = parts[type];
@@ -98,6 +98,10 @@ export default class AvatarImager {
             }
         }
         return color;
+    }
+
+    getChatColor(figure: string): number {
+        return this.getTypeColorId(figure, 'ch');
     }
 
     generateGeneric(avatarInfo: AvatarInfo, isGhost: boolean): Promise<HTMLCanvasElement> {
@@ -345,6 +349,23 @@ export default class AvatarImager {
             return null;
         }
         return drawOrder;
+    }
+
+    getPartPalette(partType: string): any {
+        let partSet = this.figuredata['settype'][partType];
+        if (partSet != null) {
+            const paletteId = partSet['paletteid'];
+            return this.figuredata['palette'][paletteId]
+        }
+        return null;
+    }
+
+    getPartSet(partType: string): any {
+        let partSet = this.figuredata['settype'][partType];
+        if (partSet != null) {
+            return partSet.set;
+        }
+        return null;
     }
 
     getPartColor(figure: FigurePart): any {

@@ -20,6 +20,10 @@ class UserInfo extends Component<UserInfoProps> {
         }
     }
 
+    changeLooks = () => {
+        BobbaEnvironment.getGame().uiManager.doOpenChangeLooks();
+    }
+
     render() {
         const { name, motto, image, onClose, isMe } = this.props;
         let src = FLOOR_ITEM_PLACEHOLDER;
@@ -33,9 +37,15 @@ class UserInfo extends Component<UserInfoProps> {
 
         if (isMe) {
             buttons = (
-                <button onClick={this.wave}>
-                    Wave
-                </button>
+                <>
+                    <button onClick={this.changeLooks}>
+                        Change looks
+                    </button>
+                    <button onClick={this.wave}>
+                        Wave
+                    </button>
+
+                </>
             );
             className = "item_info";
         }

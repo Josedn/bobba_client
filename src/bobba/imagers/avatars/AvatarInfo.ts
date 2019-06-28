@@ -48,16 +48,7 @@ export default class AvatarInfo {
                 break;
         }
 
-        this.figure = [];
-
-        for (let part of figure.split('.')) {
-            const data = part.split('-');
-            const figurePart: FigurePart = { type: data[0], id: data[1], colors: [data[2]] };
-            if (data[3] != null) {
-                figurePart.colors.push(data[3]);
-            }
-            this.figure.push(figurePart);
-        }
+        this.figure = extractFigureParts(figure);
 
         this.frame = frame;
         this.drawAction = {
@@ -182,3 +173,34 @@ interface DrawAction {
 export interface FigurePart { type: string, id: string, colors: string[] };
 export type Direction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type Scale = "l" | "s" | "d" | "n";
+export type Gender = 'M' | 'F';
+export const extractFigureParts = (figure: string): FigurePart[] => {
+    const newFigure: { [id: string]: FigurePart } = {};
+    const figures: FigurePart[] = [];
+
+    for (let part of figure.split('.')) {
+        const data = part.split('-');
+        const figurePart: FigurePart = { type: data[0], id: data[1], colors: [data[2]] };
+        if (data[3] != null) {
+            figurePart.colors.push(data[3]);
+        }
+        newFigure[figurePart.type] = figurePart;
+    }
+
+    for (let part in newFigure) {
+        figures.push(newFigure[part]);
+    }
+    return figures;
+};
+
+export const generateFigureString = (figure: FigurePart[]): string => {
+    let newFigure = '';
+    for (let figureElement of figure) {
+        let current = figureElement.type + "-" + figureElement.id;
+        for (let color of figureElement.colors) {
+            current += "-" + color;
+        }
+        newFigure += current + ".";
+    }
+    return newFigure.substr(0, newFigure.length - 1);
+};
