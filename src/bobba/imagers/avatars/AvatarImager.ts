@@ -355,9 +355,22 @@ export default class AvatarImager {
         let partSet = this.figuredata['settype'][partType];
         if (partSet != null) {
             const paletteId = partSet['paletteid'];
-            return this.figuredata['palette'][paletteId]
+            return this.figuredata['palette'][paletteId];
         }
         return null;
+    }
+
+    getPartPaletteCount(partType: string, partId: string): number {
+        const partSet = this.getPartSet(partType);
+        if (partSet != null) {
+            const selectedPart = partSet[partId];
+            if (selectedPart != null) {
+                const chunks = selectedPart.part as any[];
+                const maxColors = Math.max.apply(Math, chunks.map(o => o.colorindex));
+                return Math.max(1, maxColors);
+            }
+        }
+        return 1;
     }
 
     getPartSet(partType: string): any {

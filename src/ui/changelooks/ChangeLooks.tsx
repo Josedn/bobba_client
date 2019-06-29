@@ -204,7 +204,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
         return [];
     }
 
-    calculateCurrentColor(): number {
+    calculateCurrentColor(colorId: number): number {
         const { mainTab, secondTabId, look } = this.state;
         const mainDef = avatarMainTabs.find(value => value.id === mainTab);
         if (mainDef !== undefined) {
@@ -214,7 +214,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
                 return value.type === typeId.type;
             });
             if (value !== undefined) {
-                return parseInt(value.colors[0]);
+                return parseInt(value.colors[colorId]);
             }
         }
         return 0;
@@ -236,7 +236,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
         return null;
     }
 
-    generatePalette(): ReactNode {
+    generatePalette(paletteId: number): ReactNode {
         const { mainTab, secondTabId } = this.state;
         const mainDef = avatarMainTabs.find(value => value.id === mainTab);
         if (mainDef !== undefined) {
@@ -244,14 +244,14 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
             if (typeId != null) {
                 const ogPalettes = BobbaEnvironment.getGame().avatarImager.getPartPalette(typeId.type);
                 const colors: ReactNode[] = [];
-                const currentColor = this.calculateCurrentColor();
+                const currentColor = this.calculateCurrentColor(paletteId);
                 for (let colorIdStr in ogPalettes) {
                     const colorId = parseInt(colorIdStr);
                     const colorData = ogPalettes[colorId];
                     const selected = colorId === currentColor;
                     const isHc = colorData.club !== 0;
                     colors.push(
-                        <button onClick={this.handleChangeColor(colorId)} key={colorId} className={(selected ? 'selected ' : '') + (isHc ? 'hc ' : '')}>
+                        <button onClick={this.handleChangeColor(paletteId, colorId)} key={colorId} className={(selected ? 'selected ' : '') + (isHc ? 'hc ' : '')}>
                             <div className="palette" style={{ backgroundColor: '#' + colorData.color }}></div>
                         </button>
                     );
@@ -260,6 +260,23 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
             }
         }
         return [];
+    }
+
+    generatePalettes(): ReactNode {
+        const currentPart = this.calculateCurrentPart();
+        const palettes: ReactNode[] = [];
+        if (currentPart != null) {
+            const colorCount = BobbaEnvironment.getGame().avatarImager.getPartPaletteCount(currentPart.type, currentPart.id);
+            for (let i = 0; i < colorCount; i++) {
+                palettes.push(
+                    <div key={i} className="colors_container" >
+                        {this.generatePalette(i)}
+                    </div>
+                );
+            }
+        }
+
+        return palettes;
     }
 
     generatePartImage(figure: string, selected: boolean, type: MainTabId): ReactNode {
@@ -311,8 +328,11 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
             if (typeId != null) {
                 const partSet = BobbaEnvironment.getGame().avatarImager.getPartSet(typeId.type);
                 const parts: ReactNode[] = [];
-                const currentColor = this.calculateCurrentColor();
                 const currentPart = this.calculateCurrentPart();
+                let currentColor = this.calculateCurrentColor(0).toString();
+                if (currentPart != null && currentPart.colors.length > 1) {
+                    currentColor += "-" + this.calculateCurrentColor(1);
+                }
                 if (!typeId.required) {
                     parts.push(
                         <button onClick={this.handleRemovePart(typeId.type)} key={-1} className={(currentPart == null ? 'selected ' : '')}>
@@ -354,18 +374,18 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
 
     handleChangePart = (figure: string) => () => {
         const { look } = this.state;
-        const newLook = generateFigureString(extractFigureParts(look + "." + figure));
+         const newLook = generateFigureString(extractFigureParts(look + "." + figure));
 
         this.setState({
             look: newLook,
         });
     }
 
-    handleChangeColor = (colorId: number) => () => {
+    handleChangeColor = (paletteId: number, colorId: number) => () => {
         const { look } = this.state;
         const currentPart = this.calculateCurrentPart();
         if (currentPart != null) {
-            currentPart.colors[0] = colorId.toString();
+            currentPart.colors[paletteId] = colorId.toString();
             const newLook = generateFigureString(extractFigureParts(look + "." + generateFigureString([currentPart])));
             this.setState({
                 look: newLook,
@@ -425,8 +445,8 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
                                 {this.generatePlatform()}
                             </div>
                         </div>
-                        <div className="colors_container">
-                            {this.generatePalette()}
+                        <div className="palette_container">
+                            {this.generatePalettes()}
                         </div>
                     </div>
                     <div className="button_container">

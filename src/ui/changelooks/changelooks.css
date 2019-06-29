@@ -169,12 +169,17 @@
     bottom: 24px;
 }
 
+.avatar_editor .palette_container {
+    width: 332px;
+    box-sizing: border-box;
+    display: flex;
+    border-radius: 5px;
+}
+
 .avatar_editor .colors_container {
     background-color: #f0f0f0;
-    width: 332px;
-    margin-top: 9px;
+    margin: 9px auto;
     height: 118px;
-    border-radius: 5px;
     box-sizing: border-box;
     padding: 20px 7px;
     display: flex;

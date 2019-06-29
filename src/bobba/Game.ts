@@ -69,9 +69,9 @@ export default class Game {
     }
 
     handleUserData(id: number, name: string, look: string, motto: string) {
-        BobbaEnvironment.getGame().uiManager.log("Logged in!");
         this.uiManager.onSetUserData(this.userManager.setCurrentUser(id, name, motto, look));
         if (this.currentRoom == null) {
+            BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestMap());
         }
     }
