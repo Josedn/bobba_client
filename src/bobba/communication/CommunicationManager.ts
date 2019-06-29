@@ -50,7 +50,7 @@ export default class CommunicationManager implements IMessageHandler {
 
     handleMessage = (rawMessage: string): void => {
         const message = new ServerMessage(rawMessage);
-        const handler = this.requestHandlers[message.id]
+        const handler = this.requestHandlers[message.id];
         if (handler == null) {
             //console.log('No handler for: ' + message.id);
         } else {

@@ -2,6 +2,7 @@ import Game from "../Game";
 import Login from "../communication/outgoing/generic/Login";
 import User from "../users/User";
 import RequestChangeLooks from "../communication/outgoing/rooms/RequestChangeLooks";
+import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMotto";
 
 export default class UIManager {
     game: Game;
@@ -102,6 +103,13 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             this.onOpenChangeLooks(currentUser.look);
+        }
+    }
+
+    doChangeMotto(motto: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.communicationManager.sendMessage(new RequestChangeMotto(motto));
         }
     }
 

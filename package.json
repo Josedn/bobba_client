@@ -12,6 +12,7 @@
     "react-dom": "^16.8.6",
     "react-draggable": "^3.3.0",
     "react-scripts": "3.0.0",
+    "riek": "^1.1.0",
     "typescript": "3.4.5"
   },
   "scripts": {

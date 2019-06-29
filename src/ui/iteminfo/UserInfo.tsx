@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import { FLOOR_ITEM_PLACEHOLDER } from '../../bobba/graphics/GenericSprites';
+import MottoEdit from './MottoEdit';
 
 export type UserInfoProps = {
     name: string,
@@ -13,15 +14,19 @@ export type UserInfoProps = {
 
 class UserInfo extends Component<UserInfoProps> {
 
-    wave = () => {
+    handleWave = () => {
         const { userId } = this.props;
         if (userId !== -1) {
             BobbaEnvironment.getGame().uiManager.doWave();
         }
     }
 
-    changeLooks = () => {
+    handleChangeLooks = () => {
         BobbaEnvironment.getGame().uiManager.doOpenChangeLooks();
+    }
+
+    handleChangeMotto = (motto: string) => {
+        BobbaEnvironment.getGame().uiManager.doChangeMotto(motto);
     }
 
     render() {
@@ -35,18 +40,21 @@ class UserInfo extends Component<UserInfoProps> {
             <></>
         );
 
+        let mottoNode: ReactNode = <>{motto}</>;
+
         if (isMe) {
             buttons = (
                 <>
-                    <button onClick={this.changeLooks}>
+                    <button onClick={this.handleChangeLooks}>
                         Change looks
                     </button>
-                    <button onClick={this.wave}>
+                    <button onClick={this.handleWave}>
                         Wave
                     </button>
 
                 </>
             );
+            mottoNode = <MottoEdit motto={motto} onMottoChange={this.handleChangeMotto} />;
             className = "item_info";
         }
 
@@ -62,8 +70,8 @@ class UserInfo extends Component<UserInfoProps> {
                         <img src={src} alt={name} />
                     </div>
                     <hr />
-                    <p>
-                        {motto}
+                    <p className="motto">
+                        {mottoNode}
                     </p>
                 </div >
                 <div className="item_info_button_container">
