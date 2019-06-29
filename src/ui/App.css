@@ -9,7 +9,6 @@ body {
     color: #ffffff;
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
-    background-image: url(/images/temp.png);
 }
 
 canvas {

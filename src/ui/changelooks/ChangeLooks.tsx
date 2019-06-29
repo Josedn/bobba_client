@@ -316,7 +316,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
                 if (!typeId.required) {
                     parts.push(
                         <button onClick={this.handleRemovePart(typeId.type)} key={-1} className={(currentPart == null ? 'selected ' : '')}>
-                            <img src="images/avatar_editor/removeSelection.png" />
+                            <img src="images/avatar_editor/removeSelection.png" alt="Remove" />
                         </button>
                     );
                 }
