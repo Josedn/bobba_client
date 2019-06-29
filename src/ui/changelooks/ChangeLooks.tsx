@@ -265,16 +265,18 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
     generatePalettes(): ReactNode {
         const currentPart = this.calculateCurrentPart();
         const palettes: ReactNode[] = [];
+        let colorCount = 1;
         if (currentPart != null) {
-            const colorCount = BobbaEnvironment.getGame().avatarImager.getPartPaletteCount(currentPart.type, currentPart.id);
-            for (let i = 0; i < colorCount; i++) {
-                palettes.push(
-                    <div key={i} className="colors_container" >
-                        {this.generatePalette(i)}
-                    </div>
-                );
-            }
+            colorCount = BobbaEnvironment.getGame().avatarImager.getPartPaletteCount(currentPart.type, currentPart.id);
         }
+        for (let i = 0; i < colorCount; i++) {
+            palettes.push(
+                <div key={i} className="colors_container" >
+                    {this.generatePalette(i)}
+                </div>
+            );
+        }
+
 
         return palettes;
     }
@@ -374,7 +376,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
 
     handleChangePart = (figure: string) => () => {
         const { look } = this.state;
-         const newLook = generateFigureString(extractFigureParts(look + "." + figure));
+        const newLook = generateFigureString(extractFigureParts(look + "." + figure));
 
         this.setState({
             look: newLook,
