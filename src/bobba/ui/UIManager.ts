@@ -7,7 +7,7 @@ import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMot
 export default class UIManager {
     game: Game;
 
-    onLoggedIn: (user: User) => void;
+    onSetUserData: (user: User) => void;
     onSelectFurni: FurniInfo;
     onSelectUser: UserInfo;
     onCloseSelectFurni: (furniId: number) => void;
@@ -19,7 +19,7 @@ export default class UIManager {
 
     constructor(game: Game) {
         this.game = game;
-        this.onLoggedIn = () => { };
+        this.onSetUserData = () => { };
         this.onSelectFurni = () => { };
         this.onSelectUser = () => { };
         this.onLoadPost = () => { };
@@ -113,8 +113,8 @@ export default class UIManager {
         }
     }
 
-    setLoggedInHandler(handler: (user: User) => void) {
-        this.onLoggedIn = handler;
+    setOnSetUserDataHandler(handler: (user: User) => void) {
+        this.onSetUserData = handler;
     }
 
     setOnSelectFurni(handler: FurniInfo) {
