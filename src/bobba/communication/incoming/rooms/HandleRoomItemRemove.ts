@@ -7,7 +7,7 @@ export default class HandleRoomItemRemove implements IIncomingEvent {
         const itemId = request.popInt();
         const room = BobbaEnvironment.getGame().currentRoom;
         if (room != null) {
-            room.roomItemManager.removeItemFromRoom(itemId);
+            room.roomItemManager.removeItemFromRoom(itemId, true);
         }
     }
 }

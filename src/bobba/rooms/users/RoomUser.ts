@@ -102,7 +102,6 @@ export default class RoomUser implements Selectable {
         this.showSign(5);
         this.updateTexture();
         this.updateSpritePosition();
-        this.loadTextures();
     }
 
     _nextPrivateFrame() {
@@ -136,8 +135,12 @@ export default class RoomUser implements Selectable {
 
     handleClick = (id: number) => {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestLookAt(this.user.id));
+        this.showUserInfo(false);
+    }
+
+    showUserInfo = (isUpdate: boolean) => {
         const isMe = BobbaEnvironment.getGame().userManager.currentUser === this.user;
-        BobbaEnvironment.getGame().uiManager.onSelectUser(this.user.id, this.user.name, this.user.motto, this.user.look, isMe, this.avatarContainer.userInfoImage);
+        BobbaEnvironment.getGame().uiManager.onSelectUser(this.user.id, this.user.name, this.user.motto, this.user.look, isMe, this.avatarContainer.userInfoImage, isUpdate);
     }
 
     handleHover = (id: number) => {
@@ -203,7 +206,7 @@ export default class RoomUser implements Selectable {
         return this._signCounter > 0;
     }
 
-    loadTextures() {
+    loadTextures(): Promise<void> {
         return this.avatarContainer.initialize().then(() => {
             this.loaded = true;
             this.updateTexture();

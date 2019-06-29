@@ -244,8 +244,12 @@ export default abstract class RoomItem implements Selectable {
     abstract updatePosition2(x: number, y: number, z: number, rot: Direction, notifyServer: boolean): void;
 
     handleClick = (id: number) => {
+        this.showItemInfo(false);
+    }
+
+    showItemInfo(isUpdate: boolean) {
         if (this.baseItem != null) {
-            BobbaEnvironment.getGame().uiManager.onSelectFurni(this.id, this.baseId, this.baseItem.furniBase.itemData.name, this.baseItem.furniBase.itemData.description, this.baseItem.infoImage);
+            BobbaEnvironment.getGame().uiManager.onSelectFurni(this.id, this.baseId, this.baseItem.furniBase.itemData.name, this.baseItem.furniBase.itemData.description, this.baseItem.infoImage, isUpdate);
         }
     }
 

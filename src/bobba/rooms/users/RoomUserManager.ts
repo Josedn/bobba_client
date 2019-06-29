@@ -27,12 +27,17 @@ export default class RoomUserManager {
         const baseUser = BobbaEnvironment.getGame().userManager.setUser(id, name, motto, look);
         const roomUser = this.getUser(id);
         if (roomUser != null) {
-            this.removeUserFromRoom(id);
+            this.removeUserFromRoom(id, false);
         }
         const newUser = new RoomUser(baseUser, x, y, z, rot, this.room);
         this.room.engine.addUserContainer(id, newUser.container, newUser.shadowSprite);
         this.room.engine.addSelectableContainer(newUser.colorId, [newUser.selectableContainer], newUser);
         this.users[id] = newUser;
+        newUser.loadTextures().then(()=> {
+            if (roomUser != null) {
+                newUser.showUserInfo(true);
+            }
+        });
     }
 
     userWave(id: number) {
@@ -42,12 +47,14 @@ export default class RoomUserManager {
         }
     }
 
-    removeUserFromRoom(id: number) {
+    removeUserFromRoom(id: number, notify: boolean) {
         this.room.engine.removeUserSprite(id);
         const user = this.getUser(id);
         if (user != null) {
             this.room.engine.removeSelectableContainer(user.colorId);
-            BobbaEnvironment.getGame().uiManager.onCloseSelectUser(id);
+            if (notify) {
+                BobbaEnvironment.getGame().uiManager.onCloseSelectUser(id);
+            }
             delete (this.users[id]);
         }
     }

@@ -43,29 +43,35 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         });
     }
 
-    showFurniView = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement) => {
-        this.setState({
-            furniProps: {
-                itemId: id,
-                name,
-                description,
-                image: canvas2Image(image),
-            },
-            showing: Showing.FURNI
-        });
+    showFurniView = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement, isUpdate: boolean) => {
+        const currentId = this.state.furniProps.itemId;
+        if ((isUpdate && this.state.showing === Showing.FURNI && currentId === id) || !isUpdate) {
+            this.setState({
+                furniProps: {
+                    itemId: id,
+                    name,
+                    description,
+                    image: canvas2Image(image),
+                },
+                showing: Showing.FURNI
+            });
+        }
     }
 
-    showUserView = (id: number, name: string, motto: string, look: string, isMe: boolean, image: HTMLCanvasElement) => {
-        this.setState({
-            userProps: {
-                userId: id,
-                name,
-                motto,
-                image: canvas2Image(image),
-                isMe,
-            },
-            showing: Showing.USER
-        });
+    showUserView = (id: number, name: string, motto: string, look: string, isMe: boolean, image: HTMLCanvasElement, isUpdate: boolean) => {
+        const currentId = this.state.userProps.userId;
+        if ((isUpdate && this.state.showing === Showing.USER && currentId === id) || !isUpdate) {
+            this.setState({
+                userProps: {
+                    userId: id,
+                    name,
+                    motto,
+                    image: canvas2Image(image),
+                    isMe,
+                },
+                showing: Showing.USER
+            });
+        }
     }
 
     tryCloseFurniView = (itemId: number) => {

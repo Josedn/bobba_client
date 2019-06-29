@@ -28,7 +28,7 @@ export default class RoomItemManager {
     addFloorItemToRoom(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number) {
         const item = this.getItem(id);
         if (item != null) {
-            this.removeItemFromRoom(id);
+            this.removeItemFromRoom(id, false);
         }
         const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
         this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
@@ -36,6 +36,9 @@ export default class RoomItemManager {
             this.room.engine.removeRoomItemContainerSet(id);
             this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
             this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
+            if (item != null) {
+                item.showItemInfo(true);
+            }
         });
         this.items[id] = newItem;
     }
@@ -64,12 +67,14 @@ export default class RoomItemManager {
         }
     }
 
-    removeItemFromRoom(id: number) {
+    removeItemFromRoom(id: number, notify: boolean) {
         this.room.engine.removeRoomItemContainerSet(id);
         const item = this.getItem(id);
         if (item != null) {
             this.room.engine.removeSelectableContainer(item.colorId);
-            BobbaEnvironment.getGame().uiManager.onCloseSelectFurni(id);
+            if (notify) {
+                BobbaEnvironment.getGame().uiManager.onCloseSelectFurni(id);
+            }
             delete (this.items[id]);
         }
     }
