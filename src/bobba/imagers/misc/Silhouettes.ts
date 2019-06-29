@@ -23,6 +23,7 @@ export const generateSilhouette = (img: HTMLImageElement | HTMLCanvasElement, r:
 
             const pa = imageData.data[inpos++];
             if (pa !== 0) {
+                imageData.data[inpos - 1] = 255; //A
                 imageData.data[inpos - 2] = b; //B
                 imageData.data[inpos - 3] = g; //G
                 imageData.data[inpos - 4] = r; //R
