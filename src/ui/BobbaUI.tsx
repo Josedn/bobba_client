@@ -12,6 +12,7 @@ import ErrorSplash from './splash/ErrorSplash';
 import AvatarInfo from '../bobba/imagers/avatars/AvatarInfo';
 import { canvas2Image } from './misc/GraphicsUtilities';
 import ChangeLooks from './changelooks/ChangeLooks';
+import Inventory from './inventory/Inventory';
 
 type UserData = {
     id: number,
@@ -112,6 +113,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <TopBar />
                 {mainPage}
                 <ChangeLooks />
+                <Inventory />
                 <RoomInfo />
                 <ItemInfoContainer />
                 <Footer focuser={this.updateChatFocuser} headImage={userData.image} />
