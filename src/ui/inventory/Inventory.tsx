@@ -7,7 +7,7 @@ type InventoryContainerState = {
     visible: boolean,
 };
 const initialState = {
-    visible: false,
+    visible: true,
 };
 export default class InventoryContainer extends React.Component<InventoryContainerProps, InventoryContainerState> {
     constructor(props: InventoryContainerProps) {

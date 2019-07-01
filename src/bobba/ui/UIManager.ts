@@ -1,5 +1,5 @@
 import Game from "../Game";
-import Login from "../communication/outgoing/generic/Login";
+import RequestLogin from "../communication/outgoing/users/RequestLogin";
 import User from "../users/User";
 import RequestChangeLooks from "../communication/outgoing/rooms/RequestChangeLooks";
 import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMotto";
@@ -47,7 +47,7 @@ export default class UIManager {
     }
 
     doLogin(username: string, look: string) {
-        this.game.communicationManager.sendMessage(new Login(username, look));
+        this.game.communicationManager.sendMessage(new RequestLogin(username, look));
     }
 
     doFurniInteract(itemId: number) {

@@ -10,3 +10,4 @@ export const REQUEST_ITEM_MOVE = 19;
 export const REQUEST_ITEM_PICK_UP = 20;
 export const REQUEST_CHANGE_LOOKS = 21;
 export const REQUEST_CHANGE_MOTTO = 22;
+export const REQUEST_INVENTORY_ITEMS = 23;

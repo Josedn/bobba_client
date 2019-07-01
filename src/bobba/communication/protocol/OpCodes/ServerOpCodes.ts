@@ -9,3 +9,5 @@ export const ROOM_ITEM_DATA = 16;
 export const ITEM_REMOVE = 17;
 export const ITEM_STATE = 19;
 export const WALL_ITEM_DATA = 20;
+export const INVENTORY_ITEMS = 21;
+export const INVENTORY_ITEM_REMOVE = 22;

@@ -32,6 +32,10 @@ export default class ServerMessage {
         }
         return str;
     }
+
+    popBoolean(): boolean {
+        return this.popInt() === 1;
+    }
 }
 
 const SEPARATOR = '|';
