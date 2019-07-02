@@ -34,9 +34,11 @@ export default class RoomItemManager {
         if (item.baseItem != null) {
             let promise: Promise<RoomItem> | null = null;
             if (item.itemType === ItemType.FloorItem) {
-                promise = this.addFloorItemToRoom(item.id, 0, 0, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
+                const tile = this.room.engine.globalToTile(this.room.engine.lastMousePositionX, this.room.engine.lastMousePositionY);
+                promise = this.addFloorItemToRoom(item.id, tile.x, tile.y, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
             } else {
-                promise = this.addWallItemToRoom(item.id, 0, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
+                const local = this.room.engine.globalToLocal(this.room.engine.lastMousePositionX, this.room.engine.lastMousePositionY);
+                promise = this.addWallItemToRoom(item.id, local.x, local.y, item.baseItem.getUIViewDirection(), item.state, item.baseId);
             }
             promise.then(roomItem => {
                 this.currentPlacingItem = roomItem;
@@ -90,6 +92,9 @@ export default class RoomItemManager {
             this.removeItemFromRoom(id, false);
         }
         const newItem = new WallItem(id, x, y, rot, state, baseId, this.room);
+        if (this.currentPlacingItem != null && this.currentPlacingItem.id === id) {
+            BobbaEnvironment.getGame().inventory.tryPlaceBaseItem(baseId);
+        }
         this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
         this.items[id] = newItem;
         return newItem.loadBase().then(containerGroup => {
