@@ -50,6 +50,7 @@ export default class RoomItemManager {
     cancelRoomItemMovement(movingItem: RoomItem) {
         if (movingItem === this.currentPlacingItem) {
             this.removeItemFromRoom(movingItem.id, true);
+            this.currentPlacingItem = undefined;
             BobbaEnvironment.getGame().uiManager.doOpenInventory();
         }
     }
@@ -72,6 +73,7 @@ export default class RoomItemManager {
         const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
         if (this.currentPlacingItem != null && this.currentPlacingItem.id === id) {
             BobbaEnvironment.getGame().inventory.tryPlaceBaseItem(baseId);
+            this.currentPlacingItem = undefined;
         }
         this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
         this.items[id] = newItem;
@@ -94,6 +96,7 @@ export default class RoomItemManager {
         const newItem = new WallItem(id, x, y, rot, state, baseId, this.room);
         if (this.currentPlacingItem != null && this.currentPlacingItem.id === id) {
             BobbaEnvironment.getGame().inventory.tryPlaceBaseItem(baseId);
+            this.currentPlacingItem = undefined;
         }
         this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
         this.items[id] = newItem;
