@@ -73,6 +73,9 @@ export default class RoomItemManager {
                 item.showItemInfo(true);
             }
         });
+        if (this.currentPlacingItem != null && this.currentPlacingItem.id === id) {
+            BobbaEnvironment.getGame().inventory.tryPlaceBaseItem(baseId);
+        }
         this.items[id] = newItem;
         return newItem;
     }

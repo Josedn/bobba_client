@@ -1,9 +1,11 @@
 import UserItem from "./UserItem";
 import { ItemType } from "../imagers/furniture/FurniImager";
 import BobbaEnvironment from "../BobbaEnvironment";
+import BaseItem from "../items/BaseItem";
 
 export default class Inventory {
     items: UserItemDictionary;
+    lastPlacedBaseItem?: BaseItem;
     constructor() {
         this.items = {};
     }
@@ -34,9 +36,30 @@ export default class Inventory {
     tryPlaceItem(itemId: number) {
         const item = this.getItem(itemId);
         const { currentRoom } = BobbaEnvironment.getGame();
-        if (item != null && currentRoom != null) {
+        if (item != null && currentRoom != null && item.baseItem != null) {
             BobbaEnvironment.getGame().uiManager.onCloseInventory();
             currentRoom.roomItemManager.startRoomItemPlacement(item);
+            this.lastPlacedBaseItem = item.baseItem;
+        }
+    }
+
+    findItemByBase(baseId: number): UserItem | null {
+        for (let userItemId in this.items) {
+            const currentItem = this.items[userItemId];
+            if (currentItem.baseId === baseId) {
+                return currentItem;
+            }
+        }
+        return null;
+    }
+
+    tryPlaceBaseItem(baseId: number) {
+        const item = this.findItemByBase(baseId);
+        const { currentRoom } = BobbaEnvironment.getGame();
+        if (item != null && currentRoom != null && item.baseItem != null) {
+            BobbaEnvironment.getGame().uiManager.onCloseInventory();
+            currentRoom.roomItemManager.startRoomItemPlacement(item);
+            this.lastPlacedBaseItem = item.baseItem;
         }
     }
 
