@@ -241,7 +241,7 @@ export default abstract class RoomItem implements Selectable {
 
     abstract getItemType(): ItemType;
 
-    abstract updatePosition2(x: number, y: number, z: number, rot: Direction, notifyServer: boolean): void;
+    abstract updatePosition(x: number, y: number, z: number, rot: Direction): void;
 
     handleClick = (id: number) => {
         this.showItemInfo(false);

@@ -3,19 +3,28 @@ import RequestLogin from "../communication/outgoing/users/RequestLogin";
 import User from "../users/User";
 import RequestChangeLooks from "../communication/outgoing/rooms/RequestChangeLooks";
 import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMotto";
+import UserItem from "../inventory/UserItem";
 
 export default class UIManager {
     game: Game;
-
+    //Log in    
     onSetUserData: (user: User) => void;
+    //Room item info
     onSelectFurni: FurniInfo;
     onSelectUser: UserInfo;
     onCloseSelectFurni: (furniId: number) => void;
     onCloseSelectUser: (userId: number) => void;
-    onLoadPost: (text: string) => void;
+    //Misc
     onFocusChat: () => void;
+    onLoadPost: (text: string) => void;
     onGameStop: () => void;
+    //Change looks
     onOpenChangeLooks: (figure: string) => void;
+    onCloseChangeLooks: () => void;
+    //Inventory
+    onOpenInventory: () => void;
+    onUpdateInventory: (items: UserItem[]) => void;
+    onCloseInventory: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -28,6 +37,10 @@ export default class UIManager {
         this.onCloseSelectFurni = () => { };
         this.onCloseSelectUser = () => { };
         this.onOpenChangeLooks = () => { };
+        this.onCloseChangeLooks = () => { };
+        this.onOpenInventory = () => { };
+        this.onUpdateInventory = () => { };
+        this.onCloseInventory = () => { };
     }
 
     log(text: string) {
@@ -81,7 +94,14 @@ export default class UIManager {
     doFurniMove(itemId: number) {
         const { currentRoom } = this.game;
         if (currentRoom != null) {
-            currentRoom.roomItemManager.startFloorItemMovement(itemId);
+            currentRoom.roomItemManager.startRoomItemMovement(itemId);
+        }
+    }
+
+    doFurniPlace(itemId: number) {
+        const { currentRoom, inventory } = this.game;
+        if (currentRoom != null) {
+            inventory.tryPlaceItem(itemId);
         }
     }
 
@@ -103,6 +123,14 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             this.onOpenChangeLooks(currentUser.look);
+        }
+    }
+
+    doOpenInventory() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenInventory();
+            this.game.inventory.updateInventory();
         }
     }
 
@@ -147,6 +175,22 @@ export default class UIManager {
 
     setOnOpenChangeLooksHandler(handler: (figure: string) => void) {
         this.onOpenChangeLooks = handler;
+    }
+
+    setOnCloseChangeLooksHandler(handler: () => void) {
+        this.onCloseChangeLooks = handler;
+    }
+
+    setOnOpenInventoryHandler(handler: () => void) {
+        this.onOpenInventory = handler;
+    }
+
+    setOnUpdateInventoryHandler(handler: (items: UserItem[]) => void) {
+        this.onUpdateInventory = handler;
+    }
+
+    setOnCloseInventoryHandler(handler: () => void) {
+        this.onCloseInventory = handler;
     }
 }
 

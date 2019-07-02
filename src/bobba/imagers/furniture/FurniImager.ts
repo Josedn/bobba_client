@@ -93,7 +93,7 @@ export default class FurniImager {
                     for (let assetId in offset.assets) {
                         const asset = offset.assets[assetId];
                         const fixedName = asset.name.split(itemName + '_')[1] as String;
-                        if (fixedName.startsWith(size.toString())) {
+                        if (fixedName.startsWith(size.toString()) || fixedName.startsWith("icon_")) {
                             let resourceName = asset.name;
                             if (asset.source != null) {
                                 resourceName = asset.source;
@@ -179,8 +179,8 @@ export default class FurniImager {
     }
 }
 
-export type Size = 32 | 64;
-export type ItemType = 'roomitem' | 'wallitem';
+export type Size = 1 | 32 | 64;
+export enum ItemType { FloorItem = 'roomitem', WallItem = 'wallitem' }
 export interface NameColorPair { itemName: string, colorId: number };
 export type Direction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type State = { count: number, transitionTo?: number, transition?: number, };

@@ -30,8 +30,12 @@ export default class FurniBase {
         return directions;
     }
 
-    draw(direction: Direction, state: number, frame: number): HTMLCanvasElement {
-        const layers = this.getLayers(direction, state, frame);
+    drawIcon(): HTMLCanvasElement {
+        return this.draw(0, 0, 0, true);
+    }
+
+    draw(direction: Direction, state: number, frame: number, isIcon?: boolean): HTMLCanvasElement {
+        const layers = this.getLayers(direction, state, frame, isIcon);
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
 
@@ -176,12 +180,12 @@ export default class FurniBase {
         return element;
     }
 
-    getLayers(direction: Direction, state: number, frame: number): LayerData[] {
+    getLayers(direction: Direction, state: number, frame: number, isIcon?: boolean): LayerData[] {
         const chunks: LayerData[] = [];
         const { itemName, colorId } = splitItemNameAndColor(this.itemData.classname);
 
-        const visualization = this.offset.visualization[this.size];
-        for (let i = -1; i < parseInt(visualization.layerCount); i++) {
+        const visualization = this.offset.visualization[isIcon ? 1 : this.size];
+        for (let i = isIcon ? 0 : -1; i < parseInt(visualization.layerCount); i++) {
             let layerData: any = { id: i, frame: 0, resourceName: '' };
 
             if (i === -1) {
@@ -228,8 +232,8 @@ export default class FurniBase {
                     }
                 }
             }
+            layerData.resourceName = buildResourceName(itemName, isIcon ? 1 : this.size, i, direction, layerData.frame);
 
-            layerData.resourceName = buildResourceName(itemName, this.size, i, direction, layerData.frame);
             if (this.assets[layerData.resourceName] != null) {
                 layerData.asset = this.assets[layerData.resourceName];
                 chunks.push(layerData);
@@ -253,8 +257,10 @@ export interface LayerData {
 };
 
 const buildResourceName = (itemName: string, size: Size, layerId: number, direction: Direction, frame: number): string => {
-    let resourceName = itemName + "_" + size + "_" + getLayerName(layerId) + "_" + direction + "_" + frame;
-    return resourceName;
+    if (size === 1) {
+        return itemName + "_icon_" + getLayerName(layerId);
+    }
+    return itemName + "_" + size + "_" + getLayerName(layerId) + "_" + direction + "_" + frame;
 };
 
 const getLayerName = (layerId: number): string => {

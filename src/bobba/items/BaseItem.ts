@@ -10,6 +10,7 @@ export default class BaseItem {
     textures: TextureDictionary;
     solidTextures: TextureDictionary;
     infoImage: HTMLCanvasElement;
+    iconImage: HTMLCanvasElement;
 
     constructor(furniBase: FurniBase) {
         this.furniBase = furniBase;
@@ -21,7 +22,8 @@ export default class BaseItem {
             this._loadTexture(asset.image, assetId);
         }
 
-        this.infoImage = this.furniBase.draw(this._getUIViewDirection(this.furniBase.getAvailableDirections()), 0, 0);
+        this.infoImage = this.furniBase.draw(this.getUIViewDirection(), 0, 0);
+        this.iconImage = this.furniBase.drawIcon();
     }
 
     calculateNextDirection(current: Direction): Direction {
@@ -30,7 +32,8 @@ export default class BaseItem {
         return available[(pos + 1) % available.length];
     }
 
-    _getUIViewDirection(directions: Direction[]): Direction {
+    getUIViewDirection(): Direction {
+        const directions = this.furniBase.getAvailableDirections();
         if (directions.includes(4)) {
             return 4;
         }

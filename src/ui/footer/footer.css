@@ -26,6 +26,17 @@ footer .middle_section {
     justify-content: center;
 }
 
+@media (max-width: 1000px) {
+    footer .middle_section {
+        position: absolute;
+        bottom: 70px;
+        left: 20%;
+    }
+    footer .middle_section input[type=text] {
+        width: 100%;
+    }
+}
+
 footer button.user_face {
     padding: 0;
 }

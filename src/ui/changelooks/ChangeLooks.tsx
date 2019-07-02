@@ -151,6 +151,12 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
                 look
             });
         });
+
+        game.uiManager.setOnCloseChangeLooksHandler(() => {
+            this.setState({
+                visible: false,
+            });
+        });
     }
 
     getMainTabs(): ReactNode {

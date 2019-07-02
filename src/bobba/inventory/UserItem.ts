@@ -21,7 +21,7 @@ export default class UserItem {
 
     loadBase(): Promise<void> {
         return BobbaEnvironment.getGame().baseItemManager.getItem(this.itemType, this.baseId).then(baseItem => {
-            console.log('useritem loaded');
+            this.baseItem = baseItem;
         });
     }
 }

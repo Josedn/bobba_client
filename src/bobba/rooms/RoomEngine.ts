@@ -115,8 +115,9 @@ export default class RoomEngine {
     cancelRoomItemMove() {
         if (this.movingItem != null) {
             const { x, y, z, rot } = this.movingItemPosition;
-            this.movingItem.updatePosition2(x, y, z, rot, false);
+            this.movingItem.updatePosition(x, y, z, rot);
             this.movingItem.stopMovement();
+            this.room.roomItemManager.cancelRoomItemMovement(this.movingItem);
             this.movingItem = null;
         }
     }
@@ -126,14 +127,16 @@ export default class RoomEngine {
             if (this.movingItem instanceof FloorItem) {
                 const { x, y } = this.globalToTile(globalX, globalY);
                 if (this.canPlaceFloorItem(x, y, this.movingItem)) {
-                    this.movingItem.updatePosition2(x, y, 0, this.movingItemPosition.rot, true);
+                    this.movingItem.updatePosition(x, y, 0, this.movingItemPosition.rot);
+                    this.room.roomItemManager.finishRoomItemMovement(this.movingItem);
                 } else {
                     this.cancelRoomItemMove();
                 }
             } else {
                 const { x, y } = this.globalToLocal(globalX, globalY);
                 if (this.canPlaceWallItem(globalX, globalY)) {
-                    this.movingItem.updatePosition2(x, y, 0, this.calculateWallDirection(globalX, globalY), true);
+                    this.movingItem.updatePosition(x, y, 0, this.calculateWallDirection(globalX, globalY));
+                    this.room.roomItemManager.finishRoomItemMovement(this.movingItem);
                 } else {
                     this.cancelRoomItemMove();
                 }
@@ -151,12 +154,12 @@ export default class RoomEngine {
             if (this.movingItem instanceof FloorItem) {
                 const { x, y } = this.globalToTile(globalX, globalY);
                 if (this.canPlaceFloorItem(x, y, this.movingItem)) {
-                    this.movingItem.updatePosition2(x, y, 0, this.movingItemPosition.rot, false);
+                    this.movingItem.updatePosition(x, y, 0, this.movingItemPosition.rot);
                 }
             } else {
                 const { x, y } = this.globalToLocal(globalX, globalY);
                 if (this.canPlaceWallItem(globalX, globalY)) {
-                    this.movingItem.updatePosition2(x, y, 0, this.calculateWallDirection(globalX, globalY), false);
+                    this.movingItem.updatePosition(x, y, 0, this.calculateWallDirection(globalX, globalY));
                 }
             }
         }

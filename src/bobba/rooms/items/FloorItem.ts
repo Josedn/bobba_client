@@ -30,16 +30,13 @@ export default class FloorItem extends RoomItem {
         }
     }
 
-    updatePosition2(tileX: number, tileY: number, tileZ: number, rot: Direction, notifyServer: boolean) {
+    updatePosition(tileX: number, tileY: number, tileZ: number, rot: Direction) {
         this._x = tileX;
         this._y = tileY;
         this._z = tileZ;
         this.rot = rot;
         this.updateSpritePosition();
         this.updateTextures();
-        if (notifyServer) {
-            BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestFurniMove(this.id, this._x, this._y, this.rot));
-        }
     }
 
     calculateZIndex(zIndex: number, layerIndex: number): number {
@@ -47,7 +44,7 @@ export default class FloorItem extends RoomItem {
     }
 
     getItemType(): ItemType {
-        return 'roomitem';
+        return ItemType.FloorItem;
     }
 
     rotate() {
