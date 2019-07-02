@@ -32,12 +32,16 @@ export default class RoomItemManager {
 
     startRoomItemPlacement(item: UserItem) {
         if (item.baseItem != null) {
+            let promise: Promise<RoomItem> | null = null;
             if (item.itemType === ItemType.FloorItem) {
-                this.currentPlacingItem = this.addFloorItemToRoom(item.id, 0, 0, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
+                promise = this.addFloorItemToRoom(item.id, 0, 0, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
             } else {
-                this.currentPlacingItem = this.addWallItemToRoom(item.id, 0, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
+                promise = this.addWallItemToRoom(item.id, 0, 0, item.baseItem.getUIViewDirection(), item.state, item.baseId);
             }
-            this.startRoomItemMovement(item.id);
+            promise.then(roomItem => {
+                this.currentPlacingItem = roomItem;
+                this.startRoomItemMovement(item.id);
+            });
         }
     }
 
@@ -58,45 +62,47 @@ export default class RoomItemManager {
         }
     }
 
-    addFloorItemToRoom(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number): RoomItem {
+    addFloorItemToRoom(id: number, x: number, y: number, z: number, rot: Direction, state: number, baseId: number): Promise<RoomItem> {
         const item = this.getItem(id);
         if (item != null) {
             this.removeItemFromRoom(id, false);
         }
         const newItem = new FloorItem(id, x, y, z, rot, state, baseId, this.room);
+        if (this.currentPlacingItem != null && this.currentPlacingItem.id === id) {
+            BobbaEnvironment.getGame().inventory.tryPlaceBaseItem(baseId);
+        }
         this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
-        newItem.loadBase().then(containerGroup => {
+        this.items[id] = newItem;
+        return newItem.loadBase().then(containerGroup => {
             this.room.engine.removeRoomItemContainerSet(id);
             this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
             this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
             if (item != null) {
                 item.showItemInfo(true);
             }
+            return newItem;
         });
-        if (this.currentPlacingItem != null && this.currentPlacingItem.id === id) {
-            BobbaEnvironment.getGame().inventory.tryPlaceBaseItem(baseId);
-        }
-        this.items[id] = newItem;
-        return newItem;
     }
 
-    addWallItemToRoom(id: number, x: number, y: number, rot: Direction, state: number, baseId: number): RoomItem {
+    addWallItemToRoom(id: number, x: number, y: number, rot: Direction, state: number, baseId: number): Promise<RoomItem> {
         const item = this.getItem(id);
         if (item != null) {
             this.removeItemFromRoom(id, false);
         }
         const newItem = new WallItem(id, x, y, rot, state, baseId, this.room);
         this.room.engine.addRoomItemContainerSet(id, newItem.containers); //placeholder
-        newItem.loadBase().then(containerGroup => {
+        this.items[id] = newItem;
+        return newItem.loadBase().then(containerGroup => {
             this.room.engine.removeRoomItemContainerSet(id);
             this.room.engine.addRoomItemContainerSet(id, containerGroup.containers);
             this.room.engine.addSelectableContainer(newItem.colorId, containerGroup.selectableContainers, newItem);
             if (item != null) {
                 item.showItemInfo(true);
             }
+            return newItem;
         });
-        this.items[id] = newItem;
-        return newItem;
+
+
     }
 
     itemSetState(itemId: number, state: number) {
