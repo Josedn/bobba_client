@@ -18,23 +18,30 @@ export default class FloorItem extends RoomItem {
     }
 
     updateSpritePosition() {
-        const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z);
+        const local = this.room.engine.tileToLocal(this._x, this._y, this._z);
+        let x = local.x + DRAWING_OFFSET_X;
+        let y = local.y + DRAWING_OFFSET_Y;
+        if (this.drawAsIcon) {
+            x = this._x;
+            y = this._y;
+        }
         for (let container of this.containers) {
-            container.x = x + DRAWING_OFFSET_X;
-            container.y = y + DRAWING_OFFSET_Y;
+            container.x = x;
+            container.y = y;
         }
 
         for (let container of this.selectableContainers) {
-            container.x = x + DRAWING_OFFSET_X;
-            container.y = y + DRAWING_OFFSET_Y;
+            container.x = x;
+            container.y = y;
         }
     }
 
-    updatePosition(tileX: number, tileY: number, tileZ: number, rot: Direction) {
+    updatePosition(tileX: number, tileY: number, tileZ: number, rot: Direction, drawAsIcon: boolean) {
         this._x = tileX;
         this._y = tileY;
         this._z = tileZ;
         this.rot = rot;
+        this.drawAsIcon = drawAsIcon;
         this.updateSpritePosition();
         this.updateTextures();
     }

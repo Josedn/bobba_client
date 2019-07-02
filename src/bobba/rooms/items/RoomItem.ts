@@ -27,6 +27,7 @@ export default abstract class RoomItem implements Selectable {
     selectableContainers: Container[];
     baseItem: BaseItem | null;
     loaded: boolean;
+    drawAsIcon: boolean;
 
     colorId: number;
 
@@ -48,6 +49,7 @@ export default abstract class RoomItem implements Selectable {
         this._frameCounter = 0;
 
         this.loaded = false;
+        this.drawAsIcon = false;
         this.colorId = Math.floor(Math.random() * (16777215 - 1)) + 1;
 
         const placeholderContainer = new Container();
@@ -140,69 +142,85 @@ export default abstract class RoomItem implements Selectable {
             let actualState = 0;
             let actualFrame = 0;
             let layerIndex = 0;
-            if (this.baseItem.furniBase.states[this._state] != null) {
-                actualState = this._state;
-                actualFrame = this._frame % this.baseItem.furniBase.states[this._state].count;
-            }
-            for (let layer of this.baseItem.furniBase.getLayers(this.rot, actualState, actualFrame)) {
-                const texture = this.baseItem.getTexture(layer.resourceName);
-                const selectableTexture = this.baseItem.getSolidTexture(layer.resourceName);
-                if (texture != null) {
-                    const sprite = this.sprites[layerIndex];
-                    const selectableSprite = this.selectableSprites[layerIndex];
-                    const zIndex = layer.z || 0;
+            if (this.drawAsIcon) {
+                const sprite = this.sprites[layerIndex];
+                const container = this.containers[layerIndex];
 
-                    sprite.texture = texture;
-                    sprite.visible = true;
+                sprite.texture = this.baseItem.iconTexture;
+                sprite.x = -(this.baseItem.iconTexture.width / 2);
+                sprite.y = -(this.baseItem.iconTexture.height / 2);
+                sprite.scale.x = 1;
+                sprite.blendMode = BLEND_MODES.NORMAL;
+                sprite.alpha = 1.0;
+                sprite.tint = 0xFFFFFF;
 
-                    if (selectableTexture != null && !layer.ignoreMouse) {
-                        selectableSprite.texture = selectableTexture;
-                        selectableSprite.visible = true;
+                container.zIndex = this.calculateZIndex(0, layerIndex);
+                layerIndex++;
+            } else {
+                if (this.baseItem.furniBase.states[this._state] != null) {
+                    actualState = this._state;
+                    actualFrame = this._frame % this.baseItem.furniBase.states[this._state].count;
+                }
+                for (let layer of this.baseItem.furniBase.getLayers(this.rot, actualState, actualFrame)) {
+                    const texture = this.baseItem.getTexture(layer.resourceName);
+                    const selectableTexture = this.baseItem.getSolidTexture(layer.resourceName);
+                    if (texture != null) {
+                        const sprite = this.sprites[layerIndex];
+                        const selectableSprite = this.selectableSprites[layerIndex];
+                        const zIndex = layer.z || 0;
+
+                        sprite.texture = texture;
+                        sprite.visible = true;
+
+                        if (selectableTexture != null && !layer.ignoreMouse) {
+                            selectableSprite.texture = selectableTexture;
+                            selectableSprite.visible = true;
+                        }
+
+                        sprite.x = -layer.asset.x;
+                        sprite.y = -layer.asset.y;
+
+                        selectableSprite.x = -layer.asset.x;
+                        selectableSprite.y = -layer.asset.y;
+
+                        if (layer.asset.isFlipped) {
+                            sprite.x = layer.asset.x;
+                            sprite.scale.x = -1;
+
+                            selectableSprite.x = layer.asset.x;
+                            selectableSprite.scale.x = -1;
+                        } else {
+                            sprite.scale.x = 1;
+
+                            selectableSprite.scale.x = 1;
+                        }
+
+                        if (layer.ink != null && layer.ink === 'ADD') {
+                            sprite.blendMode = BLEND_MODES.ADD;
+                        } else {
+                            sprite.blendMode = BLEND_MODES.NORMAL;
+                        }
+
+                        if (layer.alpha != null) {
+                            sprite.alpha = layer.alpha / 255;
+                        } else {
+                            sprite.alpha = 1.0;
+                        }
+
+                        if (layer.color != null) {
+                            sprite.tint = layer.color;
+                        } else {
+                            sprite.tint = 0xFFFFFF;
+                        }
+
+                        //////////////////// GENERATE A COLOR FOR EACH FURNI
+                        selectableSprite.tint = this.colorId;
+                        ////////////////////
+
+                        this.containers[layerIndex].zIndex = this.calculateZIndex(zIndex, layerIndex);
+                        this.selectableContainers[layerIndex].zIndex = this.containers[layerIndex].zIndex;
+                        layerIndex++;
                     }
-
-                    sprite.x = -layer.asset.x;
-                    sprite.y = -layer.asset.y;
-
-                    selectableSprite.x = -layer.asset.x;
-                    selectableSprite.y = -layer.asset.y;
-
-                    if (layer.asset.isFlipped) {
-                        sprite.x = layer.asset.x;
-                        sprite.scale.x = -1;
-
-                        selectableSprite.x = layer.asset.x;
-                        selectableSprite.scale.x = -1;
-                    } else {
-                        sprite.scale.x = 1;
-
-                        selectableSprite.scale.x = 1;
-                    }
-
-                    if (layer.ink != null && layer.ink === 'ADD') {
-                        sprite.blendMode = BLEND_MODES.ADD;
-                    } else {
-                        sprite.blendMode = BLEND_MODES.NORMAL;
-                    }
-
-                    if (layer.alpha != null) {
-                        sprite.alpha = layer.alpha / 255;
-                    } else {
-                        sprite.alpha = 1.0;
-                    }
-
-                    if (layer.color != null) {
-                        sprite.tint = layer.color;
-                    } else {
-                        sprite.tint = 0xFFFFFF;
-                    }
-
-                    //////////////////// GENERATE A COLOR FOR EACH FURNI
-                    selectableSprite.tint = this.colorId;
-                    ////////////////////
-
-                    this.containers[layerIndex].zIndex = this.calculateZIndex(zIndex, layerIndex);
-                    this.selectableContainers[layerIndex].zIndex = this.containers[layerIndex].zIndex;
-                    layerIndex++;
                 }
             }
             for (let i = layerIndex; i < this.sprites.length; i++) {
@@ -241,7 +259,7 @@ export default abstract class RoomItem implements Selectable {
 
     abstract getItemType(): ItemType;
 
-    abstract updatePosition(x: number, y: number, z: number, rot: Direction): void;
+    abstract updatePosition(x: number, y: number, z: number, rot: Direction, drawAsIcon: boolean): void;
 
     handleClick = (id: number) => {
         this.showItemInfo(false);

@@ -11,6 +11,7 @@ export default class BaseItem {
     solidTextures: TextureDictionary;
     infoImage: HTMLCanvasElement;
     iconImage: HTMLCanvasElement;
+    iconTexture: Texture;
 
     constructor(furniBase: FurniBase) {
         this.furniBase = furniBase;
@@ -24,6 +25,7 @@ export default class BaseItem {
 
         this.infoImage = this.furniBase.draw(this.getUIViewDirection(), 0, 0);
         this.iconImage = this.furniBase.drawIcon();
+        this.iconTexture = BobbaEnvironment.getGame().engine.getTextureFromImage(this.iconImage);
     }
 
     calculateNextDirection(current: Direction): Direction {
