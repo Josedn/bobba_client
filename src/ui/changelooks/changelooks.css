@@ -14,6 +14,19 @@
     z-index: 200;
 }
 
+.avatar_editor button.close {
+    position: absolute;
+    top: 7px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+    font-size: 0.8em;
+}
+
 .avatar_editor h2 {
     font: inherit;
     margin: 0;

@@ -57,6 +57,12 @@ export default class InventoryContainer extends React.Component<InventoryContain
         BobbaEnvironment.getGame().uiManager.doFurniPlace(selectedId);
     }
 
+    close = () => {
+        this.setState({
+            visible: false,
+        });
+    }
+
     generateGrid(): ReactNode {
         const { selectedId, items, currentType } = this.state;
         const stackableItems: { [id: number]: number } = {};
@@ -144,6 +150,9 @@ export default class InventoryContainer extends React.Component<InventoryContain
         return (
             <Draggable defaultClassName="inventory" handle=".title">
                 <div>
+                    <button className="close" onClick={this.close}>
+                        X
+                    </button>
                     <h2 className="title">
                         Inventory
                     </h2>

@@ -434,6 +434,9 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
         return (
             <Draggable defaultClassName="avatar_editor" handle=".title">
                 <div>
+                    <button className="close" onClick={this.handleClose}>
+                        X
+                    </button>
                     <h2 className="title">
                         Change your looks
                     </h2>
