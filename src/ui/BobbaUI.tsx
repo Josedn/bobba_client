@@ -13,6 +13,7 @@ import AvatarInfo from '../bobba/imagers/avatars/AvatarInfo';
 import { canvas2Image } from './misc/GraphicsUtilities';
 import ChangeLooks from './changelooks/ChangeLooks';
 import Inventory from './inventory/Inventory';
+import Catalogue from './catalogue/Catalogue';
 
 type UserData = {
     id: number,
