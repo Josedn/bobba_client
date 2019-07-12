@@ -1,16 +1,173 @@
 .catalogue {
+    font-family: 'Volter';
+    font-size: 9px;
     position: absolute;
     left: 20px;
     right: 0;
     top: 15px;
-    height: 300px;
-    width: 390px;
-    background: #418db0;
-    border: 2px groove #69a4c0;
-    box-sizing: border-box;
-    border-radius: 5px;
-    text-align: center;
+    height: 480px;
+    width: 520px;
     z-index: 200;
-    padding: 0px 5px;
+    display: flex;
 }
 
+.catalogue .navigator {
+    background: #418db0;
+    border: 2px groove #69a4c0;
+    border-radius: 5px;
+    box-sizing: border-box;
+    height: 405px;
+    width: 167px;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    z-index: 0;
+    padding: 4px;
+}
+
+.catalogue .navigator h2 {
+    font: inherit;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.catalogue .navigator hr {
+    border: 1px solid #69a4c0;
+    border-bottom: none;
+    margin: 3px;
+}
+
+.catalogue .navigator .tab_container {
+    width: 100%;
+    height: 340px;
+    background: #ffffff;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+}
+
+.catalogue .navigator .tab_container button {
+    font: inherit;
+    width: 100%;
+    height: 21px;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #000000;
+    display: flex;
+    padding: 0;
+}
+
+.catalogue .navigator .tab_container button.second_tab {
+    background: #d2f0f3;
+}
+
+.catalogue .navigator .tab_container button.open {
+    font-weight: bold;
+}
+
+.catalogue .navigator .tab_container button.selected, .catalogue .navigator .tab_container button:hover {
+    background: #72d8e5;
+}
+
+.catalogue .navigator .tab_container button .icon {
+    width: 23px;
+    height: 20px;
+    display: flex;
+}
+
+.catalogue .navigator .tab_container button.main_tab .icon {
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    border-right: 1px solid rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+}
+
+.catalogue .navigator .tab_container button .icon img {
+    object-fit: none;
+    margin: auto;
+}
+
+.catalogue .navigator .tab_container button span {
+    margin: auto 0;
+    padding: 0 7px;
+}
+
+.catalogue .content {
+    background: url('/images/catalogue/layout_bg.png') no-repeat;
+    position: absolute;
+    left: 0;
+    width: 360px;
+    height: 480px;
+    z-index: 1;
+    color: #000000;
+}
+
+.catalogue .wrapper {
+    padding: 45px 20px;
+    width: 315px;
+}
+
+.catalogue .wrapper .header_container {
+    width: 100%;
+    height: 60px;
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.catalogue .wrapper .header_container img {
+    margin: 0 auto;
+    object-fit: none;
+}
+
+.catalogue .wrapper .description {
+    margin-bottom: 15px;
+    height: 70px;
+    margin: 0 auto;
+}
+
+.catalogue .wrapper .second_row {
+    display: flex;
+}
+
+.catalogue .wrapper .second_row .grid_container {
+    width: 50%;
+    height: 250px;
+}
+
+.catalogue .wrapper .second_row .grid_container .title {
+    font-weight: bold;
+}
+
+.catalogue .wrapper .second_row .grid_container .grid {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.catalogue .wrapper .second_row .grid_container .grid button {
+    width: 38px;
+    height: 38px;
+    border-radius: 5px;
+    box-sizing: border-box;
+    border: none;
+    margin: 2px;
+    background-color: #ffffff;
+    position: relative;
+    padding: 1px;
+    font: inherit;
+    font-size: 0.55em;
+}
+
+.catalogue .wrapper .second_row .grid_container .grid button:hover, .catalogue .wrapper .second_row .grid_container .grid button.selected {
+    border: 1px solid #9d9d9d;
+    border-radius: 10px;
+}
+
+.catalogue .wrapper .second_row .item_description {
+    width: 50%;
+    height: 250px;
+}

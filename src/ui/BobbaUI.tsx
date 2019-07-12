@@ -114,6 +114,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <TopBar />
                 {mainPage}
                 <ChangeLooks />
+                <Catalogue />
                 <Inventory />
                 <RoomInfo />
                 <ItemInfoContainer />

@@ -68,7 +68,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             BobbaEnvironment.getGame().uiManager.postLoading("Connecting to server");
-            return this.communicationManager.connect("bobba.io", 8080, true);
+            return this.communicationManager.connect("localhost", 8080, false);
         });
     }
 
