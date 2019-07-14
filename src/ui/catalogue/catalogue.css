@@ -25,6 +25,18 @@
     padding: 4px;
 }
 
+.catalogue button.close {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+}
+
 .catalogue .navigator h2 {
     font: inherit;
     margin: 0;
@@ -171,3 +183,47 @@
     width: 50%;
     height: 250px;
 }
+
+.catalogue .wrapper .second_row .item_description .image_container {
+    height: 165px;
+    display: flex;
+    overflow: hidden;
+}
+
+.catalogue .wrapper .second_row .description_container {
+    height: 40px;
+    overflow: hidden;
+    padding: 1px;
+}
+
+.catalogue .wrapper .second_row .button_container {
+    background-color: #ffc900;
+    padding: 10px;
+    border-radius: 10px;
+    display: flex;
+}
+
+.catalogue .wrapper .second_row .button_container span {
+    margin: auto;
+}
+
+.catalogue .wrapper .second_row .button_container button {
+    margin: auto;
+    font: inherit;
+    height: 20px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    padding: 0 7px;
+    border-radius: 3px;
+}
+
+.catalogue .wrapper .second_row .button_container button:hover {
+    background: #efefef;
+}
+
+.catalogue .wrapper .second_row .item_description .image_container img {
+    object-fit: none;
+    margin: auto;
+}
+
+.catalogue .wrapper .second_row .item_description .description_container {}
