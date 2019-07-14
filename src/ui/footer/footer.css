@@ -79,7 +79,7 @@ footer input[type=text] {
     box-sizing: border-box;
     color: #000000;
     border: 1px solid #999999;
-    margin: 0 auto;
+    margin: 0 0 0 12px;
 }
 
 footer ::placeholder {

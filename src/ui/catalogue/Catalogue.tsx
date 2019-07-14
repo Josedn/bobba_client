@@ -303,6 +303,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 <Draggable handle=".handle">
                     <div className="catalogue">
                         <div className="content">
+                            <div className="handle" />
                             {this.generatePage()}
                         </div>
                         <div className="navigator">

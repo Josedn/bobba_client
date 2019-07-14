@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import Draggable from "react-draggable";
 import './confirmpurchase.css';
 
@@ -6,11 +6,16 @@ type ConfirmPurchaseProps = {};
 type ConfirmPurchaseState = {
     visible: boolean;
 };
-const initialState = {
+const initialState: ConfirmPurchaseState = {
     visible: true,
 };
 
-export default class ConfirmPurchase extends React.Component {
+export default class ConfirmPurchase extends React.Component<ConfirmPurchaseProps, ConfirmPurchaseState> {
+
+    constructor(props: ConfirmPurchaseProps) {
+        super(props);
+        this.state = initialState;
+    }
 
     render() {
         return (

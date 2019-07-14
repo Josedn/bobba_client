@@ -114,6 +114,12 @@
     color: #000000;
 }
 
+.catalogue .content .handle {
+    position: absolute;
+    width: 100%;
+    height: 80px;
+}
+
 .catalogue .wrapper {
     padding: 45px 20px;
     width: 315px;
