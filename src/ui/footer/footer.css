@@ -72,4 +72,16 @@ footer button:hover {
 
 footer input[type=text] {
     width: 350px;
+    font: inherit;
+    height: 40px;
+    padding: 0 0.5em;
+    border-radius: 7px;
+    box-sizing: border-box;
+    color: #000000;
+    border: 1px solid #999999;
+    margin: 0 auto;
+}
+
+footer ::placeholder {
+    color: #777777;
 }

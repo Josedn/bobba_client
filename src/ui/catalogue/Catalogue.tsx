@@ -13,10 +13,12 @@ type CatalogueIndex = {
 type CataloguePage = {
     id: number;
     layout: string;
-    headlineImage: string;
-    teaserImage: string;
+    imageHeadline: string;
+    imageTeaser: string;
     textHeader: string;
     textDetails: string;
+    textMisc: string;
+    textMisc2: string;
 };
 
 type CatalogueProps = {};
@@ -30,13 +32,26 @@ type CatalogueState = {
     visible: boolean;
 };
 
+const dummyFrontPage: CataloguePage = {
+    id: 1,
+    layout: "frontpage",
+    imageHeadline: "catalog_frontpage_headline_shop_ES",
+    imageTeaser: "fatherhabbo_300x187_girl",
+    textHeader: "Catálogo de Habbo Lan",
+    textDetails: "Yeah... it works",
+    textMisc: "How to get Habbo Credits",
+    textMisc2: "You can get Habbo Credits via Prepaid Cards, Home Phone, Credit Card, Mobile, completing offers and More!",
+};
+
 const dummyPage: CataloguePage = {
     id: 80,
     layout: "default",
-    headlineImage: "catalog_wired_header2_es",
-    teaserImage: "ctlg_pic_wired_triggers",
+    imageHeadline: "catalog_wired_header2_es",
+    imageTeaser: "ctlg_pic_wired_triggers",
     textHeader: "Los Causantes permiten definir qué se necesita que pase para que tenga lugar un Efecto. Para programar un Causante, colócalo en una Sala, haz doble clic en él y ponlo en marcha. Necesitarás apilar un Efecto sobre un Causante.",
     textDetails: "¡Haz click en cada objeto para ver cómo funciona!",
+    textMisc: "",
+    textMisc2: "",
 };
 
 const dummyPages: CatalogueIndex[] = [
@@ -87,7 +102,7 @@ const dummyPages: CatalogueIndex[] = [
 
 const initialState = {
     pages: dummyPages,
-    currentPage: dummyPage,
+    currentPage: dummyFrontPage,
     currentPageId: -1,
     currentTabId: -1,
     currentItemId: -1,
@@ -160,7 +175,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             return (
                 <>
                     <div className="image_container">
-                        <img src={"http://images.bobba.io/c_images/catalogue/" + currentPage.teaserImage + ".gif"} alt="Furniture" />
+                        <img src={"http://images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" />
                     </div>
                     <div className="description_container">
                         {currentPage.textDetails}
@@ -207,30 +222,70 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         );
     }
 
+    generateFrontPage(currentPage: CataloguePage): ReactNode {
+        return (
+            <>
+                <div className="frontpage_teaser">
+                    <img alt="border" src="http://images.bobba.io/c_images/catalogue/front_page_border.gif" className="border" />
+                    <img alt="article" src="http://images.bobba.io/c_images/Top_Story_Images/fatherhabbo_300x187_girl.gif" className="top_story" />
+                    <h2>
+                        {currentPage.textHeader}
+                    </h2>
+                    <p>
+                        {currentPage.textDetails}
+                    </p>
+                </div>
+                <div className="frontpage_content">
+                    <h2>{currentPage.textMisc}</h2>
+                    <p>{currentPage.textMisc2}</p>
+                </div>
+                <div className="frontpage_vouchers">
+                    <span>Voucher code:</span>
+                    <input type="text" name="voucher" />
+                    <button>Redeem</button>
+                </div>
+            </>
+        );
+    }
+
+    generateDefaultPage(currentPage: CataloguePage): ReactNode {
+        return (
+            <>
+                <div className="description">
+                    {currentPage.textHeader}
+                </div>
+                <div className="second_row">
+                    <div className="grid_container">
+                        <div className="title">
+                            Elige un furni
+                            </div>
+                        <div className="grid">
+                            {this.generateGrid()}
+                        </div>
+                    </div>
+                    <div className="item_description">
+                        {this.generateDescription()}
+                    </div>
+                </div>
+            </>
+        );
+    }
+
     generatePage(): ReactNode {
         const { currentPage } = this.state;
         if (currentPage != null) {
+            let page = null;
+            if (currentPage.layout === 'frontpage') {
+                page = this.generateFrontPage(currentPage);
+            } else {
+                page = this.generateDefaultPage(currentPage);
+            }
             return (
                 <div className="wrapper">
                     <div className="header_container">
-                        <img alt="Furniture" src={"http://images.bobba.io/c_images/catalogue/" + currentPage.headlineImage + ".gif"} />
+                        <img alt="Furniture" src={"http://images.bobba.io/c_images/catalogue/" + currentPage.imageHeadline + ".gif"} />
                     </div>
-                    <div className="description">
-                        {currentPage.textHeader}
-                    </div>
-                    <div className="second_row">
-                        <div className="grid_container">
-                            <div className="title">
-                                Elige un furni
-                        </div>
-                            <div className="grid">
-                                {this.generateGrid()}
-                            </div>
-                        </div>
-                        <div className="item_description">
-                            {this.generateDescription()}
-                        </div>
-                    </div>
+                    {page}
                 </div>
             );
         }
@@ -238,7 +293,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     }
     render() {
         return (
-            <Draggable>
+            <Draggable handle=".handle">
                 <div className="catalogue">
                     <div className="content">
                         {this.generatePage()}
@@ -247,7 +302,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                         <button className="close">
                             X
                         </button>
-                        <h2>Shop</h2>
+                        <h2 className="handle">Shop</h2>
                         <hr />
                         <div className="tab_container">
                             {this.generateTabs()}

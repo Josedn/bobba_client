@@ -45,9 +45,29 @@
     font-size: 1.5em;
 }
 
+
 .main_content input[type=text] {
+    font: inherit;
+    height: 40px;
+    padding: 0 0.5em;
+    border-radius: 7px;
+    box-sizing: border-box;
+    color: #000000;
+    border: 1px solid #999999;
     margin: 0 auto;
     width: 250px;
+}
+
+.main_content input[type=text].wrong {
+    border: 2px solid #aa0000;
+}
+
+.main_content .wrong::placeholder {
+    color: #ac4141;
+}
+
+.main_content ::placeholder {
+    color: #777777;
 }
 
 .main_content .look_item {
