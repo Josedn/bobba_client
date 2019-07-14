@@ -1,6 +1,7 @@
 import React, { ReactNode, Fragment } from "react";
 import Draggable from "react-draggable";
 import './catalogue.css';
+import ConfirmPurchase from "./ConfirmPurchase";
 
 type CatalogueIndex = {
     id: number;
@@ -102,7 +103,7 @@ const dummyPages: CatalogueIndex[] = [
 
 const initialState = {
     pages: dummyPages,
-    currentPage: dummyFrontPage,
+    currentPage: dummyPage,
     currentPageId: -1,
     currentTabId: -1,
     currentItemId: -1,
@@ -146,17 +147,18 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
 
     handleChangePage = (id: number) => () => {
         const { pages, currentTabId } = this.state;
-        const isMain = pages.some(value => value.id === id);
+        const isMain = pages.find(value => value.id === id);
+
         if (isMain) {
-            if (currentTabId === id) {
+            if (isMain.children.length > 0 && currentTabId !== id) {
                 this.setState({
                     currentPageId: id,
-                    currentTabId: -1,
+                    currentTabId: id,
                 });
             } else {
                 this.setState({
                     currentPageId: id,
-                    currentTabId: id,
+                    currentTabId: -1,
                 });
             }
         } else {
@@ -292,24 +294,30 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return <></>;
     }
     render() {
+        const { visible } = this.state;
+        if (!visible) {
+            return <ConfirmPurchase />;
+        }
         return (
-            <Draggable handle=".handle">
-                <div className="catalogue">
-                    <div className="content">
-                        {this.generatePage()}
-                    </div>
-                    <div className="navigator">
-                        <button className="close">
-                            X
-                        </button>
-                        <h2 className="handle">Shop</h2>
-                        <hr />
-                        <div className="tab_container">
-                            {this.generateTabs()}
+            <>
+                <Draggable handle=".handle">
+                    <div className="catalogue">
+                        <div className="content">
+                            {this.generatePage()}
+                        </div>
+                        <div className="navigator">
+                            <button className="close">
+                                X
+                            </button>
+                            <h2 className="handle">Shop</h2>
+                            <hr />
+                            <div className="tab_container">
+                                {this.generateTabs()}
+                            </div>
                         </div>
                     </div>
-                </div>
-            </Draggable>
+                </Draggable>
+            </>
         );
     }
 }
