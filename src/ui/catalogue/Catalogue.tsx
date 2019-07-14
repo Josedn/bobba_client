@@ -1,13 +1,97 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, Fragment } from "react";
 import Draggable from "react-draggable";
 import './catalogue.css';
 
-type CatalogueProps = {};
-type CatalogueState = {};
-const initialState = {};
+type CatalogueIndex = {
+    id: number;
+    name: string;
+    iconId: number;
+    color: string;
+    children: CatalogueIndex[];
+};
 
 type CataloguePage = {
+    id: number;
+    layout: string;
+    headlineImage: string;
+    teaserImage: string;
+    textHeader: string;
+    textDetails: string;
+};
 
+type CatalogueProps = {};
+
+type CatalogueState = {
+    pages: CatalogueIndex[];
+    currentPage?: CataloguePage;
+    currentTabId: number;
+    currentPageId: number;
+    currentItemId: number;
+    visible: boolean;
+};
+
+const dummyPage: CataloguePage = {
+    id: 80,
+    layout: "default",
+    headlineImage: "catalog_wired_header2_es",
+    teaserImage: "ctlg_pic_wired_triggers",
+    textHeader: "Los Causantes permiten definir qué se necesita que pase para que tenga lugar un Efecto. Para programar un Causante, colócalo en una Sala, haz doble clic en él y ponlo en marcha. Necesitarás apilar un Efecto sobre un Causante.",
+    textDetails: "¡Haz click en cada objeto para ver cómo funciona!",
+};
+
+const dummyPages: CatalogueIndex[] = [
+    {
+        id: 0,
+        name: "Catálogo",
+        iconId: 1,
+        color: "c8684e",
+        children: [],
+    },
+    {
+        id: 1,
+        name: "Wired",
+        iconId: 80,
+        color: "aaaaaa",
+        children: [
+            {
+                id: 81,
+                name: "Causantes",
+                iconId: 81,
+                color: "",
+                children: [],
+            },
+            {
+                id: 82,
+                name: "Efectos",
+                iconId: 82,
+                color: "",
+                children: [],
+            },
+            {
+                id: 83,
+                name: "Condiciones",
+                iconId: 83,
+                color: "",
+                children: [],
+            }
+        ],
+    },
+    {
+        id: 2,
+        name: "Tienda",
+        iconId: 2,
+        color: "8ebb4a",
+        children: [],
+    }
+];
+
+const initialState = {
+    pages: dummyPages,
+    currentPage: dummyPage,
+    currentPageId: -1,
+    currentTabId: -1,
+    currentItemId: -1,
+    visible: true,
 };
 
 export default class Catalogue extends React.Component<CatalogueProps, CatalogueState> {
@@ -17,62 +101,74 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     }
 
     generateTabs(): ReactNode {
-        return (
-            <>
-                <button className="main_tab">
-                    <div className="icon" style={{ backgroundColor: '#c8684e' }}>
-                        <img src="http://images.bobba.io/c_images/catalogue/icon_1.png" alt="Front page" />
-                    </div>
-                    <span>Catálogo</span>
-                </button>
-                <button className="main_tab open">
-                    <div className="icon" style={{ backgroundColor: '#aaaaaa' }}>
-                        <img src="http://images.bobba.io/c_images/catalogue/icon_80.png" alt="Front page" />
-                    </div>
-                    <span>Wired</span>
-                </button>
-                <button className="second_tab">
-                    <div className="icon">
-                        <img src="http://images.bobba.io/c_images/catalogue/icon_81.png" alt="Front page" />
-                    </div>
-                    <span>Causantes</span>
-                </button>
-                <button className="second_tab selected">
-                    <div className="icon">
-                        <img src="http://images.bobba.io/c_images/catalogue/icon_82.png" alt="Front page" />
-                    </div>
-                    <span>Efectos</span>
-                </button>
-                <button className="second_tab">
-                    <div className="icon">
-                        <img src="http://images.bobba.io/c_images/catalogue/icon_83.png" alt="Front page" />
-                    </div>
-                    <span>Condiciones</span>
-                </button>
-                <button className="main_tab">
-                    <div className="icon" style={{ backgroundColor: '#8ebb4a' }}>
-                        <img src="http://images.bobba.io/c_images/catalogue/icon_2.png" alt="Front page" />
-                    </div>
-                    <span>Tienda</span>
-                </button>
-            </>
-        );
+        const { pages, currentPageId, currentTabId } = this.state;
+
+        return pages.map(currentPage => {
+            const children = currentPage.children.map(child => {
+                return (
+                    <button onClick={this.handleChangePage(child.id)} key={child.id} className={"second_tab" + (currentPageId === child.id ? ' selected' : '')}>
+                        <div className="icon">
+                            <img src={"http://images.bobba.io/c_images/catalogue/icon_" + child.iconId + ".png"} alt={child.name} />
+                        </div>
+                        <span>{child.name}</span>
+                    </button>
+                );
+            });
+
+            return (
+                <Fragment key={currentPage.id}>
+                    <button onClick={this.handleChangePage(currentPage.id)} className={"main_tab" + (currentPageId === currentPage.id ? ' selected' : '') + (currentTabId === currentPage.id ? ' open' : '')}>
+                        <div className="icon" style={{ backgroundColor: '#' + currentPage.color }}>
+                            <img src={"http://images.bobba.io/c_images/catalogue/icon_" + currentPage.iconId + ".png"} alt={currentPage.name} />
+                        </div>
+                        <span>{currentPage.name}</span>
+                    </button>
+                    {currentTabId === currentPage.id ? children : <></>}
+                </Fragment>
+            );
+        });
     }
 
-    generateDescription2(): ReactNode {
-        return (
-            <>
-                <div className="image_container">
-                    <img src="http://images.bobba.io/c_images/catalogue/ctlg_pic_wired_triggers.gif" alt="Causantes" />
-                </div>
-                <div className="description_container">
-                    ¡Haz click en cada objeto para ver cómo funciona!
-                </div>
-            </>
-        );
+    handleChangePage = (id: number) => () => {
+        const { pages, currentTabId } = this.state;
+        const isMain = pages.some(value => value.id === id);
+        if (isMain) {
+            if (currentTabId === id) {
+                this.setState({
+                    currentPageId: id,
+                    currentTabId: -1,
+                });
+            } else {
+                this.setState({
+                    currentPageId: id,
+                    currentTabId: id,
+                });
+            }
+        } else {
+            this.setState({
+                currentPageId: id,
+            });
+        }
     }
 
     generateDescription(): ReactNode {
+        const { currentItemId, currentPage } = this.state;
+        if (currentPage == null) {
+            return <></>;
+        }
+        if (currentItemId === -1) {
+            return (
+                <>
+                    <div className="image_container">
+                        <img src={"http://images.bobba.io/c_images/catalogue/" + currentPage.teaserImage + ".gif"} alt="Furniture" />
+                    </div>
+                    <div className="description_container">
+                        {currentPage.textDetails}
+                    </div>
+                </>
+            );
+        }
+
         return (
             <>
                 <div className="image_container">
@@ -112,29 +208,33 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     }
 
     generatePage(): ReactNode {
-        return (
-            <div className="wrapper">
-                <div className="header_container">
-                    <img alt="Causantes" src="http://images.bobba.io/c_images/catalogue/catalog_wired_header2_es.gif" />
-                </div>
-                <div className="description">
-                    Los Causantes permiten definir qué se necesita que pase para que tenga lugar un Efecto. Para programar un Causante, colócalo en una Sala, haz doble clic en él y ponlo en marcha. Necesitarás apilar un Efecto sobre un Causante.
-                </div>
-                <div className="second_row">
-                    <div className="grid_container">
-                        <div className="title">
-                            Elige un furni
+        const { currentPage } = this.state;
+        if (currentPage != null) {
+            return (
+                <div className="wrapper">
+                    <div className="header_container">
+                        <img alt="Furniture" src={"http://images.bobba.io/c_images/catalogue/" + currentPage.headlineImage + ".gif"} />
+                    </div>
+                    <div className="description">
+                        {currentPage.textHeader}
+                    </div>
+                    <div className="second_row">
+                        <div className="grid_container">
+                            <div className="title">
+                                Elige un furni
                         </div>
-                        <div className="grid">
-                            {this.generateGrid()}
+                            <div className="grid">
+                                {this.generateGrid()}
+                            </div>
+                        </div>
+                        <div className="item_description">
+                            {this.generateDescription()}
                         </div>
                     </div>
-                    <div className="item_description">
-                        {this.generateDescription()}
-                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
+        return <></>;
     }
     render() {
         return (
