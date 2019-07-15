@@ -16,6 +16,7 @@ import UIManager from "./ui/UIManager";
 import UserManager from "./users/UserManager";
 import Inventory from "./inventory/Inventory";
 import RequestInventoryItems from "./communication/outgoing/users/RequestInventoryItems";
+import Catalogue from "./catalogue/Catalogue";
 
 export default class Game {
     currentRoom?: Room;
@@ -29,6 +30,7 @@ export default class Game {
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
     inventory: Inventory;
+    catalogue: Catalogue;
     uiManager: UIManager;
     isStarting: boolean;
 
@@ -43,6 +45,7 @@ export default class Game {
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
         this.inventory = new Inventory();
+        this.catalogue = new Catalogue();
         this.uiManager = new UIManager(this);
         this.isStarting = false;
     }

@@ -11,3 +11,5 @@ export const ITEM_STATE = 19;
 export const WALL_ITEM_DATA = 20;
 export const INVENTORY_ITEMS = 21;
 export const INVENTORY_ITEM_REMOVE = 22;
+export const CATALOGUE_INDEX = 23;
+export const CATALOGUE_PAGE = 24;

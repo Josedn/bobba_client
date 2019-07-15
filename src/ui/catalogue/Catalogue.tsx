@@ -2,25 +2,8 @@ import React, { ReactNode, Fragment } from "react";
 import Draggable from "react-draggable";
 import './catalogue.css';
 import ConfirmPurchase from "./ConfirmPurchase";
-
-type CatalogueIndex = {
-    id: number;
-    name: string;
-    iconId: number;
-    color: string;
-    children: CatalogueIndex[];
-};
-
-type CataloguePage = {
-    id: number;
-    layout: string;
-    imageHeadline: string;
-    imageTeaser: string;
-    textHeader: string;
-    textDetails: string;
-    textMisc: string;
-    textMisc2: string;
-};
+import { CatalogueIndex } from "../../bobba/catalogue/Catalogue";
+import CataloguePage from "../../bobba/catalogue/CataloguePage";
 
 type CatalogueProps = {};
 
@@ -42,6 +25,7 @@ const dummyFrontPage: CataloguePage = {
     textDetails: "Yeah... it works",
     textMisc: "How to get Habbo Credits",
     textMisc2: "You can get Habbo Credits via Prepaid Cards, Home Phone, Credit Card, Mobile, completing offers and More!",
+    items: [],
 };
 
 const dummyPage: CataloguePage = {
@@ -53,11 +37,13 @@ const dummyPage: CataloguePage = {
     textDetails: "¡Haz click en cada objeto para ver cómo funciona!",
     textMisc: "",
     textMisc2: "",
+    items: [],
 };
 
 const dummyPages: CatalogueIndex[] = [
     {
         id: 0,
+        visible: true,
         name: "Catálogo",
         iconId: 1,
         color: "c8684e",
@@ -65,12 +51,14 @@ const dummyPages: CatalogueIndex[] = [
     },
     {
         id: 1,
+        visible: true,
         name: "Wired",
         iconId: 80,
         color: "aaaaaa",
         children: [
             {
                 id: 81,
+                visible: true,
                 name: "Causantes",
                 iconId: 81,
                 color: "",
@@ -78,6 +66,7 @@ const dummyPages: CatalogueIndex[] = [
             },
             {
                 id: 82,
+                visible: true,
                 name: "Efectos",
                 iconId: 82,
                 color: "",
@@ -85,6 +74,7 @@ const dummyPages: CatalogueIndex[] = [
             },
             {
                 id: 83,
+                visible: true,
                 name: "Condiciones",
                 iconId: 83,
                 color: "",
@@ -94,6 +84,7 @@ const dummyPages: CatalogueIndex[] = [
     },
     {
         id: 2,
+        visible: true,
         name: "Tienda",
         iconId: 2,
         color: "8ebb4a",

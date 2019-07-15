@@ -25,6 +25,10 @@ export default class UIManager {
     onOpenInventory: () => void;
     onUpdateInventory: (items: UserItem[]) => void;
     onCloseInventory: () => void;
+    //Catalogue
+    onOpenCatalogue: () => void;
+    onLoadCataloguePage: (page: object) => void;
+    onCloseCatalogue: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -41,6 +45,9 @@ export default class UIManager {
         this.onOpenInventory = () => { };
         this.onUpdateInventory = () => { };
         this.onCloseInventory = () => { };
+        this.onOpenCatalogue = () => { };
+        this.onLoadCataloguePage = () => { };
+        this.onCloseCatalogue = () => { };
     }
 
     log(text: string) {
@@ -191,6 +198,18 @@ export default class UIManager {
 
     setOnCloseInventoryHandler(handler: () => void) {
         this.onCloseInventory = handler;
+    }
+
+    setOnOpenCatalogueHandler(handler: () => void) {
+        this.onOpenCatalogue = handler;
+    }
+
+    setOnCloseCatalogueHandler(handler: () => void) {
+        this.onCloseCatalogue = handler;
+    }
+
+    setOnLoadCataloguePageHandler(handler: () => void) {
+        this.onLoadCataloguePage = handler;
     }
 }
 
