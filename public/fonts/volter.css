@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'Volter';
+    src: url('volter.woff2') format('woff2'),
+    url('volter.woff') format('woff'),
+    url('volter.ttf') format('truetype'),
+    url('volter.svg') format('svg');
+}
+
+@font-face {
+    font-family: 'Volter';
+    src: url('volter_bold.woff2') format('woff2'),
+    url('volter_bold.woff') format('woff'),
+    url('volter_bold.ttf') format('truetype'),
+    url('volter_bold.svg') format('svg');
+    font-weight: bold;
+}

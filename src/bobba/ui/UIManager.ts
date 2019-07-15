@@ -4,6 +4,8 @@ import User from "../users/User";
 import RequestChangeLooks from "../communication/outgoing/rooms/RequestChangeLooks";
 import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMotto";
 import UserItem from "../inventory/UserItem";
+import CataloguePage from "../catalogue/CataloguePage";
+import { CatalogueIndex } from "../catalogue/Catalogue";
 
 export default class UIManager {
     game: Game;
@@ -18,6 +20,8 @@ export default class UIManager {
     onFocusChat: () => void;
     onLoadPost: (text: string) => void;
     onGameStop: () => void;
+    onUpdateCreditsBalance: (amount: number) => void;
+    onShowNotification: (text: string) => void;
     //Change looks
     onOpenChangeLooks: (figure: string) => void;
     onCloseChangeLooks: () => void;
@@ -25,6 +29,11 @@ export default class UIManager {
     onOpenInventory: () => void;
     onUpdateInventory: (items: UserItem[]) => void;
     onCloseInventory: () => void;
+    //Catalogue
+    onOpenCatalogue: () => void;
+    onLoadCataloguePage: (page: CataloguePage) => void;
+    onLoadCatalogueIndex: (index: CatalogueIndex[]) => void;
+    onCloseCatalogue: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -41,6 +50,12 @@ export default class UIManager {
         this.onOpenInventory = () => { };
         this.onUpdateInventory = () => { };
         this.onCloseInventory = () => { };
+        this.onOpenCatalogue = () => { };
+        this.onLoadCataloguePage = () => { };
+        this.onCloseCatalogue = () => { };
+        this.onLoadCatalogueIndex = () => { };
+        this.onUpdateCreditsBalance = () => { };
+        this.onShowNotification = () => { };
     }
 
     log(text: string) {
@@ -141,6 +156,28 @@ export default class UIManager {
         }
     }
 
+    doOpenCatalogue() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenCatalogue();
+
+        }
+    }
+
+    doRequestCataloguePage(pageId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.catalogue.requestPage(pageId);
+        }
+    }
+
+    doRequestCataloguePurchase(pageId: number, itemId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.catalogue.requestPurchase(pageId, itemId);
+        }
+    }
+
     setOnSetUserDataHandler(handler: (user: User) => void) {
         this.onSetUserData = handler;
     }
@@ -191,6 +228,30 @@ export default class UIManager {
 
     setOnCloseInventoryHandler(handler: () => void) {
         this.onCloseInventory = handler;
+    }
+
+    setOnOpenCatalogueHandler(handler: () => void) {
+        this.onOpenCatalogue = handler;
+    }
+
+    setOnCloseCatalogueHandler(handler: () => void) {
+        this.onCloseCatalogue = handler;
+    }
+
+    setOnLoadCataloguePageHandler(handler: (page: CataloguePage) => void) {
+        this.onLoadCataloguePage = handler;
+    }
+
+    setOnLoadCatalogueIndexHandler(handler: (index: CatalogueIndex[]) => void) {
+        this.onLoadCatalogueIndex = handler;
+    }
+
+    setOnUpdateCreditsBalanceHandler(handler: (amount: number) => void) {
+        this.onUpdateCreditsBalance = handler;
+    }
+
+    setOnShowNotificationHandler(handler: (text: string) => void) {
+        this.onShowNotification = handler;
     }
 }
 

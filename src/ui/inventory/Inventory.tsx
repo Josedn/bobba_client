@@ -5,6 +5,7 @@ import BobbaEnvironment from "../../bobba/BobbaEnvironment";
 import UserItem from "../../bobba/inventory/UserItem";
 import { canvas2Image } from "../misc/GraphicsUtilities";
 import { ItemType } from "../../bobba/imagers/furniture/FurniImager";
+import { FLOOR_ITEM_PLACEHOLDER } from "../../bobba/graphics/GenericSprites";
 type InventoryContainerProps = {};
 type InventoryContainerState = {
     visible: boolean,
@@ -110,7 +111,7 @@ export default class InventoryContainer extends React.Component<InventoryContain
             return (
                 <div className="item_preview">
                     <div className="image_container">
-                        <img src="http://localhost:3000/assets/furni_placeholder.png" alt="Furni" />
+                        <img src={FLOOR_ITEM_PLACEHOLDER} alt="Furni" />
                     </div>
                     <div className="item_data">
                         <h2>

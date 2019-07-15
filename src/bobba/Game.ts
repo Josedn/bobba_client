@@ -16,6 +16,9 @@ import UIManager from "./ui/UIManager";
 import UserManager from "./users/UserManager";
 import Inventory from "./inventory/Inventory";
 import RequestInventoryItems from "./communication/outgoing/users/RequestInventoryItems";
+import Catalogue from "./catalogue/Catalogue";
+import RequestCatalogueIndex from "./communication/outgoing/catalogue/RequestCatalogueIndex";
+import SoundManager from "./sound/SoundManager";
 
 export default class Game {
     currentRoom?: Room;
@@ -29,11 +32,14 @@ export default class Game {
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
     inventory: Inventory;
+    catalogue: Catalogue;
     uiManager: UIManager;
+    soundManager: SoundManager;
     isStarting: boolean;
 
     constructor() {
         this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
+        this.soundManager = new SoundManager();
         this.ghostTextures = new AvatarContainer(GHOST_LOOK, true);
         this.avatarImager = new AvatarImager();
         this.furniImager = new FurniImager();
@@ -43,6 +49,7 @@ export default class Game {
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
         this.inventory = new Inventory();
+        this.catalogue = new Catalogue();
         this.uiManager = new UIManager(this);
         this.isStarting = false;
     }
@@ -77,7 +84,9 @@ export default class Game {
         if (this.currentRoom == null) {
             BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
+            this.communicationManager.sendMessage(new RequestCatalogueIndex());
             this.communicationManager.sendMessage(new RequestMap());
+            this.soundManager.playPixelsSound();
         }
     }
 

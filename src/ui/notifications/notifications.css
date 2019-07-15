@@ -1,0 +1,83 @@
+.notification {
+    position: absolute;
+    left: 20px;
+    right: 0;
+    top: 15px;
+    height: 180px;
+    width: 280px;
+    background: #418db0;
+    border: 2px groove #69a4c0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 200;
+    padding: 4px;
+    font-family: 'Volter';
+    font-size: 9px;
+}
+
+.notification button.close {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+}
+
+.notification h2 {
+    font: inherit;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.notification hr {
+    border: 1px solid #69a4c0;
+    border-bottom: none;
+    margin: 3px;
+}
+
+.notification .wrapper {
+    width: 100%;
+    height: 90%;
+    background: #ffffff;
+    border: 1px solid #567483;
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: #000000;
+    padding: 10px;
+    position: relative;
+}
+
+.notification .first_row {
+    height: 80%;
+    display: flex;
+}
+
+.notification .first_row span {
+    margin: auto;
+}
+
+.notification .second_row {
+    height: 20%;
+    display: flex;
+}
+
+.notification .second_row button {
+    width: 20%;
+    margin: auto;
+    font: inherit;
+    height: 25px;
+    border: 1px solid #000000;
+    background: #ffffff;
+    padding: 0 7px;
+    border-radius: 3px;
+}
+
+.notification .second_row button:hover {
+    background: #efefef;
+}

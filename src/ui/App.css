@@ -21,26 +21,3 @@ canvas {
 button {
     cursor: pointer;
 }
-
-input[type=text] {
-    font: inherit;
-    height: 40px;
-    padding: 0 0.5em;
-    border-radius: 7px;
-    box-sizing: border-box;
-    margin: 0 0 0 12px;
-    color: #000000;
-    border: 1px solid #999999;
-}
-
-input[type=text].wrong {
-    border: 2px solid #aa0000;
-}
-
-.wrong::placeholder {
-    color: #ac4141;
-}
-
-::placeholder {
-    color: #777777;
-}

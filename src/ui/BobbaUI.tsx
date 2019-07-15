@@ -13,6 +13,8 @@ import AvatarInfo from '../bobba/imagers/avatars/AvatarInfo';
 import { canvas2Image } from './misc/GraphicsUtilities';
 import ChangeLooks from './changelooks/ChangeLooks';
 import Inventory from './inventory/Inventory';
+import Catalogue from './catalogue/Catalogue';
+import Notifications from './notifications/Notifications';
 
 type UserData = {
     id: number,
@@ -68,6 +70,9 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                     error: 'Game has stoppped!',
                 });
             });
+
+            //AUTO LOGIN 
+            //game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
         }).catch(err => {
             this.setState({
                 gameLoaded: false,
@@ -113,7 +118,9 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <TopBar />
                 {mainPage}
                 <ChangeLooks />
+                <Catalogue />
                 <Inventory />
+                <Notifications />
                 <RoomInfo />
                 <ItemInfoContainer />
                 <Footer focuser={this.updateChatFocuser} headImage={userData.image} />

@@ -1,13 +1,38 @@
 import React, { Component } from 'react';
 import './header.css';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
+type HeaderProps = {};
+type HeaderState = {
+    credits: number,
+};
 
-class Header extends Component {
+const initialState = {
+    credits: 420,
+};
+class Header extends Component<HeaderProps, HeaderState> {
+    constructor(props: HeaderProps) {
+        super(props);
+        this.state = initialState;
+    }
+
+    componentDidMount() {
+        BobbaEnvironment.getGame().uiManager.setOnUpdateCreditsBalanceHandler((amount: number) => {
+            this.setState({
+              credits: amount,  
+            })
+        });
+    }
+
+    getMoneyNumber(value: number): string {
+        return value.toLocaleString(navigator.language, {minimumFractionDigits: 0});
+    }
 
     render() {
+        const { credits } = this.state;
         return (
             <header>
                 <div className="bar_content">
-                    <span>420</span>
+                    <span>{this.getMoneyNumber(credits)}</span>
                     <img src="images/top_bar/credits.png" alt="Credits" />
                 </div>
                 <div className="bar_content">
