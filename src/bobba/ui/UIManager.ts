@@ -20,6 +20,7 @@ export default class UIManager {
     onFocusChat: () => void;
     onLoadPost: (text: string) => void;
     onGameStop: () => void;
+    onUpdateCreditsBalance: (amount: number) => void;
     //Change looks
     onOpenChangeLooks: (figure: string) => void;
     onCloseChangeLooks: () => void;
@@ -52,6 +53,7 @@ export default class UIManager {
         this.onLoadCataloguePage = () => { };
         this.onCloseCatalogue = () => { };
         this.onLoadCatalogueIndex = () => { };
+        this.onUpdateCreditsBalance = () => { };
     }
 
     log(text: string) {
@@ -64,7 +66,8 @@ export default class UIManager {
     }
 
     doChat(chat: string) {
-        const { currentRoom } = this.game;
+        const { currentRoom, soundManager } = this.game;
+        soundManager.playCreditsSound();
         if (currentRoom != null && chat.length > 0) {
             currentRoom.chat(chat);
         }
@@ -240,6 +243,10 @@ export default class UIManager {
 
     setOnLoadCatalogueIndexHandler(handler: (index: CatalogueIndex[]) => void) {
         this.onLoadCatalogueIndex = handler;
+    }
+
+    setOnUpdateCreditsBalanceHandler(handler: (amount: number) => void) {
+        this.onUpdateCreditsBalance = handler;
     }
 }
 

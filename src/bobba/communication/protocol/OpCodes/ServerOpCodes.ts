@@ -13,3 +13,6 @@ export const INVENTORY_ITEMS = 21;
 export const INVENTORY_ITEM_REMOVE = 22;
 export const CATALOGUE_INDEX = 23;
 export const CATALOGUE_PAGE = 24;
+export const CATALOGUE_PURCHASE_ERROR = 25;
+export const CATALOGUE_PURCHASE_INFO = 26;
+export const CREDITS_BALANCE = 27;

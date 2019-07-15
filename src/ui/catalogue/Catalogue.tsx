@@ -25,7 +25,7 @@ const initialState = {
     currentPageId: -1,
     currentTabId: -1,
     currentItemId: -1,
-    visible: true,
+    visible: false,
     purchaseWindowVisible: false,
 };
 

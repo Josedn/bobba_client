@@ -2,7 +2,7 @@ import IMessageHandler from "../net/IMessageHandler";
 import WebSocketClient from "../net/WebSocketClient";
 import BobbaEnvironment from "../BobbaEnvironment";
 import IIncomingEvent from "./incoming/IIncomingEvent";
-import { LOGIN_OK, MAP_DATA, ROOM_ITEM_DATA, PLAYERS_DATA, PLAYER_STATUS, PLAYER_REMOVE, CHAT, PLAYER_WAVE, ITEM_REMOVE, ITEM_STATE, WALL_ITEM_DATA, INVENTORY_ITEMS, INVENTORY_ITEM_REMOVE, CATALOGUE_INDEX, CATALOGUE_PAGE } from "./protocol/OpCodes/ServerOpCodes";
+import { LOGIN_OK, MAP_DATA, ROOM_ITEM_DATA, PLAYERS_DATA, PLAYER_STATUS, PLAYER_REMOVE, CHAT, PLAYER_WAVE, ITEM_REMOVE, ITEM_STATE, WALL_ITEM_DATA, INVENTORY_ITEMS, INVENTORY_ITEM_REMOVE, CATALOGUE_INDEX, CATALOGUE_PAGE, CATALOGUE_PURCHASE_ERROR, CATALOGUE_PURCHASE_INFO, CREDITS_BALANCE } from "./protocol/OpCodes/ServerOpCodes";
 import HandleLoginOk from "./incoming/generic/HandleLoginOk";
 import ServerMessage from "./protocol/ServerMessage";
 import ClientMessage from "./protocol/ClientMessage";
@@ -20,6 +20,9 @@ import HandleInventoryItems from "./incoming/generic/HandleInventoryItems";
 import HandleInventoryItemRemove from "./incoming/generic/HandleInventoryItemRemove";
 import HandleCatalogueIndex from "./incoming/catalogue/HandleCatalogueIndex";
 import HandleCataloguePage from "./incoming/catalogue/HandleCataloguePage";
+import HandleCataloguePurchaseError from "./incoming/catalogue/HandleCataloguePurchaseError";
+import HandleCataloguePurchaseInformation from "./incoming/catalogue/HandlePurchaseCatalogueInformation";
+import HandleUpdateCreditsBalance from "./incoming/generic/HandleUpdateCreditsBalance";
 
 export default class CommunicationManager implements IMessageHandler {
     client: WebSocketClient;
@@ -47,6 +50,9 @@ export default class CommunicationManager implements IMessageHandler {
         this.requestHandlers[INVENTORY_ITEM_REMOVE] = new HandleInventoryItemRemove();
         this.requestHandlers[CATALOGUE_INDEX] = new HandleCatalogueIndex();
         this.requestHandlers[CATALOGUE_PAGE] = new HandleCataloguePage();
+        this.requestHandlers[CATALOGUE_PURCHASE_ERROR] = new HandleCataloguePurchaseError();
+        this.requestHandlers[CATALOGUE_PURCHASE_INFO] = new HandleCataloguePurchaseInformation();
+        this.requestHandlers[CREDITS_BALANCE] = new HandleUpdateCreditsBalance();
     }
 
     sendMessage(message: ClientMessage) {
@@ -60,9 +66,9 @@ export default class CommunicationManager implements IMessageHandler {
         const message = new ServerMessage(rawMessage);
         const handler = this.requestHandlers[message.id];
         if (handler == null) {
-            //console.log('No handler for: ' + message.id);
+            console.log('No handler for: ' + message.id);
         } else {
-            //console.log('Handled [' + message.id + ']: ' + handler.constructor.name);
+            console.log('Handled [' + message.id + ']: ' + handler.constructor.name);
             handler.handle(message);
         }
     }
