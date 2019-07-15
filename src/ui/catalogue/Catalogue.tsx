@@ -16,6 +16,7 @@ type CatalogueState = {
     currentPageId: number;
     currentItemId: number;
     visible: boolean;
+    purchaseWindowVisible: boolean,
 };
 
 const initialState = {
@@ -25,6 +26,7 @@ const initialState = {
     currentTabId: -1,
     currentItemId: -1,
     visible: true,
+    purchaseWindowVisible: false,
 };
 
 export default class Catalogue extends React.Component<CatalogueProps, CatalogueState> {
@@ -116,18 +118,21 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                     currentPageId: id,
                     currentTabId: id,
                     currentItemId: -1,
+                    purchaseWindowVisible: false,
                 });
             } else {
                 this.setState({
                     currentPageId: id,
                     currentTabId: -1,
                     currentItemId: -1,
+                    purchaseWindowVisible: false,
                 });
             }
         } else {
             this.setState({
                 currentPageId: id,
                 currentItemId: -1,
+                purchaseWindowVisible: false,
             });
         }
 
@@ -154,7 +159,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                         </div>
                         <div className="button_container">
                             <span>{item.cost} crédito{item.cost === 1 ? '' : 's'}</span>
-                            <button>Comprar</button>
+                            <button onClick={this.handleTryPurchase}>Comprar</button>
                         </div>
                     </>
                 );
@@ -175,6 +180,26 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         );
     }
 
+    handleTryPurchase = () => {
+        this.setState({
+            purchaseWindowVisible: true,
+        });
+    }
+
+    handlePurchase = () => {
+        const { currentItemId } = this.state;
+        BobbaEnvironment.getGame().uiManager.doRequestCataloguePurchase(currentItemId);
+        this.setState({
+            purchaseWindowVisible: false,
+        });
+    }
+
+    handlePurchaseWindowClose = () => {
+        this.setState({
+            purchaseWindowVisible: false,
+        });
+    }
+
     generateGrid(): ReactNode {
         const { currentPage, currentItemId } = this.state;
         if (currentPage == null) {
@@ -191,7 +216,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             } else {
                 const image = canvas2Image(item.baseItem.iconImage);
                 return (
-                    <button key={item.itemId} onClick={this.handleSelectItem(item.itemId)} className={currentItemId === item.itemId ? 'selected': ''}>
+                    <button key={item.itemId} onClick={this.handleSelectItem(item.itemId)} className={currentItemId === item.itemId ? 'selected' : ''}>
                         <img src={image.src} alt={item.baseItem.furniBase.itemData.name} />
                     </button>
                 );
@@ -269,10 +294,18 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return <></>;
     }
     render() {
-        const { visible } = this.state;
+        const { visible, purchaseWindowVisible, currentItemId, currentPage } = this.state;
         if (!visible) {
-            return <ConfirmPurchase />;
+            return <></>;
         }
+        let purchaseWindow = <></>;
+        if (currentPage != null && purchaseWindowVisible) {
+            const item = currentPage.items.find(value => value.itemId === currentItemId);
+            if (item != null && item.baseItem != null) {
+                purchaseWindow = <ConfirmPurchase item={item} onClose={this.handlePurchaseWindowClose} onPurchase={this.handlePurchase} />
+            }
+        }
+
         return (
             <>
                 <Draggable handle=".handle">
@@ -293,6 +326,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                         </div>
                     </div>
                 </Draggable>
+                {purchaseWindow}
             </>
         );
     }
