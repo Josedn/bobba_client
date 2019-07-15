@@ -6,6 +6,7 @@ import { CatalogueIndex } from "../../bobba/catalogue/Catalogue";
 import CataloguePage from "../../bobba/catalogue/CataloguePage";
 import BobbaEnvironment from "../../bobba/BobbaEnvironment";
 import { canvas2Image } from "../misc/GraphicsUtilities";
+import WindowManager from "../windows/WindowManager";
 
 type CatalogueProps = {};
 
@@ -17,6 +18,7 @@ type CatalogueState = {
     currentItemId: number;
     visible: boolean;
     purchaseWindowVisible: boolean,
+    zIndex: number,
 };
 
 const initialState = {
@@ -27,6 +29,7 @@ const initialState = {
     currentItemId: -1,
     visible: false,
     purchaseWindowVisible: false,
+    zIndex: WindowManager.getNextZIndex(),
 };
 
 export default class Catalogue extends React.Component<CatalogueProps, CatalogueState> {
@@ -41,6 +44,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         game.uiManager.setOnOpenCatalogueHandler(() => {
             this.setState({
                 visible: true,
+                zIndex: WindowManager.getNextZIndex()
             });
         });
 
@@ -293,8 +297,13 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         }
         return <></>;
     }
+    upgradeZIndex = () => {
+        this.setState({
+            zIndex: WindowManager.getNextZIndex(),
+        });
+    }
     render() {
-        const { visible, purchaseWindowVisible, currentItemId, currentPage } = this.state;
+        const { visible, purchaseWindowVisible, currentItemId, currentPage, zIndex } = this.state;
         if (!visible) {
             return <></>;
         }
@@ -308,8 +317,8 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
 
         return (
             <>
-                <Draggable handle=".handle">
-                    <div className="catalogue">
+                <Draggable handle=".handle" onStart={() => { this.upgradeZIndex() }}>
+                    <div className="catalogue" style={{ zIndex }}>
                         <div className="content">
                             <div className="handle" />
                             {this.generatePage()}

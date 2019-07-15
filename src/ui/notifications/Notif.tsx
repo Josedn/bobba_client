@@ -1,18 +1,22 @@
 import React from "react";
 import Draggable from "react-draggable";
 import './notifications.css';
+import WindowManager from "../windows/WindowManager";
 
 type NotifProps = {
     text: string,
+    id: number,
 };
 type NotifState = {
     visible: boolean,
+    zIndex: number,
 };
 export default class Notif extends React.Component<NotifProps, NotifState> {
     constructor(props: NotifProps) {
         super(props);
         this.state = {
             visible: true,
+            zIndex: WindowManager.getNextZIndex(),
         };
     }
     handleClose = () => {
@@ -20,15 +24,21 @@ export default class Notif extends React.Component<NotifProps, NotifState> {
             visible: false,
         });
     }
+    upgradeZIndex = () => {
+        this.setState({
+            zIndex: WindowManager.getNextZIndex(),
+        });
+    }
     render() {
-        const { visible } = this.state;
-        const { text } = this.props;
+        const { visible, zIndex } = this.state;
+        const { text, id } = this.props;
         if (!visible) {
             return <></>;
         }
+
         return (
-            <Draggable handle=".handle">
-                <div className="notification">
+            <Draggable key={id} handle=".handle" onStart={() => { this.upgradeZIndex() }}>
+                <div className="notification" style={{ zIndex }}>
                     <button className="close" onClick={this.handleClose}>
                         X
                     </button>
