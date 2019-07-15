@@ -7,7 +7,7 @@ type HeaderState = {
 };
 
 const initialState = {
-    credits: 0,
+    credits: 420,
 };
 class Header extends Component<HeaderProps, HeaderState> {
     constructor(props: HeaderProps) {
@@ -23,12 +23,16 @@ class Header extends Component<HeaderProps, HeaderState> {
         });
     }
 
+    getMoneyNumber(value: number): string {
+        return value.toLocaleString(navigator.language, {minimumFractionDigits: 0});
+    }
+
     render() {
         const { credits } = this.state;
         return (
             <header>
                 <div className="bar_content">
-                    <span>{credits}</span>
+                    <span>{this.getMoneyNumber(credits)}</span>
                     <img src="images/top_bar/credits.png" alt="Credits" />
                 </div>
                 <div className="bar_content">
