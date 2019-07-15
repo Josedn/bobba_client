@@ -4,6 +4,8 @@ import User from "../users/User";
 import RequestChangeLooks from "../communication/outgoing/rooms/RequestChangeLooks";
 import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMotto";
 import UserItem from "../inventory/UserItem";
+import CataloguePage from "../catalogue/CataloguePage";
+import { CatalogueIndex } from "../catalogue/Catalogue";
 
 export default class UIManager {
     game: Game;
@@ -27,7 +29,8 @@ export default class UIManager {
     onCloseInventory: () => void;
     //Catalogue
     onOpenCatalogue: () => void;
-    onLoadCataloguePage: (page: object) => void;
+    onLoadCataloguePage: (page: CataloguePage) => void;
+    onLoadCatalogueIndex: (index: CatalogueIndex[]) => void;
     onCloseCatalogue: () => void;
 
     constructor(game: Game) {
@@ -48,6 +51,7 @@ export default class UIManager {
         this.onOpenCatalogue = () => { };
         this.onLoadCataloguePage = () => { };
         this.onCloseCatalogue = () => { };
+        this.onLoadCatalogueIndex = () => { };
     }
 
     log(text: string) {
@@ -148,6 +152,28 @@ export default class UIManager {
         }
     }
 
+    doOpenCatalogue() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenCatalogue();
+
+        }
+    }
+
+    doRequestCataloguePage(pageId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.catalogue.requestPage(pageId);
+        }
+    }
+
+    doRequestCataloguePurchase(itemId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.catalogue.requestPurchase(itemId);
+        }
+    }
+
     setOnSetUserDataHandler(handler: (user: User) => void) {
         this.onSetUserData = handler;
     }
@@ -208,8 +234,12 @@ export default class UIManager {
         this.onCloseCatalogue = handler;
     }
 
-    setOnLoadCataloguePageHandler(handler: () => void) {
+    setOnLoadCataloguePageHandler(handler: (page: CataloguePage) => void) {
         this.onLoadCataloguePage = handler;
+    }
+
+    setOnLoadCatalogueIndexHandler(handler: (index: CatalogueIndex[]) => void) {
+        this.onLoadCatalogueIndex = handler;
     }
 }
 

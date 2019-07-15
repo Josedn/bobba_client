@@ -4,6 +4,8 @@ import './catalogue.css';
 import ConfirmPurchase from "./ConfirmPurchase";
 import { CatalogueIndex } from "../../bobba/catalogue/Catalogue";
 import CataloguePage from "../../bobba/catalogue/CataloguePage";
+import BobbaEnvironment from "../../bobba/BobbaEnvironment";
+import { canvas2Image } from "../misc/GraphicsUtilities";
 
 type CatalogueProps = {};
 
@@ -16,85 +18,9 @@ type CatalogueState = {
     visible: boolean;
 };
 
-const dummyFrontPage: CataloguePage = {
-    id: 1,
-    layout: "frontpage",
-    imageHeadline: "catalog_frontpage_headline_shop_ES",
-    imageTeaser: "fatherhabbo_300x187_girl",
-    textHeader: "Catálogo de Habbo Lan",
-    textDetails: "Yeah... it works",
-    textMisc: "How to get Habbo Credits",
-    textMisc2: "You can get Habbo Credits via Prepaid Cards, Home Phone, Credit Card, Mobile, completing offers and More!",
-    items: [],
-};
-
-const dummyPage: CataloguePage = {
-    id: 80,
-    layout: "default",
-    imageHeadline: "catalog_wired_header2_es",
-    imageTeaser: "ctlg_pic_wired_triggers",
-    textHeader: "Los Causantes permiten definir qué se necesita que pase para que tenga lugar un Efecto. Para programar un Causante, colócalo en una Sala, haz doble clic en él y ponlo en marcha. Necesitarás apilar un Efecto sobre un Causante.",
-    textDetails: "¡Haz click en cada objeto para ver cómo funciona!",
-    textMisc: "",
-    textMisc2: "",
-    items: [],
-};
-
-const dummyPages: CatalogueIndex[] = [
-    {
-        id: 0,
-        visible: true,
-        name: "Catálogo",
-        iconId: 1,
-        color: "c8684e",
-        children: [],
-    },
-    {
-        id: 1,
-        visible: true,
-        name: "Wired",
-        iconId: 80,
-        color: "aaaaaa",
-        children: [
-            {
-                id: 81,
-                visible: true,
-                name: "Causantes",
-                iconId: 81,
-                color: "",
-                children: [],
-            },
-            {
-                id: 82,
-                visible: true,
-                name: "Efectos",
-                iconId: 82,
-                color: "",
-                children: [],
-            },
-            {
-                id: 83,
-                visible: true,
-                name: "Condiciones",
-                iconId: 83,
-                color: "",
-                children: [],
-            }
-        ],
-    },
-    {
-        id: 2,
-        visible: true,
-        name: "Tienda",
-        iconId: 2,
-        color: "8ebb4a",
-        children: [],
-    }
-];
-
 const initialState = {
-    pages: dummyPages,
-    currentPage: dummyPage,
+    pages: [],
+    currentPage: undefined,
     currentPageId: -1,
     currentTabId: -1,
     currentItemId: -1,
@@ -105,6 +31,44 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     constructor(props: CatalogueProps) {
         super(props);
         this.state = initialState;
+    }
+
+    componentDidMount() {
+        const game = BobbaEnvironment.getGame();
+
+        game.uiManager.setOnOpenCatalogueHandler(() => {
+            this.setState({
+                visible: true,
+            });
+        });
+
+        game.uiManager.setOnCloseCatalogueHandler(() => {
+            this.setState({
+                visible: false,
+            });
+        });
+
+        game.uiManager.setOnLoadCatalogueIndexHandler(index => {
+            this.setState({
+                pages: index,
+                currentPage: undefined,
+                currentItemId: -1,
+                currentPageId: -1,
+                currentTabId: -1,
+            });
+        });
+
+        game.uiManager.setOnLoadCataloguePageHandler(page => {
+            this.setState({
+                currentPage: page,
+            });
+        });
+    }
+
+    handleClose = () => {
+        this.setState({
+            visible: false,
+        });
     }
 
     generateTabs(): ReactNode {
@@ -157,6 +121,8 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 currentPageId: id,
             });
         }
+
+        BobbaEnvironment.getGame().uiManager.doRequestCataloguePage(id);
     }
 
     generateDescription(): ReactNode {
@@ -194,25 +160,27 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     }
 
     generateGrid(): ReactNode {
-        return (
-            <>
-                <button onClick={() => { }} className={''}>
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAaCAYAAACgoey0AAACl0lEQVRIS7WWQWsTQRTHZ2OUIEJV6EGtORRB8FJaGwweihR61S8gItrSg0jBox/AL1Ck1IpI6BfQqyAiqJWUKiiCFw9tUWgPkkPBQ9LI/2X/0zezM5utxLlsdndmfv/3z3tvNjGDH910yyRv69yXBTURJNNv1yrmefMPfv43sADnuxOOvuVkg/cDB2eAnZcVB/70xvuBRhwF/tjcdMBvVhOz/3ErN/Ii/7EDXKnvmjsPz8umPhDPAOV73KfRZxzIA0cjfPZoy1y76eSUaX3/ZYYunhEw341Wq9YJX0AIXMhSAggkAc9L9T0z1mmJEIyAgIRgK19nKZMmZmko6k/NswLWY+rCcSsAe72+vy211mXt+dAQMGQpnmFMLo7JFXmAERNgwboeQ1H6djKJEDHeEci1R65LA8kIYOQOePbF1WCm4j/TgzBYOl77KVC/jjlfC0D0GfD04ogkAKz1QW9fbVvu1MyIhemIdPk4KtMbCID9zAkbcXnhtKjxaxDrUDoYEADw3NqwjdC3NCSAecIqYHOxWV260msKGFCmS0ALCG2uBcSaC528tb8rh4hkdefrZceho3d3rAD80CLgQMxa31ImIa4AYtybaJvacjsMpgoI0F1I26bhfI4MR9JhjY4Q+6VHpWnOl+PgD9Xe0Vb/ctIce3BCEopdiFEA7Nc5wTpCAtX5LM1KrG6/OxVKRnkGsC4Fgv2uFYsw9kGQC15qtMzC53O2A7EO2Y9ZCX0iDAaVBX/7bScurZeiYE5i0gQsjbp4YPWKMeZSarcCzz6pmEZpWDag3Ye1NEZ3Tidk3Phk284tzx0sY53/a4S+AP88dk/33mx7gumy6PcVmevzIRZ34cbjjXKhT9d+UEZTZB7mFPpQL7rZX4R9hCBJOQXEAAAAAElFTkSuQmCC" alt={"Loading"} />
-                </button>
-                <button onClick={() => { }} className={'selected'}>
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAdCAYAAACuc5z4AAAC7UlEQVRIS62VT0hUURTGv2kMjMChGRBTBpowElGxJgiMMF0oim2icCeubCiKSSIiiIigWkRJkaibQpAQRRdJoYHaoihqSErEUhyjnCJQUBBdJC++M97Hncd904Sdhc67577f+fedGQ/Sm/UXv8fN7+oAYH15FMTvA3U4GO1BQ0Ex+nveYWqiRVjzHb2o71jmRyPDDWw9i/gEMPIZ6Eqso/5QGYYWphDxZKHlXqOA90QaUVzeZYSbwBazyvrwXMDMuOtCL8405djPhNIKD+eI3wTXwdJPll9++xcGmwMI1jUIgEEIUP/VmQrsBhbgzWvNuHL9sYDbu1dQsx9Sqg52Bpl9uyJ+U6+ZsXX8SAmevpqUS8O38hHK84IvsVQaK6jYth3tl3alnNPHe25g+m1ZcWgnx9YF2F+VbcOVrPSAmYBteLTKh8mfGyjJ84oaaBOXcxX3nzMWsOqzkhpbwX4zkLLWSq/92a2/PE9RhQLTQbjqcVwDb3xdtcGZLoid8dVzJ3DjwYDAuSBtY8tgi6gUmjpLSd2xgc4FkSF23m/F+MhrPBl643g3+Ui/btpdm2cEX4yewtpSUqM7/EnJ+X07sbS8in17g/K8uLiEQMCPmblvcvdh97CKJUwjmK0g8OVoDJXV4ZTsCCP0Y2waVTUVGOh7IXe4XEzoTlufcE1gWRqWy2yYqdPGR2M4Vh3Gp9g0CgqDCgYuWn5uNjoH3xszFjCjq/J1MMueiScErGd5tqlWb4c7mNKjqdLZXwYieM3rtSshnKZJ1dhjlZxITw3r+8y8wDg4KqA0XGQPl7LcnBUV5aoKu+rao6UWAcxyIf5Dhknw6fN3JTueOZSQGVjvMxVQFi6SoCzdUXYKMEVzxi0ALA6kILRb3KrHTlm5vGv+Idy8LGC1IAqgLUO6H+K0YLJkiNSr3++z5bfZ262BuYWz8cT/B7MdBBeG8kUF2iJsKWNpB/84Nist1PQl5DZkGWQmvc1Ebs4gRr26ZfIH8Cx6KzXkTL0AAAAASUVORK5CYII=" alt={"Loading"} />
-                </button>
-                <button onClick={() => { }} className={''}>
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAeCAYAAADzXER0AAACUElEQVRIS4VVv2sUURD+FkWLa+7qpPA4LyaChZDG7tDs2V6z2AiGwClEURDW/AUWcojgj06CARF0QbGxuIt1mlgcFhc5bhtjfVgEJJg8+WZv1vf2h06zb+fN930zszOsh3IzBVee7XNeZhcCCnbzV9FyyieX2QijoOkecPDD1a7MAbVFYEbi2WABEkQjkMH6VB+f81cSghx4/3MCViAD4w9KaFBb8uRu+3oGzJCV1wkfFQkkGYNp0xH9BvMrXh7c6/UQhqEEkoT1sQyqqI8EtaUC5cFggLtvfRz+BCbR32bZpIurKFb+dfwb588u4PTlGKOXAEGb30KsnUsyagRAdcErVz5z9AlX1z8ijmMwk9tbPl7cGMD3fSmlNG1VfrcRY/kWwPeLN0+mygTvb5c0jMHf+6GjzB48vfZ/ZXbIkODZ4ydSoyrb4DJlAdsDWQbee5VEFc62TtnOhhF1zYQ185tPJhM0Gg13PPv9vjAOh0O8P34gZxKoKTgIAkRRlFfWwEuP3KQ4oqyXKevQlC6GXbtu0tfnCZgZttttN22mld1hJeGSKDirLLvMRk1HSY1cvSxQtymrLGAyK4gkelZVBeeUdfRUrUi5Mufhy0OTa5jJgjV1VSWQe8zFIIEOiRmPx2g2m+Lgvtp24U5SDlMmUI0E7IphDbROp5MjIYjfl8o2MFXmgR3kZNHW799D5cQpOWs5Wi99mqkzJFkSOxPeHRwd4s3mlpB2u93ceNIv3bAzqVaracqtVistreh3o4EpCR31ej0F6Tb+C+yQzF6c+D9J03IVp0yqFQAAAABJRU5ErkJggg==" alt={"Loading"} />
-                </button>
-                <button onClick={() => { }} className={''}>
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAVCAYAAAC6wOViAAAB7UlEQVRIS62UTyhEURTGzyws1GwkxWpKzYIsJ5GmZkrNBmWjJoqdYqWslGRjpSxE2SEa2ShsptSMJpFGUWIxUbOiJEvK4um7887tvjvz5r778hbvz33nnt855zv3RCjc5bjbImG2h9nkHB7sCdbk1DQzrfxYGbsE57qUF6/Hm8uUGJu3hoeCrq3MCGh6OCuer9V3q8xDQbmmOrxwkaNYPG3MPBQUMNW5beYMtelGYcugZnC/zAF1Fib6bRuCgwwEZzkGkxm8RgQU3YhmKJ9umeB1sKXVXeHTL3NUAn47enrJta1BVU24E7VzKBzPjico3tVKlbdv2jkpi7XRoT7xPLt69IVzUByghH48P4lNiAhHAfBqpSDW2Hh9LkmXD180korRebFK0WiUcvkbdUA0LDv8wP/G8a2wlZoCxhcMVDiv8wTKZgaMMA4U0wtQ/paaShoRoanUAHgI+GgeuOxugjJTvEhdEVEjsArvjnUSjgNsWWdD2dW8auWFVovbJc8Pbi695PzNQHyjue5efsUvTWOPT4/40AhXKtFOxfKnZ7MOV6EI1gamQkV5cQO8pe2H9o/u6yIEnBtMBSuGgUeqbqiOQ8+404eA2o0Na9hksVl0jno0WIIgmpmCMJVElv0/YLqmpuAANwVo8iH//wFM5AYjo1pE/AAAAABJRU5ErkJggg==" alt={"Loading"} />
-                </button>
-                <button onClick={() => { }} className={''}>
-                    <img src="images/avatar_editor/avatar_editor_download_icon.png" alt={"Loading"} />
-                </button>
-            </>
-        );
+        const { currentPage } = this.state;
+        if (currentPage == null) {
+            return <></>;
+        }
+
+        return currentPage.items.map(item => {
+            if (item.baseItem == null) {
+                return (
+                    <button key={item.itemId} onClick={() => { }} className={''}>
+                        <img src="images/avatar_editor/avatar_editor_download_icon.png" alt={"Loading"} />
+                    </button>
+                );
+            } else {
+                const image = canvas2Image(item.baseItem.iconImage);
+                return (
+                    <button key={item.itemId} onClick={() => { }} className={''}>
+                        <img src={image.src} alt={item.baseItem.furniBase.itemData.name} />
+                    </button>
+                );
+            }
+        });
     }
 
     generateFrontPage(currentPage: CataloguePage): ReactNode {
@@ -220,7 +188,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             <>
                 <div className="frontpage_teaser">
                     <img alt="border" src="http://images.bobba.io/c_images/catalogue/front_page_border.gif" className="border" />
-                    <img alt="article" src="http://images.bobba.io/c_images/Top_Story_Images/fatherhabbo_300x187_girl.gif" className="top_story" />
+                    <img alt="article" src={"http://images.bobba.io/c_images/Top_Story_Images/" + currentPage.imageTeaser + ".gif"} className="top_story" />
                     <h2>
                         {currentPage.textHeader}
                     </h2>
@@ -298,7 +266,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                             {this.generatePage()}
                         </div>
                         <div className="navigator">
-                            <button className="close">
+                            <button className="close" onClick={this.handleClose}>
                                 X
                             </button>
                             <h2 className="handle">Shop</h2>

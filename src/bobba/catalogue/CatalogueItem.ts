@@ -1,4 +1,6 @@
 import { ItemType } from "../imagers/furniture/FurniImager";
+import BobbaEnvironment from "../BobbaEnvironment";
+import BaseItem from "../items/BaseItem";
 
 export default class CatalogueItem {
     itemId: number;
@@ -6,6 +8,7 @@ export default class CatalogueItem {
     cost: number;
     itemType: ItemType;
     baseId: number;
+    baseItem: BaseItem | null;
     amount: number;
 
     constructor(itemId: number, itemName: string, cost: number, itemType: ItemType, baseId: number, amount: number) {
@@ -15,5 +18,12 @@ export default class CatalogueItem {
         this.itemType = itemType;
         this.baseId = baseId;
         this.amount = amount;
+        this.baseItem = null;
+    }
+
+    loadBase(): Promise<void> {
+        return BobbaEnvironment.getGame().baseItemManager.getItem(this.itemType, this.baseId).then(baseItem => {
+            this.baseItem = baseItem;
+        });
     }
 }

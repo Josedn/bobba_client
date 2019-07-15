@@ -22,4 +22,10 @@ export default class CataloguePage {
         this.textMisc2 = textMisc2;
         this.items = items;
     }
+
+    loadBases(): Promise<void[]> {
+        return Promise.all(this.items.map(item => {
+            return item.loadBase();
+        }));
+    }
 }

@@ -17,6 +17,7 @@ import UserManager from "./users/UserManager";
 import Inventory from "./inventory/Inventory";
 import RequestInventoryItems from "./communication/outgoing/users/RequestInventoryItems";
 import Catalogue from "./catalogue/Catalogue";
+import RequestCatalogueIndex from "./communication/outgoing/catalogue/RequestCatalogueIndex";
 
 export default class Game {
     currentRoom?: Room;
@@ -80,6 +81,7 @@ export default class Game {
         if (this.currentRoom == null) {
             BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
+            this.communicationManager.sendMessage(new RequestCatalogueIndex());
             this.communicationManager.sendMessage(new RequestMap());
         }
     }
