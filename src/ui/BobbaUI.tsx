@@ -14,6 +14,7 @@ import { canvas2Image } from './misc/GraphicsUtilities';
 import ChangeLooks from './changelooks/ChangeLooks';
 import Inventory from './inventory/Inventory';
 import Catalogue from './catalogue/Catalogue';
+import Notifications from './notifications/Notifications';
 
 type UserData = {
     id: number,
@@ -119,6 +120,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <ChangeLooks />
                 <Catalogue />
                 <Inventory />
+                <Notifications />
                 <RoomInfo />
                 <ItemInfoContainer />
                 <Footer focuser={this.updateChatFocuser} headImage={userData.image} />

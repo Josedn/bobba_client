@@ -21,6 +21,7 @@ export default class UIManager {
     onLoadPost: (text: string) => void;
     onGameStop: () => void;
     onUpdateCreditsBalance: (amount: number) => void;
+    onShowNotification: (text: string) => void;
     //Change looks
     onOpenChangeLooks: (figure: string) => void;
     onCloseChangeLooks: () => void;
@@ -54,6 +55,7 @@ export default class UIManager {
         this.onCloseCatalogue = () => { };
         this.onLoadCatalogueIndex = () => { };
         this.onUpdateCreditsBalance = () => { };
+        this.onShowNotification = () => { };
     }
 
     log(text: string) {
@@ -67,7 +69,7 @@ export default class UIManager {
 
     doChat(chat: string) {
         const { currentRoom, soundManager } = this.game;
-        soundManager.playCreditsSound();
+        this.onShowNotification(chat);
         if (currentRoom != null && chat.length > 0) {
             currentRoom.chat(chat);
         }
@@ -247,6 +249,10 @@ export default class UIManager {
 
     setOnUpdateCreditsBalanceHandler(handler: (amount: number) => void) {
         this.onUpdateCreditsBalance = handler;
+    }
+
+    setOnShowNotificationHandler(handler: (text: string) => void) {
+        this.onShowNotification = handler;
     }
 }
 
