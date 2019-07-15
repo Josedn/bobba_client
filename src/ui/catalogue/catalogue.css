@@ -329,4 +329,12 @@
     margin: auto;
 }
 
-.catalogue .wrapper .second_row .item_description .description_container {}
+.catalogue .wrapper .second_row .item_description .description_container h2 {
+    font: inherit;
+    font-weight: bold;
+    margin: 0;
+}
+
+.catalogue .wrapper .second_row .item_description .description_container p {
+    margin: 0;
+}

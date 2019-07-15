@@ -149,10 +149,11 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                             <img src={image.src} alt={item.baseItem.furniBase.itemData.name} />
                         </div>
                         <div className="description_container">
-                            {item.baseItem.furniBase.itemData.description}
+                            <h2>{item.baseItem.furniBase.itemData.name}</h2>
+                            <p>{item.baseItem.furniBase.itemData.description}</p>
                         </div>
                         <div className="button_container">
-                            <span>{item.cost} crédito(s)</span>
+                            <span>{item.cost} crédito{item.cost === 1 ? '' : 's'}</span>
                             <button>Comprar</button>
                         </div>
                     </>
@@ -175,7 +176,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     }
 
     generateGrid(): ReactNode {
-        const { currentPage } = this.state;
+        const { currentPage, currentItemId } = this.state;
         if (currentPage == null) {
             return <></>;
         }
@@ -190,7 +191,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             } else {
                 const image = canvas2Image(item.baseItem.iconImage);
                 return (
-                    <button key={item.itemId} onClick={this.handleSelectItem(item.itemId)} className={''}>
+                    <button key={item.itemId} onClick={this.handleSelectItem(item.itemId)} className={currentItemId === item.itemId ? 'selected': ''}>
                         <img src={image.src} alt={item.baseItem.furniBase.itemData.name} />
                     </button>
                 );
