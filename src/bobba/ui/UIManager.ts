@@ -68,8 +68,7 @@ export default class UIManager {
     }
 
     doChat(chat: string) {
-        const { currentRoom, soundManager } = this.game;
-        this.onShowNotification(chat);
+        const { currentRoom } = this.game;
         if (currentRoom != null && chat.length > 0) {
             currentRoom.chat(chat);
         }
