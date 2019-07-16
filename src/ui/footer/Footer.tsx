@@ -63,6 +63,10 @@ class Footer extends Component<FooterProps, FooterState> {
         BobbaEnvironment.getGame().uiManager.doOpenCatalogue();
     }
 
+    openNavigator = () => {
+        BobbaEnvironment.getGame().uiManager.doOpenNavigator();
+    }
+
     render() {
         const { chat } = this.state;
         const { headImage } = this.props;
@@ -86,7 +90,7 @@ class Footer extends Component<FooterProps, FooterState> {
                         <button>
                             <img src="images/bottom_bar/logo.png" alt="Return" />
                         </button>
-                        <button>
+                        <button onClick={this.openNavigator}>
                             <img src="images/bottom_bar/rooms.png" alt="Rooms" />
                         </button>
                         <button onClick={this.openCatalogue}>

@@ -34,6 +34,10 @@ export default class UIManager {
     onLoadCataloguePage: (page: CataloguePage) => void;
     onLoadCatalogueIndex: (index: CatalogueIndex[]) => void;
     onCloseCatalogue: () => void;
+    //Navigator
+    onOpenNavigator: () => void;
+    onCloseNavigator: () => void;
+    onLoadRoomList: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -56,6 +60,9 @@ export default class UIManager {
         this.onLoadCatalogueIndex = () => { };
         this.onUpdateCreditsBalance = () => { };
         this.onShowNotification = () => { };
+        this.onOpenNavigator = () => { };
+        this.onCloseNavigator = () => { };
+        this.onLoadRoomList = () => { };
     }
 
     log(text: string) {
@@ -160,7 +167,34 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             this.onOpenCatalogue();
+        }
+    }
 
+    doOpenNavigator() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenNavigator();
+        }
+    }
+
+    doRequestNavigatorSearch(search: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            //TODO: SEARCH
+        }
+    }
+
+    doRequestNavigatorRooms() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            //TODO: SEARCH
+        }
+    }
+
+    doRequestNavigatorMyRooms() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            //TODO: SEARCH
         }
     }
 
@@ -252,6 +286,18 @@ export default class UIManager {
 
     setOnShowNotificationHandler(handler: (text: string) => void) {
         this.onShowNotification = handler;
+    }
+
+    setOnOpenNavigatorHandler(handler: () => void) {
+        this.onOpenNavigator =  handler;
+    }
+
+    setOnCloseNavigatorHandler(handler: () => void) {
+        this.onCloseNavigator =  handler;
+    }
+
+    setOnLoadRoomListHandler(handler: () => void) {
+        this.onLoadRoomList =  handler;
     }
 }
 

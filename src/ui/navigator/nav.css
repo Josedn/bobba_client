@@ -82,6 +82,12 @@
     display: flex;
 }
 
+.nav .wrapper .search_bar form {
+    margin: auto;
+    width: 100%;
+    display: flex;
+}
+
 .nav .wrapper .search_bar input {
     margin: auto;
     height: 17px;
@@ -117,9 +123,19 @@
     background: #dee4f2;
     border: none;
     font: inherit;
-    text-align: left;
+    text-align: right;
     padding: 0 8px;
     display: flex;
+}
+
+.nav .wrapper .basic_rooms p {
+    color: #000000;
+    border: none;
+    font: inherit;
+    font-weight: bold;
+    display: flex;
+    text-align: right;
+    background-color: red;
 }
 
 .nav .wrapper .basic_rooms button:nth-child(even) {

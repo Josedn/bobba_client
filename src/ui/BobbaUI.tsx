@@ -73,7 +73,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             });
 
             //AUTO LOGIN 
-            game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
+            //game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
         }).catch(err => {
             this.setState({
                 gameLoaded: false,
