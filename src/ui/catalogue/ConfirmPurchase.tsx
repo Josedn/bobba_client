@@ -3,20 +3,18 @@ import Draggable from "react-draggable";
 import './confirmpurchase.css';
 import CatalogueItem from "../../bobba/catalogue/CatalogueItem";
 import { canvas2Image } from "../misc/GraphicsUtilities";
-import WindowManager from "../windows/WindowManager";
 
 type ConfirmPurchaseProps = {
     item: CatalogueItem,
     onClose: () => void,
     onPurchase: () => void,
+    zIndex: number,
 };
 type ConfirmPurchaseState = {
     visible: boolean,
-    zIndex: number,
 };
 const initialState: ConfirmPurchaseState = {
     visible: true,
-    zIndex: WindowManager.getNextZIndex(),
 };
 
 export default class ConfirmPurchase extends React.Component<ConfirmPurchaseProps, ConfirmPurchaseState> {
@@ -26,21 +24,14 @@ export default class ConfirmPurchase extends React.Component<ConfirmPurchaseProp
         this.state = initialState;
     }
 
-    upgradeZIndex = () => {
-        this.setState({
-            zIndex: WindowManager.getNextZIndex(),
-        });
-    }
-
     render() {
-        const { item, onClose, onPurchase } = this.props;
-        const { zIndex } = this.state;
+        const { item, onClose, onPurchase, zIndex } = this.props;
         if (item.baseItem == null) {
             return <></>;
         }
         const image = canvas2Image(item.baseItem.iconImage);
         return (
-            <Draggable handle=".handle" onStart={() => { this.upgradeZIndex() }}>
+            <Draggable handle=".handle">
                 <div className="catalogue_confirm_purchase" style={{ zIndex }}>
                     <button className="close" onClick={onClose}>
                         X

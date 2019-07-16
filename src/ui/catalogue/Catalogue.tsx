@@ -311,7 +311,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         if (currentPage != null && purchaseWindowVisible) {
             const item = currentPage.items.find(value => value.itemId === currentItemId);
             if (item != null && item.baseItem != null) {
-                purchaseWindow = <ConfirmPurchase item={item} onClose={this.handlePurchaseWindowClose} onPurchase={this.handlePurchase} />
+                purchaseWindow = <ConfirmPurchase zIndex={WindowManager.getNextZIndex()} item={item} onClose={this.handlePurchaseWindowClose} onPurchase={this.handlePurchase} />
             }
         }
 
