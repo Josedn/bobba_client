@@ -120,8 +120,6 @@
     position: relative;
     padding: 1px;
     font: inherit;
-    font-size: 0.55em;
-    font-family: 'Ubuntu';
 }
 
 .inventory .grid_container .grid button.selected, .inventory .grid_container .grid button:hover {
@@ -135,7 +133,7 @@
     background: #ffffff;
     border: 1px solid #2f6982;
     color: #2f6982;
-    padding: 0 1px;
+    padding: 0 2px;
 }
 
 .inventory .grid_container .item_preview {
