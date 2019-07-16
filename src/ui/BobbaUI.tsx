@@ -15,6 +15,7 @@ import ChangeLooks from './changelooks/ChangeLooks';
 import Inventory from './inventory/Inventory';
 import Catalogue from './catalogue/Catalogue';
 import Notifications from './notifications/Notifications';
+import Navigator from './navigator/Navigator';
 
 type UserData = {
     id: number,
@@ -72,7 +73,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             });
 
             //AUTO LOGIN 
-            //game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
+            game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
         }).catch(err => {
             this.setState({
                 gameLoaded: false,
@@ -120,6 +121,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <ChangeLooks />
                 <Catalogue />
                 <Inventory />
+                <Navigator />
                 <Notifications />
                 <RoomInfo />
                 <ItemInfoContainer />
