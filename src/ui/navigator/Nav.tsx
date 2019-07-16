@@ -65,8 +65,16 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                     </div>
                     <div className="wrapper">
                         <div className="search_bar">
-                            <input type="text" name="room_search" />
+                            <input type="text" name="room_search" placeholder="Escribe tu búsqueda" />
                             <button>Buscar</button>
+                        </div>
+                        <div className="basic_rooms">
+                            <button>
+                                this a sample room
+                            </button>
+                            <button>
+                                this another sample room
+                            </button>
                         </div>
                     </div>
                 </div>
