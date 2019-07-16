@@ -1,4 +1,6 @@
 .inventory {
+    font-family: 'Volter';
+    font-size: 9px;
     position: absolute;
     left: 20px;
     right: 0;
@@ -11,7 +13,7 @@
     border-radius: 5px;
     text-align: center;
     z-index: 200;
-    padding: 0px 5px;
+    padding: 4px;
 }
 
 .inventory button.close {
@@ -24,11 +26,11 @@
     background: inherit;
     border: none;
     font: inherit;
-    font-size: 0.8em;
 }
 
 .inventory h2 {
     font: inherit;
+    font-weight: bold;
     margin: 0;
 }
 
@@ -51,7 +53,6 @@
     border: 1px solid #3d5059;
     border-radius: 5px 5px 0 0;
     font: inherit;
-    font-size: 0.7em;
     color: #000000;
 }
 
@@ -63,7 +64,7 @@
 .inventory .items_container {
     background-color: #ffffff;
     border-radius: 5px;
-    height: 245px;
+    height: 250px;
     padding: 2px 8px;
     box-sizing: border-box;
     border: 1px solid #567483;
@@ -83,7 +84,6 @@
     border: none;
     color: #000000;
     font: inherit;
-    font-size: 0.7em;
     border-right: 1px solid #000000;
     height: 22px;
     width: 100%;
@@ -121,6 +121,7 @@
     padding: 1px;
     font: inherit;
     font-size: 0.55em;
+    font-family: 'Ubuntu';
 }
 
 .inventory .grid_container .grid button.selected, .inventory .grid_container .grid button:hover {
@@ -155,11 +156,10 @@
 }
 
 .inventory .grid_container .item_preview .item_data h2 {
-    font-size: 0.9em;
+    font-weight: bold;
 }
 
 .inventory .grid_container .item_preview .item_data p {
-    font-size: 0.7em;
     margin: 0;
 }
 
@@ -170,7 +170,6 @@
     border: 1px solid #000000;
     padding: 5px 10px;
     font: inherit;
-    font-size: 0.8em;
     border-radius: 3px;
 }
 
