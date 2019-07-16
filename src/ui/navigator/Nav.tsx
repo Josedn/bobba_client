@@ -1,7 +1,7 @@
 import React from 'react';
 import WindowManager from '../windows/WindowManager';
 import Draggable from 'react-draggable';
-import './navigator.css';
+import './nav.css';
 
 type NavigatorProps = {};
 type NavigatorState = {
@@ -37,7 +37,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         }
 
         return (
-            <Draggable defaultClassName="navigator" handle=".title" onStart={() => { this.upgradeZIndex() }}>
+            <Draggable defaultClassName="nav" handle=".title" onStart={() => { this.upgradeZIndex() }}>
                 <div style={{ zIndex }}>
                     <button className="close" onClick={this.close}>
                         X

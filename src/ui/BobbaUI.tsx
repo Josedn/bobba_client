@@ -15,7 +15,7 @@ import ChangeLooks from './changelooks/ChangeLooks';
 import Inventory from './inventory/Inventory';
 import Catalogue from './catalogue/Catalogue';
 import Notifications from './notifications/Notifications';
-import Navigator from './navigator/Navigator';
+import Navigator from './navigator/Nav';
 
 type UserData = {
     id: number,
