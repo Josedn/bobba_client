@@ -133,6 +133,13 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         BobbaEnvironment.getGame().uiManager.doRequestGoToRoom(roomId);
     }
 
+    calculateUserCountColor(userCount: number, capacity: number): string {
+        if (userCount === 0) {
+            return '';
+        }
+        return 'g';
+    }
+
     generateGrid(): ReactNode {
         const { currentRooms } = this.state;
         if (currentRooms == null) {
@@ -156,7 +163,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                     <div className="icons_container">
                         {lockIcon}
                         <button className={roomData.isFavourite ? 'favourite' : 'make_favourite'} />
-                        <button className="usercount g">{roomData.userCount}</button>
+                        <button className={"usercount " + this.calculateUserCountColor(roomData.userCount, roomData.capacity)}>{roomData.userCount}</button>
                     </div>
 
                 </div>

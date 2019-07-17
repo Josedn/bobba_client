@@ -40,7 +40,6 @@ export default class InventoryContainer extends React.Component<InventoryContain
         game.uiManager.setOnUpdateInventoryHandler(items => {
             this.setState({
                 items,
-                selectedId: -1,
             });
         });
 
