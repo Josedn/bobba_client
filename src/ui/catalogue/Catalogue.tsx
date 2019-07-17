@@ -317,7 +317,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
 
         return (
             <>
-                <Draggable handle=".handle" onStart={() => { this.upgradeZIndex() }}>
+                <Draggable handle=".handle" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
                     <div className="catalogue" style={{ zIndex }}>
                         <div className="content">
                             <div className="handle" />

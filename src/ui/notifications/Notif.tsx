@@ -37,7 +37,7 @@ export default class Notif extends React.Component<NotifProps, NotifState> {
         }
 
         return (
-            <Draggable key={id} handle=".handle" onStart={() => { this.upgradeZIndex() }}>
+            <Draggable key={id} handle=".handle" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
                 <div className="notification" style={{ zIndex }}>
                     <button className="close" onClick={this.handleClose}>
                         X

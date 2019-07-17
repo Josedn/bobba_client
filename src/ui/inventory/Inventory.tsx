@@ -159,7 +159,7 @@ export default class InventoryContainer extends React.Component<InventoryContain
             return <></>;
         }
         return (
-            <Draggable defaultClassName="inventory" handle=".title" onStart={() => { this.upgradeZIndex() }}>
+            <Draggable defaultClassName="inventory" handle=".title" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
                 <div style={{ zIndex }}>
                     <button className="close" onClick={this.close}>
                         X

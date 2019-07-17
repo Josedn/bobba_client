@@ -31,6 +31,10 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         const game = BobbaEnvironment.getGame();
 
         game.uiManager.setOnOpenNavigatorHandler(() => {
+            const { currentRooms, mainTabId } = this.state;
+            if (currentRooms == null) {
+                this.requestRoomList(mainTabId);
+            }
             this.setState({
                 visible: true,
                 zIndex: WindowManager.getNextZIndex(),
@@ -79,7 +83,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         );
     }
 
-    handleMainTabChange = (mainTabId: MainTabId) => () => {
+    requestRoomList(mainTabId: MainTabId) {
         switch (mainTabId) {
             case 'me':
                 BobbaEnvironment.getGame().uiManager.doRequestNavigatorMyRooms();
@@ -88,10 +92,21 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                 BobbaEnvironment.getGame().uiManager.doRequestNavigatorRooms();
                 break;
         }
-        this.setState({
-            mainTabId,
-            currentRooms: undefined,
-        });
+    }
+
+    handleMainTabChange = (mainTabId: MainTabId) => () => {
+        if (mainTabId === 'search') {
+            this.setState({
+                mainTabId,
+                currentRooms: [],
+            });
+        } else {
+            this.setState({
+                mainTabId,
+                currentRooms: undefined,
+            });
+            this.requestRoomList(mainTabId);
+        }
     }
 
     handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +126,6 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
 
     generateGrid(): ReactNode {
         const { currentRooms } = this.state;
-
         if (currentRooms == null) {
             return (
                 <p>
@@ -121,7 +135,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         }
         return currentRooms.map(roomData => {
             return (
-                <button>
+                <button key={roomData.id}>
                     {roomData.name}
                 </button>
             )
@@ -135,7 +149,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         }
 
         return (
-            <Draggable defaultClassName="nav" handle=".title" onStart={() => { this.upgradeZIndex() }}>
+            <Draggable defaultClassName="nav" handle=".title" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
                 <div style={{ zIndex }}>
                     <button className="close" onClick={this.close}>
                         X

@@ -183,7 +183,7 @@ export default class UIManager {
         if (currentUser != null) {
             //TODO: SEARCH
             //dummy:
-            this.onLoadRoomList([new RoomData(1, "Dummy room", "Relevance", "Coolest room evur", 20, 1), new RoomData(1, search, "Relevance", "Coolest room evur", 20, 1)]);
+            this.onLoadRoomList([new RoomData(1, "Dummy room", "Relevance", "Coolest room evur", 20, 1), new RoomData(2, search, "Relevance", "Coolest room evur", 20, 1)]);
         }
     }
 
@@ -191,6 +191,7 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             //TODO: SEARCH
+            this.onLoadRoomList([new RoomData(1, "The deep forest", "Relevance", "Coolest room evur", 20, 1)]);
         }
     }
 
@@ -198,6 +199,7 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             //TODO: SEARCH
+            this.onLoadRoomList([new RoomData(1, "my room #1", "Relevance", "Coolest room evur", 20, 1)]);
         }
     }
 

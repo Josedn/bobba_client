@@ -115,6 +115,8 @@
     margin-top: 5px;
     height: 370px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .nav .wrapper .basic_rooms button {
@@ -129,12 +131,12 @@
 }
 
 .nav .wrapper .basic_rooms p {
+    margin: auto;
     color: #000000;
     border: none;
     font: inherit;
     font-weight: bold;
-    display: flex;
-    text-align: right;
+    text-align: center;
 }
 
 .nav .wrapper .basic_rooms button:nth-child(even) {

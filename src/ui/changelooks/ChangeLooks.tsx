@@ -440,7 +440,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
             return <></>;
         }
         return (
-            <Draggable defaultClassName="avatar_editor" handle=".title" onStart={() => { this.upgradeZIndex() }}>
+            <Draggable defaultClassName="avatar_editor" handle=".title" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
                 <div style={{ zIndex }}>
                     <button className="close" onClick={this.handleClose}>
                         X
