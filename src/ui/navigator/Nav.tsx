@@ -3,6 +3,7 @@ import WindowManager from '../windows/WindowManager';
 import Draggable from 'react-draggable';
 import './nav.css';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
+import RoomData from '../../bobba/navigator/RoomData';
 
 type MainTabId = 'rooms' | 'me' | 'search';
 type NavigatorProps = {};
@@ -11,12 +12,14 @@ type NavigatorState = {
     zIndex: number,
     mainTabId: MainTabId,
     search: string,
+    currentRooms?: RoomData[],
 };
 const initialState: NavigatorState = {
     visible: false,
     mainTabId: 'rooms',
     search: '',
     zIndex: WindowManager.getNextZIndex(),
+    currentRooms: undefined,
 };
 export default class Navigator extends React.Component<NavigatorProps, NavigatorState> {
     constructor(props: NavigatorProps) {
@@ -40,8 +43,10 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
             });
         });
 
-        game.uiManager.setOnLoadRoomListHandler(() => {
-
+        game.uiManager.setOnLoadRoomListHandler((rooms) => {
+            this.setState({
+                currentRooms: rooms,
+            });
         });
     }
 
@@ -84,7 +89,8 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                 break;
         }
         this.setState({
-            mainTabId
+            mainTabId,
+            currentRooms: undefined,
         });
     }
 
@@ -95,20 +101,31 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
     }
 
     handleSearch = (event: FormEvent<HTMLFormElement>) => {
+        const { search } = this.state;
         event.preventDefault();
         this.setState({
             mainTabId: 'search',
         });
+        BobbaEnvironment.getGame().uiManager.doRequestNavigatorSearch(search);
     }
 
     generateGrid(): ReactNode {
-        return (
-            <>
+        const { currentRooms } = this.state;
+
+        if (currentRooms == null) {
+            return (
                 <p>
                     Loading...
                 </p>
-            </>
-        );
+            );
+        }
+        return currentRooms.map(roomData => {
+            return (
+                <button>
+                    {roomData.name}
+                </button>
+            )
+        });
     }
 
     render() {

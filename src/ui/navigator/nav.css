@@ -135,7 +135,6 @@
     font-weight: bold;
     display: flex;
     text-align: right;
-    background-color: red;
 }
 
 .nav .wrapper .basic_rooms button:nth-child(even) {

@@ -6,6 +6,7 @@ import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMot
 import UserItem from "../inventory/UserItem";
 import CataloguePage from "../catalogue/CataloguePage";
 import { CatalogueIndex } from "../catalogue/Catalogue";
+import RoomData from "../navigator/RoomData";
 
 export default class UIManager {
     game: Game;
@@ -37,7 +38,7 @@ export default class UIManager {
     //Navigator
     onOpenNavigator: () => void;
     onCloseNavigator: () => void;
-    onLoadRoomList: () => void;
+    onLoadRoomList: (rooms: RoomData[]) => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -181,6 +182,8 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             //TODO: SEARCH
+            //dummy:
+            this.onLoadRoomList([new RoomData(1, "Dummy room", "Relevance", "Coolest room evur", 20, 1), new RoomData(1, search, "Relevance", "Coolest room evur", 20, 1)]);
         }
     }
 
@@ -296,7 +299,7 @@ export default class UIManager {
         this.onCloseNavigator =  handler;
     }
 
-    setOnLoadRoomListHandler(handler: () => void) {
+    setOnLoadRoomListHandler(handler: (rooms: RoomData[]) => void) {
         this.onLoadRoomList =  handler;
     }
 }
