@@ -19,6 +19,7 @@ import RequestInventoryItems from "./communication/outgoing/users/RequestInvento
 import Catalogue from "./catalogue/Catalogue";
 import RequestCatalogueIndex from "./communication/outgoing/catalogue/RequestCatalogueIndex";
 import SoundManager from "./sound/SoundManager";
+import Nav from "./navigator/Nav";
 
 export default class Game {
     currentRoom?: Room;
@@ -33,6 +34,7 @@ export default class Game {
     communicationManager: CommunicationManager;
     inventory: Inventory;
     catalogue: Catalogue;
+    navigator: Nav;
     uiManager: UIManager;
     soundManager: SoundManager;
     isStarting: boolean;
@@ -50,6 +52,7 @@ export default class Game {
         this.communicationManager = new CommunicationManager();
         this.inventory = new Inventory();
         this.catalogue = new Catalogue();
+        this.navigator = new Nav();
         this.uiManager = new UIManager(this);
         this.isStarting = false;
     }

@@ -119,15 +119,85 @@
     flex-direction: column;
 }
 
-.nav .wrapper .basic_rooms button {
+.nav .wrapper .basic_rooms .room_button {
     width: 100%;
     height: 17px;
     background: #dee4f2;
     border: none;
     font: inherit;
-    text-align: right;
     padding: 0 8px;
+    box-sizing: border-box;
     display: flex;
+    cursor: pointer;
+}
+
+.nav .wrapper .basic_rooms .room_button span {
+    width: 70%;
+    text-align: left;
+    margin: auto 0;
+    overflow: hidden;
+    color: #000000;
+}
+
+.nav .wrapper .basic_rooms .room_button .icons_container {
+    display: flex;
+    width: 30%;
+    justify-content: flex-end;
+}
+
+.nav .wrapper .basic_rooms .room_button .icons_container button {
+    border: none;
+    background: none;
+    margin: auto 0 auto 2px;
+}
+
+.nav .wrapper .basic_rooms .room_button button.door_bell {
+    width: 13px;
+    height: 16px;
+    background-image: url('/images/navigator/doormode_doorbell_small.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.door_password {
+    width: 13px;
+    height: 16px;
+    background-image: url('/images/navigator/doormode_password_small.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.make_favourite {
+    width: 18px;
+    height: 16px;
+    background-image: url('/images/navigator/make_favourite.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.make_favourite:hover, .nav .wrapper .basic_rooms .room_button button.favourite {
+    width: 18px;
+    height: 16px;
+    background-image: url('/images/navigator/favourite.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount {
+    font: inherit;
+    text-align: right;
+    color: #ffffff;
+    width: 34px;
+    height: 13px;
+    background-image: url('/images/navigator/usercount_fixed_b.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.g {
+    background-image: url('/images/navigator/usercount_fixed_g.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.o {
+    background-image: url('/images/navigator/usercount_fixed_g.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.r {
+    background-image: url('/images/navigator/usercount_fixed_r.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.y {
+    background-image: url('/images/navigator/usercount_fixed_y.png');
 }
 
 .nav .wrapper .basic_rooms p {
@@ -139,10 +209,10 @@
     text-align: center;
 }
 
-.nav .wrapper .basic_rooms button:nth-child(even) {
+.nav .wrapper .basic_rooms .room_button:nth-child(even) {
     background: #ffffff;
 }
 
-.nav .wrapper .basic_rooms button:hover, .nav .wrapper .basic_rooms button:nth-child(even):hover {
+.nav .wrapper .basic_rooms .room_button:hover, .nav .wrapper .basic_rooms .room_button:nth-child(even):hover {
     background: #a2d6ea;
 }

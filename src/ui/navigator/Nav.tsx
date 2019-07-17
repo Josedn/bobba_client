@@ -3,7 +3,7 @@ import WindowManager from '../windows/WindowManager';
 import Draggable from 'react-draggable';
 import './nav.css';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
-import RoomData from '../../bobba/navigator/RoomData';
+import RoomData, { LockType } from '../../bobba/navigator/RoomData';
 
 type MainTabId = 'rooms' | 'me' | 'search';
 type NavigatorProps = {};
@@ -95,11 +95,15 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
     }
 
     handleMainTabChange = (mainTabId: MainTabId) => () => {
+        const { search } = this.state;
         if (mainTabId === 'search') {
             this.setState({
                 mainTabId,
                 currentRooms: [],
             });
+            if (search.length > 0) {
+                BobbaEnvironment.getGame().uiManager.doRequestNavigatorSearch(search);
+            }
         } else {
             this.setState({
                 mainTabId,
@@ -120,8 +124,13 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         event.preventDefault();
         this.setState({
             mainTabId: 'search',
+            currentRooms: undefined,
         });
         BobbaEnvironment.getGame().uiManager.doRequestNavigatorSearch(search);
+    }
+
+    handleGoToRoom = (roomId: number) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestGoToRoom(roomId);
     }
 
     generateGrid(): ReactNode {
@@ -134,10 +143,23 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
             );
         }
         return currentRooms.map(roomData => {
+            let lockIcon = <></>;
+            if (roomData.lockType === LockType.Locked) {
+                lockIcon = <button className="door_bell" />;
+            } else if (roomData.lockType === LockType.Password) {
+                lockIcon = <button className="door_password" />;
+            }
             return (
-                <button key={roomData.id}>
-                    {roomData.name}
-                </button>
+
+                <div className="room_button" key={roomData.id} onClick={this.handleGoToRoom(roomData.id)}>
+                    <span>{roomData.name}</span>
+                    <div className="icons_container">
+                        {lockIcon}
+                        <button className={roomData.isFavourite ? 'favourite' : 'make_favourite'} />
+                        <button className="usercount g">{roomData.userCount}</button>
+                    </div>
+
+                </div>
             )
         });
     }

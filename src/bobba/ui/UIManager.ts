@@ -181,25 +181,35 @@ export default class UIManager {
     doRequestNavigatorSearch(search: string) {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
-            //TODO: SEARCH
-            //dummy:
-            this.onLoadRoomList([new RoomData(1, "Dummy room", "Relevance", "Coolest room evur", 20, 1), new RoomData(2, search, "Relevance", "Coolest room evur", 20, 1)]);
+            this.game.navigator.requestSearchRooms(search);
         }
     }
 
     doRequestNavigatorRooms() {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
-            //TODO: SEARCH
-            this.onLoadRoomList([new RoomData(1, "The deep forest", "Relevance", "Coolest room evur", 20, 1)]);
+            this.game.navigator.requestPopularRooms();
         }
     }
 
     doRequestNavigatorMyRooms() {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
-            //TODO: SEARCH
-            this.onLoadRoomList([new RoomData(1, "my room #1", "Relevance", "Coolest room evur", 20, 1)]);
+            this.game.navigator.requestOwnRooms();
+        }
+    }
+
+    doRequestGoToRoom(roomId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestGoToRoom(roomId);
+        }
+    }
+
+    doRequestLeaveRoom() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestLeaveRoom();
         }
     }
 
@@ -294,15 +304,15 @@ export default class UIManager {
     }
 
     setOnOpenNavigatorHandler(handler: () => void) {
-        this.onOpenNavigator =  handler;
+        this.onOpenNavigator = handler;
     }
 
     setOnCloseNavigatorHandler(handler: () => void) {
-        this.onCloseNavigator =  handler;
+        this.onCloseNavigator = handler;
     }
 
     setOnLoadRoomListHandler(handler: (rooms: RoomData[]) => void) {
-        this.onLoadRoomList =  handler;
+        this.onLoadRoomList = handler;
     }
 }
 
