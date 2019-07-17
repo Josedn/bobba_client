@@ -3,6 +3,7 @@ import RequestNavigatorSearchRooms from "../communication/outgoing/navigator/Req
 import RequestNavigatorPopularRooms from "../communication/outgoing/navigator/RequestNavigatorPopularRooms";
 import RequestNavigatorOwnRooms from "../communication/outgoing/navigator/RequestNavigatorOwnRooms";
 import RequestNavigatorLeaveRoom from "../communication/outgoing/navigator/RequestNavigatorLeaveRoom";
+import RequestNavigatorGoToRoom from "../communication/outgoing/navigator/RequestNavigatorGoToRoom";
 
 export default class Nav {
 
@@ -19,7 +20,7 @@ export default class Nav {
     }
 
     requestGoToRoom(roomId: number) {
-        
+        BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestNavigatorGoToRoom(roomId));
     }
 
     requestLeaveRoom() {

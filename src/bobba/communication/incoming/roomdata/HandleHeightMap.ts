@@ -3,7 +3,7 @@ import ServerMessage from "../../protocol/ServerMessage";
 import BobbaEnvironment from "../../../BobbaEnvironment";
 import RoomModel from "../../../rooms/RoomModel";
 
-export default class HandleMap implements IIncomingEvent {
+export default class HandleHeightMap implements IIncomingEvent {
     handle(request: ServerMessage) {
         const cols = request.popInt();
         const rows = request.popInt();
@@ -20,6 +20,6 @@ export default class HandleMap implements IIncomingEvent {
         }
 
         const model = new RoomModel(cols, rows, doorX, doorY, heightmap);
-        BobbaEnvironment.getGame().loadRoom(1, "Dummy", model);
+        BobbaEnvironment.getGame().handleHeightMap(model);
     }
 }

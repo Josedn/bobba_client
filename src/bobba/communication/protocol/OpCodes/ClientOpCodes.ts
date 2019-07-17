@@ -1,5 +1,4 @@
 export const LOGIN = 1;
-export const REQUEST_MAP = 2;
 export const REQUEST_MOVEMENT = 7;
 export const REQUEST_CHAT = 9;
 export const REQUEST_LOOK_AT = 12;
@@ -21,3 +20,5 @@ export const REQUEST_NAVIGATOR_SEARCH_ROOMS = 30;
 export const REQUEST_NAVIGATOR_MAKE_FAVOURITE = 31;
 export const REQUEST_NAVIGATOR_REMOVE_FAVOURITE = 32;
 export const REQUEST_NAVIGATOR_LEAVE_ROOM = 33;
+export const REQUEST_NAVIGATOR_GO_TO_ROOM = 34;
+export const REQUEST_HEIGHT_MAP = 2;

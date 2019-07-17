@@ -1,5 +1,5 @@
 export const LOGIN_OK = 3;
-export const MAP_DATA = 4;
+export const ROOM_DATA_HEIGHTMAP = 4;
 export const PLAYERS_DATA = 6;
 export const PLAYER_STATUS = 8;
 export const CHAT = 10;
@@ -16,3 +16,5 @@ export const CATALOGUE_PAGE = 24;
 export const CATALOGUE_PURCHASE_ERROR = 25;
 export const CATALOGUE_PURCHASE_INFO = 26;
 export const CREDITS_BALANCE = 27;
+export const ROOM_DATA_MODEL_INFO = 28;
+export const ROOM_DATA = 29;

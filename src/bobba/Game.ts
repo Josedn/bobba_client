@@ -6,9 +6,8 @@ import BaseItemManager from "./items/BaseItemManager";
 import { ROOM_TILE, ROOM_SELECTED_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
 import CommunicationManager from "./communication/CommunicationManager";
-import RequestMap from "./communication/outgoing/rooms/RequestMap";
 import RoomModel from "./rooms/RoomModel";
-import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
+import RequestRoomData from "./communication/outgoing/roomdata/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
 import BobbaEnvironment from "./BobbaEnvironment";
@@ -20,6 +19,8 @@ import Catalogue from "./catalogue/Catalogue";
 import RequestCatalogueIndex from "./communication/outgoing/catalogue/RequestCatalogueIndex";
 import SoundManager from "./sound/SoundManager";
 import Nav from "./navigator/Nav";
+import RequestHeightMap from "./communication/outgoing/roomdata/RequestHeightMap";
+import RequestNavigatorGoToRoom from "./communication/outgoing/navigator/RequestNavigatorGoToRoom";
 
 export default class Game {
     currentRoom?: Room;
@@ -88,16 +89,21 @@ export default class Game {
             BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
             this.communicationManager.sendMessage(new RequestCatalogueIndex());
-            this.communicationManager.sendMessage(new RequestMap());
             this.soundManager.playPixelsSound();
+
+            this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(1));
         }
     }
 
-    loadRoom(id: number, name: string, model: RoomModel) {
-        this.currentRoom = new Room(id, name, model);
+    handleRoomModelInfo(modelId: string, roomId: number) {
+        this.communicationManager.sendMessage(new RequestHeightMap());
+    }
+
+    handleHeightMap(model: RoomModel) {
+        this.currentRoom = new Room(model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
-        BobbaEnvironment.getGame().uiManager.log("Loaded room: " + name);
+        BobbaEnvironment.getGame().uiManager.log("Loaded heightmap");
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 
