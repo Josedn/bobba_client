@@ -1,5 +1,5 @@
 export enum LockType {
-    Unlocked, Locked, Password
+    Open, Locked, Password
 };
 export default class RoomData {
     id: number;

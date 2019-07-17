@@ -100,6 +100,8 @@ export default class Game {
     }
 
     handleHeightMap(model: RoomModel) {
+        this.unloadRoom();
+        
         this.currentRoom = new Room(model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());

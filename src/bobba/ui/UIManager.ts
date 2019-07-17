@@ -39,6 +39,8 @@ export default class UIManager {
     onOpenNavigator: () => void;
     onCloseNavigator: () => void;
     onLoadRoomList: (rooms: RoomData[]) => void;
+    //Room Info
+    onCurrentRoomDataLoad: (data: RoomData) => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -64,6 +66,7 @@ export default class UIManager {
         this.onOpenNavigator = () => { };
         this.onCloseNavigator = () => { };
         this.onLoadRoomList = () => { };
+        this.onCurrentRoomDataLoad = () => { };
     }
 
     log(text: string) {
@@ -313,6 +316,10 @@ export default class UIManager {
 
     setOnLoadRoomListHandler(handler: (rooms: RoomData[]) => void) {
         this.onLoadRoomList = handler;
+    }
+
+    setOnCurrentRoomDataLoad(handler: (roomData: RoomData) => void) {
+        this.onCurrentRoomDataLoad = handler;
     }
 }
 

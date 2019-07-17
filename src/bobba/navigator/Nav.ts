@@ -4,9 +4,9 @@ import RequestNavigatorPopularRooms from "../communication/outgoing/navigator/Re
 import RequestNavigatorOwnRooms from "../communication/outgoing/navigator/RequestNavigatorOwnRooms";
 import RequestNavigatorLeaveRoom from "../communication/outgoing/navigator/RequestNavigatorLeaveRoom";
 import RequestNavigatorGoToRoom from "../communication/outgoing/navigator/RequestNavigatorGoToRoom";
+import RoomData from "./RoomData";
 
 export default class Nav {
-
     requestSearchRooms(search: string) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestNavigatorSearchRooms(search));
     }
@@ -25,5 +25,13 @@ export default class Nav {
 
     requestLeaveRoom() {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestNavigatorLeaveRoom());
+    }
+
+    handleRoomDataList(data: RoomData[]) {
+        BobbaEnvironment.getGame().uiManager.onLoadRoomList(data);
+    }
+
+    handleCurrentRoomData(data: RoomData) {
+        BobbaEnvironment.getGame().uiManager.onCurrentRoomDataLoad(data);
     }
 }

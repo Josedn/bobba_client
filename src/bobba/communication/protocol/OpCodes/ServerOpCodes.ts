@@ -18,3 +18,5 @@ export const CATALOGUE_PURCHASE_INFO = 26;
 export const CREDITS_BALANCE = 27;
 export const ROOM_DATA_MODEL_INFO = 28;
 export const ROOM_DATA = 29;
+export const NAVIGATOR_ROOM_LIST = 30;
+export const NAVIGATOR_LEAVE_ROOM = 31;
