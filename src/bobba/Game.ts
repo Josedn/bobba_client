@@ -3,7 +3,7 @@ import MainEngine from './graphics/MainEngine';
 import AvatarImager from "./imagers/avatars/AvatarImager";
 import FurniImager from "./imagers/furniture/FurniImager";
 import BaseItemManager from "./items/BaseItemManager";
-import { ROOM_TILE, ROOM_SELECTED_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER } from "./graphics/GenericSprites";
+import { ROOM_TILE, ROOM_SELECTED_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER, ROOM_WALL_DOOR_L, ROOM_WALL_DOOR_BEFORE_L } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
 import CommunicationManager from "./communication/CommunicationManager";
 import RoomModel from "./rooms/RoomModel";
@@ -67,7 +67,8 @@ export default class Game {
             WALL_ITEM_PLACEHOLDER,
             ROOM_WALL_L,
             ROOM_WALL_R,
-            ROOM_WALL_DOOR_EXTENDED_L,
+            ROOM_WALL_DOOR_BEFORE_L,
+            ROOM_WALL_DOOR_L,
             ROOM_TILE_SHADOW
         ];
         BobbaEnvironment.getGame().uiManager.postLoading("Initializing game engine");
@@ -101,11 +102,14 @@ export default class Game {
 
     handleHeightMap(model: RoomModel) {
         this.unloadRoom();
-        
+
         this.currentRoom = new Room(model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
         BobbaEnvironment.getGame().uiManager.log("Loaded heightmap");
+        BobbaEnvironment.getGame().uiManager.onCloseNavigator();
+        BobbaEnvironment.getGame().uiManager.onCloseCatalogue();
+        BobbaEnvironment.getGame().uiManager.onCloseInventory();
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 

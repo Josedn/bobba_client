@@ -15,7 +15,7 @@ type NavigatorState = {
     currentRooms?: RoomData[],
 };
 const initialState: NavigatorState = {
-    visible: false,
+    visible: true,
     mainTabId: 'rooms',
     search: '',
     zIndex: WindowManager.getNextZIndex(),
@@ -71,13 +71,13 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         return (
             <>
                 <button onClick={this.handleMainTabChange('rooms')} className={mainTabId === 'rooms' ? 'selected' : ''}>
-                    Salas
+                    Rooms
                 </button>
                 <button onClick={this.handleMainTabChange('me')} className={mainTabId === 'me' ? 'selected' : ''}>
-                    Yo
+                    Me
                 </button>
                 <button onClick={this.handleMainTabChange('search')} className={mainTabId === 'search' ? 'selected' : ''}>
-                    Buscar
+                    Search
                 </button>
             </>
         );
@@ -184,7 +184,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                         X
                     </button>
                     <h2 className="title">
-                        Navegador
+                        Navigator
                     </h2>
                     <hr />
                     <div className="main_tab_container">
@@ -193,8 +193,8 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                     <div className="wrapper">
                         <div className="search_bar">
                             <form onSubmit={this.handleSearch}>
-                                <input autoComplete="off" type="text" onChange={this.handleSearchChange} value={search} name="room_search" placeholder="Escribe tu búsqueda" />
-                                <button>Buscar</button>
+                                <input autoComplete="off" type="text" onChange={this.handleSearchChange} value={search} name="room_search" placeholder="Search a room..." />
+                                <button>Search</button>
                             </form>
                         </div>
                         <div className="basic_rooms">

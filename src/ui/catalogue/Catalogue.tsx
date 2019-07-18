@@ -27,7 +27,7 @@ const initialState = {
     currentPageId: -1,
     currentTabId: -1,
     currentItemId: -1,
-    visible: false,
+    visible: true,
     purchaseWindowVisible: false,
     zIndex: WindowManager.getNextZIndex(),
 };
@@ -85,7 +85,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 return (
                     <button onClick={this.handleChangePage(child.id)} key={child.id} className={"second_tab" + (currentPageId === child.id ? ' selected' : '')}>
                         <div className="icon">
-                            <img src={"http://images.bobba.io/c_images/catalogue/icon_" + child.iconId + ".png"} alt={child.name} />
+                            <img src={"//images.bobba.io/c_images/catalogue/icon_" + child.iconId + ".png"} alt={child.name} />
                         </div>
                         <span>{child.name}</span>
                     </button>
@@ -96,7 +96,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 <Fragment key={currentPage.id}>
                     <button onClick={this.handleChangePage(currentPage.id)} className={"main_tab" + (currentPageId === currentPage.id ? ' selected' : '') + (currentTabId === currentPage.id ? ' open' : '')}>
                         <div className="icon" style={{ backgroundColor: '#' + currentPage.color }}>
-                            <img src={"http://images.bobba.io/c_images/catalogue/icon_" + currentPage.iconId + ".png"} alt={currentPage.name} />
+                            <img src={"//images.bobba.io/c_images/catalogue/icon_" + currentPage.iconId + ".png"} alt={currentPage.name} />
                         </div>
                         <span>{currentPage.name}</span>
                     </button>
@@ -175,7 +175,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return (
             <>
                 <div className="image_container">
-                    <img src={"http://images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" />
+                    <img src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" />
                 </div>
                 <div className="description_container">
                     {currentPage.textDetails}
@@ -232,8 +232,8 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return (
             <>
                 <div className="frontpage_teaser">
-                    <img alt="border" src="http://images.bobba.io/c_images/catalogue/front_page_border.gif" className="border" />
-                    <img alt="article" src={"http://images.bobba.io/c_images/Top_Story_Images/" + currentPage.imageTeaser + ".gif"} className="top_story" />
+                    <img alt="border" src="//images.bobba.io/c_images/catalogue/front_page_border.gif" className="border" />
+                    <img alt="article" src={"//images.bobba.io/c_images/Top_Story_Images/" + currentPage.imageTeaser + ".gif"} className="top_story" />
                     <h2>
                         {currentPage.textHeader}
                     </h2>
@@ -263,7 +263,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 <div className="second_row">
                     <div className="grid_container">
                         <div className="title">
-                            Elige un furni
+                            Pick a furni
                             </div>
                         <div className="grid">
                             {this.generateGrid()}
@@ -289,7 +289,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             return (
                 <div className="wrapper">
                     <div className="header_container">
-                        <img alt="Furniture" src={"http://images.bobba.io/c_images/catalogue/" + currentPage.imageHeadline + ".gif"} />
+                        <img alt="Furniture" src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageHeadline + ".gif"} />
                     </div>
                     {page}
                 </div>
