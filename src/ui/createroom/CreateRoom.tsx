@@ -114,8 +114,8 @@ export default class CreateRoom extends React.Component<CreateRoomProps, CreateR
                 <button key={model.id} onClick={this.handleSelect(model.id)} className={selectedModel === model.id ? 'selected' : ''}>
                     <img src={"images/navigator/" + model.id + ".png"} alt={model.id} />
                     <div className="tile_count">
-                        <img src="images/navigator/tile_icon_black.png" alt={model.tileCount + " baldosas"} />
-                        <span>{model.tileCount} baldosas</span>
+                        <img src="images/navigator/tile_icon_black.png" alt={model.tileCount + " tiles"} />
+                        <span>{model.tileCount} tiles</span>
                     </div>
                 </button>
             );
@@ -138,19 +138,19 @@ export default class CreateRoom extends React.Component<CreateRoomProps, CreateR
                     </h2>
                     <hr />
                     <div className="wrapper">
-                        <h2>Elegir estilo</h2>
+                        <h2>Choose style</h2>
                         <div className="grid">
                             {this.generateGrid()}
                         </div>
                         <form onSubmit={this.handleSubmit}>
-                            <h2>Nombre de la sala</h2>
-                            <input maxLength={33} onChange={this.handleNameChange} value={name} type="text" placeholder="Nombre de la sala" />
+                            <h2>Room name</h2>
+                            <input maxLength={33} onChange={this.handleNameChange} value={name} type="text" placeholder="Room name" />
                             <div className="button_container">
                                 <button>
-                                    Crear sala
+                                    Create room
                                 </button>
                                 <button onClick={this.close}>
-                                    Cancelar
+                                    Cancel
                                 </button>
                             </div>
                         </form>

@@ -207,9 +207,9 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                         <div className="more_rooms">
                             <div className="info">
                                 <img src="images/navigator/create_room.png" alt="More rooms" />
-                                <span>¿Más salas?</span>
+                                <span>More rooms?</span>
                             </div>
-                            <button onClick={this.handleCreateRoom}>Crear sala</button>
+                            <button onClick={this.handleCreateRoom}>Create room</button>
                         </div>
                     </div>
                 </div>
