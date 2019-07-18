@@ -39,6 +39,8 @@ export default class UIManager {
     onOpenNavigator: () => void;
     onCloseNavigator: () => void;
     onLoadRoomList: (rooms: RoomData[]) => void;
+    onOpenCreateRoom: () => void;
+    onCloseCreateRoom: () => void;
     //Room Info
     onCurrentRoomDataLoad: (data: RoomData) => void;
 
@@ -67,6 +69,8 @@ export default class UIManager {
         this.onCloseNavigator = () => { };
         this.onLoadRoomList = () => { };
         this.onCurrentRoomDataLoad = () => { };
+        this.onOpenCreateRoom = () => { };
+        this.onCloseCreateRoom = () => { };
     }
 
     log(text: string) {
@@ -160,6 +164,20 @@ export default class UIManager {
         }
     }
 
+    doOpenCreateRoom() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenCreateRoom();
+        }
+    }
+
+    doCloseCreateRoom() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onCloseCreateRoom();
+        }
+    }
+
     doChangeMotto(motto: string) {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
@@ -213,6 +231,13 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             this.game.navigator.requestLeaveRoom();
+        }
+    }
+
+    doRequestCreateRoom(name: string, selectedModel: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestCreateRoom(name, selectedModel);
         }
     }
 
@@ -320,6 +345,14 @@ export default class UIManager {
 
     setOnCurrentRoomDataLoad(handler: (roomData: RoomData) => void) {
         this.onCurrentRoomDataLoad = handler;
+    }
+
+    setOnOpenCreateRoomHandler(handler: () => void) {
+        this.onOpenCreateRoom = handler;
+    }
+
+    setOnCloseCreateRoomHandler(handler: () => void) {
+        this.onCloseCreateRoom = handler;
     }
 }
 

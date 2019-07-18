@@ -1,0 +1,150 @@
+.createroom {
+    position: absolute;
+    left: 20px;
+    right: 0;
+    top: 15px;
+    height: 420px;
+    width: 320px;
+    background: #418db0;
+    border: 2px groove #69a4c0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 200;
+    padding: 4px;
+    font-family: 'Volter';
+    font-size: 9px;
+}
+
+.createroom button.close {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+}
+
+.createroom h2 {
+    font: inherit;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.createroom hr {
+    border: 1px solid #69a4c0;
+    border-bottom: none;
+    margin: 3px;
+}
+
+.createroom .wrapper {
+    background-color: #ffffff;
+    border-radius: 5px;
+    height: 390px;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    border: 1px solid #567483;
+    border-top: none;
+}
+
+.createroom .wrapper h2 {
+    font: inherit;
+    text-align: left;
+    font-weight: bold;
+    color: #000000;
+    margin-top: 3px;
+}
+
+.createroom .wrapper .grid {
+    width: 100%;
+    height: 290px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-top: 5px;
+}
+
+.createroom .wrapper .grid button {
+    width: 133px;
+    height: 95px;
+    background: #cbcbcb;
+    border: 1px solid #979797;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin: 1px;
+    font: inherit;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+}
+
+.createroom .wrapper .grid button.selected, .createroom .wrapper .grid button:hover {
+    background: #6e8184;
+}
+
+.createroom .wrapper .grid button img {
+    object-fit: none;
+    margin: auto;
+}
+
+.createroom .wrapper .grid button .tile_count {
+    position: absolute;
+    bottom: 3px;
+    display: flex;
+    width: 80%;
+}
+
+.createroom .wrapper .grid button .tile_count span {
+    margin: auto;
+}
+
+.createroom .wrapper .grid button .tile_count img {
+    margin: auto;
+}
+
+.createroom .wrapper form {
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.createroom .wrapper form input {
+    width: 100%;
+    background: none;
+    font: inherit;
+    margin-top: 5px;
+    height: 20px;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.createroom .wrapper form ::placeholder {
+    color: #777777;
+}
+
+.createroom .wrapper form .button_container {
+    width: 100%;
+    display: flex;
+    margin-top: 7px;
+}
+
+.createroom .wrapper form .button_container button {
+    margin: auto;
+    background: none;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    height: 20px;
+    font: inherit;
+    padding: 0 8px;
+}
+
+.createroom .wrapper form .button_container button:hover {
+    background-color: #cbcbcb;
+}

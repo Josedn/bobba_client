@@ -16,6 +16,7 @@ import Inventory from './inventory/Inventory';
 import Catalogue from './catalogue/Catalogue';
 import Notifications from './notifications/Notifications';
 import Navigator from './navigator/Nav';
+import CreateRoom from './createroom/CreateRoom';
 
 type UserData = {
     id: number,
@@ -92,7 +93,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 });
             });
             //AUTO NAV
-            game.uiManager.doOpenNavigator();
+            //game.uiManager.doOpenNavigator();
         });
 
     }
@@ -124,6 +125,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <Catalogue />
                 <Inventory />
                 <Navigator />
+                <CreateRoom />
                 <Notifications />
                 <RoomInfo />
                 <ItemInfoContainer />

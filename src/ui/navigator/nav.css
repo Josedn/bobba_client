@@ -101,7 +101,7 @@
     color: #555555;
 }
 
-.nav .wrapper .search_bar button {
+.nav .wrapper .search_bar button, .nav .wrapper .more_rooms button {
     margin: auto;
     background: #ffffff;
     border: 1px solid #000000;
@@ -111,12 +111,46 @@
     font: inherit;
 }
 
+.nav .wrapper .search_bar button:hover, .nav .wrapper .more_rooms button:hover {
+    background-color: #cbcbcb;
+}
+
+.nav .wrapper .more_rooms {
+    background-color: #cbcbcb;
+    border: 1px solid #979797;
+    border-radius: 5px;
+    height: 27px;
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+}
+
+.nav .wrapper .more_rooms .info {
+    display: flex;
+    margin: auto;
+    margin: auto auto auto 5px;
+}
+
+.nav .wrapper .more_rooms .info img {
+    margin: auto 10px;
+}
+
+.nav .wrapper .more_rooms .info span {
+    color: #000000;
+    margin: auto 10px;
+}
+
+.nav .wrapper .more_rooms button {
+    margin: auto 10px auto auto;
+}
+
 .nav .wrapper .basic_rooms {
     margin-top: 5px;
-    height: 370px;
+    height: 340px;
     width: 100%;
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
 }
 
 .nav .wrapper .basic_rooms .room_button {

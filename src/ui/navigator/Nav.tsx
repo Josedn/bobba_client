@@ -15,7 +15,7 @@ type NavigatorState = {
     currentRooms?: RoomData[],
 };
 const initialState: NavigatorState = {
-    visible: true,
+    visible: false,
     mainTabId: 'rooms',
     search: '',
     zIndex: WindowManager.getNextZIndex(),
@@ -31,10 +31,8 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         const game = BobbaEnvironment.getGame();
 
         game.uiManager.setOnOpenNavigatorHandler(() => {
-            const { currentRooms, mainTabId } = this.state;
-            if (currentRooms == null) {
-                this.requestRoomList(mainTabId);
-            }
+            const { mainTabId } = this.state;
+            this.requestRoomList(mainTabId);
             this.setState({
                 visible: true,
                 zIndex: WindowManager.getNextZIndex(),
@@ -133,6 +131,10 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
         BobbaEnvironment.getGame().uiManager.doRequestGoToRoom(roomId);
     }
 
+    handleCreateRoom = () => {
+        BobbaEnvironment.getGame().uiManager.doOpenCreateRoom();
+    }
+
     calculateUserCountColor(userCount: number, capacity: number): string {
         if (userCount === 0) {
             return '';
@@ -149,26 +151,28 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                 </p>
             );
         }
-        return currentRooms.map(roomData => {
-            let lockIcon = <></>;
-            if (roomData.lockType === LockType.Locked) {
-                lockIcon = <button className="door_bell" />;
-            } else if (roomData.lockType === LockType.Password) {
-                lockIcon = <button className="door_password" />;
-            }
-            return (
+        return currentRooms
+            .sort((a, b) => b.userCount - a.userCount)
+            .map(roomData => {
+                let lockIcon = <></>;
+                if (roomData.lockType === LockType.Locked) {
+                    lockIcon = <button className="door_bell" />;
+                } else if (roomData.lockType === LockType.Password) {
+                    lockIcon = <button className="door_password" />;
+                }
+                return (
 
-                <div className="room_button" key={roomData.id} onClick={this.handleGoToRoom(roomData.id)}>
-                    <span>{roomData.name}</span>
-                    <div className="icons_container">
-                        {lockIcon}
-                        <button className={roomData.isFavourite ? 'favourite' : 'make_favourite'} />
-                        <button className={"usercount " + this.calculateUserCountColor(roomData.userCount, roomData.capacity)}>{roomData.userCount}</button>
+                    <div className="room_button" key={roomData.id} onClick={this.handleGoToRoom(roomData.id)}>
+                        <span>{roomData.name}</span>
+                        <div className="icons_container">
+                            {lockIcon}
+                            <button className={roomData.isFavourite ? 'favourite' : 'make_favourite'} />
+                            <button className={"usercount " + this.calculateUserCountColor(roomData.userCount, roomData.capacity)}>{roomData.userCount}</button>
+                        </div>
+
                     </div>
-
-                </div>
-            )
-        });
+                )
+            });
     }
 
     render() {
@@ -199,6 +203,13 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                         </div>
                         <div className="basic_rooms">
                             {this.generateGrid()}
+                        </div>
+                        <div className="more_rooms">
+                            <div className="info">
+                                <img src="images/navigator/create_room.png" alt="More rooms" />
+                                <span>¿Más salas?</span>
+                            </div>
+                            <button onClick={this.handleCreateRoom}>Crear sala</button>
                         </div>
                     </div>
                 </div>

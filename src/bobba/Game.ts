@@ -108,6 +108,7 @@ export default class Game {
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
         BobbaEnvironment.getGame().uiManager.log("Loaded heightmap");
         BobbaEnvironment.getGame().uiManager.onCloseNavigator();
+        BobbaEnvironment.getGame().uiManager.onCloseCreateRoom();
         BobbaEnvironment.getGame().uiManager.onCloseCatalogue();
         BobbaEnvironment.getGame().uiManager.onCloseInventory();
         this.communicationManager.sendMessage(new RequestRoomData());
