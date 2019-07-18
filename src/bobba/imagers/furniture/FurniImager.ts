@@ -182,7 +182,7 @@ export default class FurniImager {
 export type Size = 1 | 32 | 64;
 export enum ItemType { FloorItem = 'roomitem', WallItem = 'wallitem' }
 export interface NameColorPair { itemName: string, colorId: number };
-export type Direction = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type Direction = 0 | 2 | 4 | 6;
 export type State = { count: number, transitionTo?: number, transition?: number, };
 
 export const splitItemNameAndColor = (itemName: string): NameColorPair => {

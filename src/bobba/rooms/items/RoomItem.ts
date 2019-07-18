@@ -1,10 +1,9 @@
-import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
 import { Container, Sprite, BLEND_MODES } from "pixi.js";
 import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";
-import { ItemType } from "../../imagers/furniture/FurniImager";
+import { ItemType, Direction } from "../../imagers/furniture/FurniImager";
 import { Selectable } from "../RoomEngine";
 import RequestFurniPickUp from "../../communication/outgoing/rooms/RequestFurniPickUp";
 

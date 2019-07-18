@@ -154,7 +154,8 @@ export default class RoomEngine {
             if (this.movingItem instanceof FloorItem) {
                 const { x, y } = this.globalToTile(globalX, globalY);
                 if (this.canPlaceFloorItem(x, y, this.movingItem)) {
-                    this.movingItem.updatePosition(x, y, 0, this.movingItemPosition.rot, false);
+                    const z = this.room.model.heightMap[x][y] - 1;
+                    this.movingItem.updatePosition(x, y, z, this.movingItemPosition.rot, false);
                 } else {
                     const local = this.globalToLocal(globalX, globalY);
                     this.movingItem.updatePosition(local.x, local.y, 0, this.movingItemPosition.rot, true);
@@ -257,9 +258,9 @@ export default class RoomEngine {
         }
     }
 
-    _addWallSprite(texture: Texture, x: number, y: number, offsetX: number, offsetY: number, priority: number) {
+    _addWallSprite(texture: Texture, x: number, y: number, z: number, offsetX: number, offsetY: number, priority: number) {
         const currentSprite = new Sprite(texture);
-        const localPos = this.tileToLocal(x, y, 0);
+        const localPos = this.tileToLocal(x, y, z);
         currentSprite.x = localPos.x + offsetX;
         currentSprite.y = localPos.y + offsetY;
         currentSprite.zIndex = calculateZIndex(x, y, 0, priority);
@@ -278,7 +279,7 @@ export default class RoomEngine {
             for (let j = 0; j < model.maxY; j++) {
                 const tile = model.heightMap[i][j];
                 if ((model.doorX !== i || model.doorY !== j) && tile > 0) {
-                    this._addWallSprite(wall_r, i, j + 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, PRIORITY_WALL);
+                    this._addWallSprite(wall_r, i, j + 1, tile - 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, PRIORITY_WALL);
                     break;
                 }
             }
@@ -288,26 +289,16 @@ export default class RoomEngine {
                 const tile = model.heightMap[i][j];
                 if ((model.doorX !== i || model.doorY !== j) && tile > 0) {
                     if (j === model.doorY) {
-                        this._addWallSprite(wall_door_l, i, j, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+                        this._addWallSprite(wall_door_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
                     } else if (j === model.doorY - 1) {
-                        this._addWallSprite(wall_door_before_l, i, j, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+                        this._addWallSprite(wall_door_before_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
                     } else {
-                        this._addWallSprite(wall_l, i, j, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+                        this._addWallSprite(wall_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
                     }
                     break;
                 }
             }
         }
-        //for (let i = 0; i < model.maxY; i++) {
-        //if (model.doorY === i) {
-        //this._addWallSprite(wall_door_extended_l, startX, i, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_X, ROOM_WALL_DOOR_EXTENDED_L_OFFSET_Y, PRIORITY_WALL);
-        //} else if (model.doorY - startX !== i) {
-        //this._addWallSprite(wall_l, startX, i, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
-        //}
-        //}
-        //for (let i = startX; i < this.room.model.maxX; i++) {
-        //    this._addWallSprite(wall_r, i, startY, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, PRIORITY_WALL);
-        //}
     }
 
     setFloor() {
@@ -336,8 +327,19 @@ export default class RoomEngine {
     }
 
     globalToTile(x: number, y: number): Point {
+        const first = this.globalToTileWithHeight(x, y, 0);
+        const second = this.globalToTileWithHeight(x, y, 1);
+        const { model } = this.room;
+
+        if (model.isValidTile(second.x, second.y) && model.heightMap[second.x][second.y] > 1) {
+            return second;
+        }
+        return first;
+    }
+
+    globalToTileWithHeight(x: number, y: number, z: number): Point {
         const offsetX = this.container.x;
-        const offsetY = this.container.y;
+        const offsetY = this.container.y - (z * ROOM_TILE_HEIGHT * 2);
 
         const xminusy = (x - ROOM_TILE_WIDTH - offsetX) / ROOM_TILE_WIDTH;
         const xplusy = (y - offsetY) / ROOM_TILE_HEIGHT;
@@ -367,7 +369,6 @@ export default class RoomEngine {
         let selectable = null;
         if (colorId !== -1) {
             selectable = this.selectableItems[colorId];
-
             if (selectable != null) {
                 selectable.handleHover(colorId);
             }

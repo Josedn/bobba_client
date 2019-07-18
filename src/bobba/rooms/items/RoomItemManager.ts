@@ -1,11 +1,10 @@
 import Room from "../Room";
-import { Direction } from "../../imagers/avatars/AvatarInfo";
 import RoomItem from "./RoomItem";
 import FloorItem from "./FloorItem";
 import WallItem from "./WallItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import UserItem from "../../inventory/UserItem";
-import { ItemType } from "../../imagers/furniture/FurniImager";
+import { ItemType, Direction } from "../../imagers/furniture/FurniImager";
 import RequestFurniMove from "../../communication/outgoing/rooms/RequestFurniMove";
 import RequestFurniPlace from "../../communication/outgoing/rooms/RequestFurniPlace";
 
