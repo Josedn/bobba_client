@@ -169,7 +169,6 @@ export default class RoomUser implements Selectable {
         this._z = z;
         this.rot = rot;
         this.headRot = rot;
-        this.updateSpritePosition();
         this.status = status;
         if (status.mv != null) {
             const coords = status.mv.split(',');
@@ -177,7 +176,10 @@ export default class RoomUser implements Selectable {
         }
         if (status.sit != null) {
             this._seatZ = parseFloat(status.sit) - 1.0;
+        } else {
+            this._seatZ = 0;
         }
+        this.updateSpritePosition();
         this.updateTexture();
     }
     setMovement(x: number, y: number, z: number) {
