@@ -144,7 +144,7 @@ export default class CreateRoom extends React.Component<CreateRoomProps, CreateR
                         </div>
                         <form onSubmit={this.handleSubmit}>
                             <h2>Nombre de la sala</h2>
-                            <input onChange={this.handleNameChange} value={name} type="text" placeholder="Nombre de la sala" />
+                            <input maxLength={33} onChange={this.handleNameChange} value={name} type="text" placeholder="Nombre de la sala" />
                             <div className="button_container">
                                 <button>
                                     Crear sala

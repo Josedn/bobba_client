@@ -163,7 +163,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
                 return (
 
                     <div className="room_button" key={roomData.id} onClick={this.handleGoToRoom(roomData.id)}>
-                        <span>{roomData.name}</span>
+                        <span>{roomData.name.substr(0, 30)}</span>
                         <div className="icons_container">
                             {lockIcon}
                             <button className={roomData.isFavourite ? 'favourite' : 'make_favourite'} />
