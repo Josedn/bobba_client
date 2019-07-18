@@ -280,7 +280,7 @@ export default class RoomUser implements Selectable {
         this.selectableContainer.x = this.container.x;
         this.selectableContainer.y = this.container.y;
 
-        const shadowCoords = this.room.engine.tileToLocal(this._x, this._y, 0);
+        const shadowCoords = this.room.engine.tileToLocal(this._x, this._y, this._z); //TODO: calculate z from heightmap
         this.shadowSprite.x = shadowCoords.x;
         this.shadowSprite.y = shadowCoords.y;
         this.shadowSprite.zIndex = this.room.engine.calculateZIndexUserShadow(this._x, this._y, 0);

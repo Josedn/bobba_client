@@ -319,7 +319,7 @@ export default class RoomEngine {
                 const tile = model.heightMap[i][j];
                 if (tile > 0) {
                     const currentSprite = new Sprite(floorTexture);
-                    const localPos = this.tileToLocal(i, j, 0);
+                    const localPos = this.tileToLocal(i, j, tile - 1);
                     currentSprite.x = localPos.x;
                     currentSprite.y = localPos.y;
 
@@ -401,7 +401,7 @@ export default class RoomEngine {
         return -1;
     }
 
-    handleMouseClick = (mouseX: number, mouseY: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean): Selectable | null => {
+    handleMouseClick = (mouseX: number, mouseY: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean, focusChat: boolean): Selectable | null => {
         const { x, y } = this.globalToTile(mouseX, mouseY);
         const isValidTile = this.room.model.isValidTile(x, y);
         if (this.isMovingRoomItem()) {
@@ -436,8 +436,9 @@ export default class RoomEngine {
         if (isValidTile) {
             BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMovement(x, y));
         }
-
-        BobbaEnvironment.getGame().uiManager.onFocusChat();
+        if (focusChat) {
+            BobbaEnvironment.getGame().uiManager.onFocusChat();
+        }
         return selectable;
     }
 
@@ -451,7 +452,7 @@ export default class RoomEngine {
         mouseX = Math.floor(mouseX);
         mouseY = Math.floor(mouseY);
         this.handleMouseMovement(mouseX, mouseY, false);
-        const newSelectedItem = this.handleMouseClick(mouseX, mouseY, false, false, false);
+        const newSelectedItem = this.handleMouseClick(mouseX, mouseY, false, false, false, false);
 
         if (newSelectedItem === this.currentSelectedItem) {
             this.handleMouseDoubleClick(mouseX, mouseY);
@@ -471,12 +472,15 @@ export default class RoomEngine {
     }
 
     updateSelectedTile(tileX: number, tileY: number) {
-        const model = this.room.model;
-        const localPos = this.tileToLocal(tileX, tileY, 0);
         if (this.selectedTileSprite != null) {
-            this.selectedTileSprite.visible = model.isValidTile(tileX, tileY);
-            this.selectedTileSprite.x = localPos.x + ROOM_SELECTED_TILE_OFFSET_X;
-            this.selectedTileSprite.y = localPos.y + ROOM_SELECTED_TILE_OFFSET_Y;
+            const model = this.room.model;
+            const visible = model.isValidTile(tileX, tileY);
+            this.selectedTileSprite.visible = visible;
+            if (visible) {
+                const localPos = this.tileToLocal(tileX, tileY, model.heightMap[tileX][tileY] - 1);
+                this.selectedTileSprite.x = localPos.x + ROOM_SELECTED_TILE_OFFSET_X;
+                this.selectedTileSprite.y = localPos.y + ROOM_SELECTED_TILE_OFFSET_Y;
+            }
 
             this.selectedTileSprite.zIndex = calculateZIndex(tileX, tileY, 0, model.doorX === tileX && model.doorY === tileY ? PRIORITY_DOOR_FLOOR_SELECT : PRIORITY_FLOOR_SELECT);
         }

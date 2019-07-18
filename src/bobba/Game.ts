@@ -111,6 +111,7 @@ export default class Game {
         BobbaEnvironment.getGame().uiManager.onCloseCreateRoom();
         BobbaEnvironment.getGame().uiManager.onCloseCatalogue();
         BobbaEnvironment.getGame().uiManager.onCloseInventory();
+        BobbaEnvironment.getGame().uiManager.onCloseChangeLooks();
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 
@@ -141,7 +142,7 @@ export default class Game {
 
     onMouseClick = (x: number, y: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean) => {
         if (this.currentRoom != null) {
-            this.currentRoom.engine.handleMouseClick(x, y, shiftKey, ctrlKey, altKey);
+            this.currentRoom.engine.handleMouseClick(x, y, shiftKey, ctrlKey, altKey, true);
         }
     }
 
