@@ -274,20 +274,28 @@ export default class RoomEngine {
         const wall_door_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_DOOR_L);
         const wall_door_before_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_DOOR_BEFORE_L);
         const model = this.room.model;
+        let minY = model.maxX;
 
         for (let i = 0; i < model.maxX; i++) {
             for (let j = 0; j < model.maxY; j++) {
                 const tile = model.heightMap[i][j];
-                if ((model.doorX !== i || model.doorY !== j) && tile > 0) {
+                if ((model.doorX !== i || model.doorY !== j) && tile > 0 && j <= minY) {
+                    if (minY > j) {
+                        minY = j;
+                    }
                     this._addWallSprite(wall_r, i, j + 1, tile - 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, PRIORITY_WALL);
                     break;
                 }
             }
         }
+        let minX = model.maxX;
         for (let j = 0; j < model.maxY; j++) {
             for (let i = 0; i < model.maxX; i++) {
                 const tile = model.heightMap[i][j];
-                if ((model.doorX !== i || model.doorY !== j) && tile > 0) {
+                if ((model.doorX !== i || model.doorY !== j) && tile > 0 && i <= minX) {
+                    if (minX > i) {
+                        minX = i;
+                    }
                     if (j === model.doorY) {
                         this._addWallSprite(wall_door_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
                     } else if (j === model.doorY - 1) {
@@ -295,6 +303,7 @@ export default class RoomEngine {
                     } else {
                         this._addWallSprite(wall_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
                     }
+
                     break;
                 }
             }
