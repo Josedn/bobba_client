@@ -318,21 +318,45 @@ export default class RoomEngine {
     }
 
     setFloor() {
-        const floorTexture = BobbaEnvironment.getGame().roomImager.roomTileTexture;
+        const { roomTileTexture, roomStairLTexture, roomStairRTexture } = BobbaEnvironment.getGame().roomImager;
+
         this.floorSprites = [];
         const model = this.room.model;
         for (let i = 0; i < model.maxX; i++) {
             for (let j = 0; j < model.maxY; j++) {
                 const tile = model.heightMap[i][j];
                 if (tile > 0) {
-                    const currentSprite = new Sprite(floorTexture);
-                    const localPos = this.tileToLocal(i, j, tile - 1);
-                    currentSprite.x = localPos.x;
-                    currentSprite.y = localPos.y;
+                    if (model.isValidTile(i + 1, j) && model.heightMap[i + 1][j] < tile) {
+                        const currentSprite = new Sprite(roomStairLTexture);
+                        const localPos = this.tileToLocal(i, j, tile - 1);
+                        currentSprite.x = localPos.x;
+                        currentSprite.y = localPos.y;
 
-                    currentSprite.zIndex = calculateZIndex(i, j, 0, model.doorX === i && model.doorY === j ? PRIORITY_DOOR_FLOOR : PRIORITY_FLOOR);
-                    this.floorSprites.push(currentSprite);
-                    this.container.addChild(currentSprite);
+                        currentSprite.zIndex = calculateZIndex(i, j, 0, model.doorX === i && model.doorY === j ? PRIORITY_DOOR_FLOOR : PRIORITY_FLOOR);
+                        this.floorSprites.push(currentSprite);
+                        this.container.addChild(currentSprite);
+                    } else if (model.isValidTile(i - 1, j) && model.heightMap[i - 1][j] > tile) { }
+                    else if (model.isValidTile(i, j - 1) && model.heightMap[i][j - 1] > tile) { }
+                    else if (model.isValidTile(i, j + 1) && model.heightMap[i][j + 1] < tile) {
+                        const currentSprite = new Sprite(roomStairRTexture);
+                        const localPos = this.tileToLocal(i, j, tile - 1);
+                        currentSprite.x = localPos.x - 34;
+                        currentSprite.y = localPos.y + 0;
+
+                        currentSprite.zIndex = calculateZIndex(i, j, 0, model.doorX === i && model.doorY === j ? PRIORITY_DOOR_FLOOR : PRIORITY_FLOOR);
+                        this.floorSprites.push(currentSprite);
+                        this.container.addChild(currentSprite);
+                    }
+                    else {
+                        const currentSprite = new Sprite(roomTileTexture);
+                        const localPos = this.tileToLocal(i, j, tile - 1);
+                        currentSprite.x = localPos.x;
+                        currentSprite.y = localPos.y;
+
+                        currentSprite.zIndex = calculateZIndex(i, j, 0, model.doorX === i && model.doorY === j ? PRIORITY_DOOR_FLOOR : PRIORITY_FLOOR);
+                        this.floorSprites.push(currentSprite);
+                        this.container.addChild(currentSprite);
+                    }
                 }
             }
         }

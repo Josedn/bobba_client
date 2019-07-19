@@ -84,7 +84,7 @@ export default class FurniBase {
                 let img: HTMLImageElement | HTMLCanvasElement = layer.asset.image;
 
                 if (layer.asset.isFlipped) {
-                    const flipped = this._flipImage(img);
+                    const flipped = flipImage(img);
                     if (flipped != null) {
                         posX = layer.asset.x - img.width - lefterFlippedX;
                         img = flipped;
@@ -158,25 +158,6 @@ export default class FurniBase {
             }
         }
         c.putImageData(imageData, 0, 0);
-        return element;
-    }
-
-    _flipImage(img: HTMLCanvasElement | HTMLImageElement): HTMLCanvasElement | null {
-        let element = document.createElement('canvas');
-        let c = element.getContext("2d");
-        if (c == null)
-            return null;
-
-        let width = img.width;
-        let height = img.height;
-        element.width = width;
-        element.height = height;
-
-        c.save();
-        c.scale(-1, 1);
-        c.drawImage(img, 0, 0, width * -1, height);
-        c.restore();
-
         return element;
     }
 
@@ -272,4 +253,23 @@ const getLayerName = (layerId: number): string => {
 
 interface RGB {
     r: number, g: number, b: number
+}
+
+export const flipImage = (img: HTMLCanvasElement | HTMLImageElement): HTMLCanvasElement | null => {
+    let element = document.createElement('canvas');
+    let c = element.getContext("2d");
+    if (c == null)
+        return null;
+
+    let width = img.width;
+    let height = img.height;
+    element.width = width;
+    element.height = height;
+
+    c.save();
+    c.scale(-1, 1);
+    c.drawImage(img, 0, 0, width * -1, height);
+    c.restore();
+
+    return element;
 }
