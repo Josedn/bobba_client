@@ -1,4 +1,3 @@
-export const ROOM_TILE = "assets/room_tile.png";
 export const ROOM_SELECTED_TILE = "assets/selected_tile.png";
 export const ROOM_TILE_HEIGHT = 16;
 export const ROOM_TILE_WIDTH = 32;
@@ -8,12 +7,8 @@ export const FLOOR_ITEM_PLACEHOLDER_OFFSET_Y = -49;
 export const WALL_ITEM_PLACEHOLDER = "assets/wall_placeholder.png";
 export const WALL_ITEM_PLACEHOLDER_OFFSET_X = -18;
 export const WALL_ITEM_PLACEHOLDER_OFFSET_Y = -25;
-export const ROOM_WALL_R = "assets/wall_r.png";
 export const ROOM_WALL_R_OFFSET_X = +64;
 export const ROOM_WALL_R_OFFSET_Y = -139;
-export const ROOM_WALL_L = "assets/wall_l.png";
 export const ROOM_WALL_L_OFFSET_X = -8;
 export const ROOM_WALL_L_OFFSET_Y = -123;
-export const ROOM_WALL_DOOR_L = "assets/wall_door_l.png";
-export const ROOM_WALL_DOOR_BEFORE_L = "assets/wall_door_before_l.png";
 export const ROOM_TILE_SHADOW = "assets/shadow_tile.png";

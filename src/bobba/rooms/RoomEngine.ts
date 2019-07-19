@@ -2,7 +2,7 @@ import Room from "./Room";
 import { Sprite, Container, Point, Texture } from "pixi.js";
 import BobbaEnvironment from "../BobbaEnvironment";
 import MainEngine from "../graphics/MainEngine";
-import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, ROOM_WALL_DOOR_L, ROOM_WALL_DOOR_BEFORE_L } from "../graphics/GenericSprites";
+import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y } from "../graphics/GenericSprites";
 import RequestMovement from "../communication/outgoing/rooms/RequestMovement";
 import FloorItem from "./items/FloorItem";
 import RoomItem from "./items/RoomItem";
@@ -258,7 +258,7 @@ export default class RoomEngine {
         }
     }
 
-    _addWallSprite(texture: Texture, x: number, y: number, z: number, offsetX: number, offsetY: number, priority: number) {
+    _addWallSprite(texture: Texture | undefined, x: number, y: number, z: number, offsetX: number, offsetY: number, priority: number) {
         const currentSprite = new Sprite(texture);
         const localPos = this.tileToLocal(x, y, z);
         currentSprite.x = localPos.x + offsetX;
@@ -269,12 +269,19 @@ export default class RoomEngine {
     }
 
     setWalls() {
-        const wall_r = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_R);
-        const wall_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_L);
-        const wall_door_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_DOOR_L);
-        const wall_door_before_l = BobbaEnvironment.getGame().engine.getTexture(ROOM_WALL_DOOR_BEFORE_L);
+        const { roomImager } = BobbaEnvironment.getGame();
         const model = this.room.model;
         let minY = model.maxX;
+
+        let maxHeight = 1;
+        for (let i = 0; i < model.maxX; i++) {
+            for (let j = 0; j < model.maxY; j++) {
+                const tile = model.heightMap[i][j];
+                if (tile > maxHeight) {
+                    maxHeight = tile;
+                }
+            }
+        }
 
         for (let i = 0; i < model.maxX; i++) {
             for (let j = 0; j < model.maxY; j++) {
@@ -283,7 +290,8 @@ export default class RoomEngine {
                     if (minY > j) {
                         minY = j;
                     }
-                    this._addWallSprite(wall_r, i, j + 1, tile - 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y, PRIORITY_WALL);
+                    this._addWallSprite(roomImager.generateRoomWallR(maxHeight - tile), i, j + 1, maxHeight - 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y + 4, PRIORITY_WALL);
+
                     break;
                 }
             }
@@ -297,13 +305,12 @@ export default class RoomEngine {
                         minX = i;
                     }
                     if (j === model.doorY) {
-                        this._addWallSprite(wall_door_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+                        this._addWallSprite(roomImager.generateRoomDoorL(), i, j, maxHeight - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y + 4, PRIORITY_WALL);
                     } else if (j === model.doorY - 1) {
-                        this._addWallSprite(wall_door_before_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+                        this._addWallSprite(roomImager.generateRoomDoorBeforeL(maxHeight - tile), i, j, maxHeight - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y + 4, PRIORITY_WALL);
                     } else {
-                        this._addWallSprite(wall_l, i, j, tile - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, PRIORITY_WALL);
+                        this._addWallSprite(roomImager.generateRoomWallL(maxHeight - tile), i, j, maxHeight - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y + 4, PRIORITY_WALL);
                     }
-
                     break;
                 }
             }
@@ -311,7 +318,7 @@ export default class RoomEngine {
     }
 
     setFloor() {
-        const floorTexture = BobbaEnvironment.getGame().engine.getTexture(ROOM_TILE);
+        const floorTexture = BobbaEnvironment.getGame().roomImager.roomTileTexture;
         this.floorSprites = [];
         const model = this.room.model;
         for (let i = 0; i < model.maxX; i++) {

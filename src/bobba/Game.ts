@@ -3,7 +3,7 @@ import MainEngine from './graphics/MainEngine';
 import AvatarImager from "./imagers/avatars/AvatarImager";
 import FurniImager from "./imagers/furniture/FurniImager";
 import BaseItemManager from "./items/BaseItemManager";
-import { ROOM_TILE, ROOM_SELECTED_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER, ROOM_WALL_DOOR_L, ROOM_WALL_DOOR_BEFORE_L } from "./graphics/GenericSprites";
+import { ROOM_SELECTED_TILE, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
 import CommunicationManager from "./communication/CommunicationManager";
 import RoomModel from "./rooms/RoomModel";
@@ -21,6 +21,7 @@ import SoundManager from "./sound/SoundManager";
 import Nav from "./navigator/Nav";
 import RequestHeightMap from "./communication/outgoing/roomdata/RequestHeightMap";
 import RequestNavigatorGoToRoom from "./communication/outgoing/navigator/RequestNavigatorGoToRoom";
+import RoomImager from "./imagers/rooms/RoomImager";
 
 export default class Game {
     currentRoom?: Room;
@@ -29,6 +30,7 @@ export default class Game {
     furniImager: FurniImager;
     chatImager: ChatImager;
     meMenuImager: MeMenuImager;
+    roomImager: RoomImager;
     baseItemManager: BaseItemManager;
     userManager: UserManager;
     ghostTextures: AvatarContainer;
@@ -47,6 +49,7 @@ export default class Game {
         this.avatarImager = new AvatarImager();
         this.furniImager = new FurniImager();
         this.chatImager = new ChatImager();
+        this.roomImager = new RoomImager();
         this.meMenuImager = new MeMenuImager();
         this.userManager = new UserManager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
@@ -61,14 +64,9 @@ export default class Game {
     loadGame(): Promise<void> {
         this.isStarting = true;
         const sprites: string[] = [
-            ROOM_TILE,
             ROOM_SELECTED_TILE,
             FLOOR_ITEM_PLACEHOLDER,
             WALL_ITEM_PLACEHOLDER,
-            ROOM_WALL_L,
-            ROOM_WALL_R,
-            ROOM_WALL_DOOR_BEFORE_L,
-            ROOM_WALL_DOOR_L,
             ROOM_TILE_SHADOW
         ];
         BobbaEnvironment.getGame().uiManager.postLoading("Initializing game engine");
@@ -77,6 +75,7 @@ export default class Game {
             this.furniImager.initialize(),
             this.chatImager.initialize(),
             this.meMenuImager.initialize(),
+            this.roomImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             BobbaEnvironment.getGame().uiManager.postLoading("Connecting to server");

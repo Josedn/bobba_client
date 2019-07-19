@@ -48,7 +48,7 @@ type CreateRoomState = {
 const initialState = {
     zIndex: WindowManager.getNextZIndex(),
     visible: true,
-    selectedModel: 'model_a',
+    selectedModel: models[0].id,
     name: '',
 };
 
