@@ -1,0 +1,252 @@
+.nav {
+    position: absolute;
+    left: 20px;
+    right: 0;
+    top: 15px;
+    height: 470px;
+    width: 320px;
+    background: #418db0;
+    border: 2px groove #69a4c0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 200;
+    padding: 4px;
+    font-family: 'Volter';
+    font-size: 9px;
+}
+
+.nav button.close {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+}
+
+.nav h2 {
+    font: inherit;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+.nav hr {
+    border: 1px solid #69a4c0;
+    border-bottom: none;
+    margin: 3px;
+}
+
+.nav .main_tab_container {
+    display: flex;
+    padding: 0 10px;
+}
+
+.nav .main_tab_container button {
+    background-color: #9fbdcc;
+    width: 100%;
+    height: 20px;
+    box-sizing: border-box;
+    border: 1px solid #3d5059;
+    border-radius: 5px 5px 0 0;
+    font: inherit;
+    color: #000000;
+}
+
+.nav .main_tab_container button:hover, .nav .main_tab_container button.selected {
+    background: #ffffff;
+    border-bottom: 1px solid #ffffff;
+}
+
+.nav .wrapper {
+    background-color: #ffffff;
+    border-radius: 5px;
+    height: 420px;
+    padding: 2px 8px;
+    box-sizing: border-box;
+    border: 1px solid #567483;
+    border-top: none;
+}
+
+.nav .wrapper .search_bar {
+    background-color: #cbcbcb;
+    border: 1px solid #979797;
+    border-radius: 5px;
+    height: 27px;
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+}
+
+.nav .wrapper .search_bar form {
+    margin: auto;
+    width: 100%;
+    display: flex;
+}
+
+.nav .wrapper .search_bar input {
+    margin: auto;
+    height: 17px;
+    width: 190px;
+    border: 1px solid #000000;
+    font: inherit;
+    padding: 0 5px;
+}
+
+.nav .wrapper .search_bar ::placeholder {
+    color: #555555;
+}
+
+.nav .wrapper .search_bar button, .nav .wrapper .more_rooms button {
+    margin: auto;
+    background: #ffffff;
+    border: 1px solid #000000;
+    height: 20px;
+    padding: 0 8px;
+    border-radius: 3px;
+    font: inherit;
+}
+
+.nav .wrapper .search_bar button:hover, .nav .wrapper .more_rooms button:hover {
+    background-color: #cbcbcb;
+}
+
+.nav .wrapper .more_rooms {
+    background-color: #cbcbcb;
+    border: 1px solid #979797;
+    border-radius: 5px;
+    height: 27px;
+    width: 100%;
+    margin-top: 5px;
+    display: flex;
+}
+
+.nav .wrapper .more_rooms .info {
+    display: flex;
+    margin: auto;
+    margin: auto auto auto 5px;
+}
+
+.nav .wrapper .more_rooms .info img {
+    margin: auto 10px;
+}
+
+.nav .wrapper .more_rooms .info span {
+    color: #000000;
+    margin: auto 10px;
+}
+
+.nav .wrapper .more_rooms button {
+    margin: auto 10px auto auto;
+}
+
+.nav .wrapper .basic_rooms {
+    margin-top: 5px;
+    height: 340px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.nav .wrapper .basic_rooms .room_button {
+    width: 100%;
+    height: 17px;
+    background: #dee4f2;
+    border: none;
+    font: inherit;
+    padding: 0 8px;
+    box-sizing: border-box;
+    display: flex;
+    cursor: pointer;
+}
+
+.nav .wrapper .basic_rooms .room_button span {
+    width: 70%;
+    text-align: left;
+    margin: auto 0;
+    overflow: hidden;
+    color: #000000;
+}
+
+.nav .wrapper .basic_rooms .room_button .icons_container {
+    display: flex;
+    width: 30%;
+    justify-content: flex-end;
+}
+
+.nav .wrapper .basic_rooms .room_button .icons_container button {
+    border: none;
+    background: none;
+    margin: auto 0 auto 2px;
+}
+
+.nav .wrapper .basic_rooms .room_button button.door_bell {
+    width: 13px;
+    height: 16px;
+    background-image: url('/images/navigator/doormode_doorbell_small.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.door_password {
+    width: 13px;
+    height: 16px;
+    background-image: url('/images/navigator/doormode_password_small.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.make_favourite {
+    width: 18px;
+    height: 16px;
+    background-image: url('/images/navigator/make_favourite.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.make_favourite:hover, .nav .wrapper .basic_rooms .room_button button.favourite {
+    width: 18px;
+    height: 16px;
+    background-image: url('/images/navigator/favourite.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount {
+    font: inherit;
+    text-align: right;
+    color: #ffffff;
+    width: 34px;
+    height: 13px;
+    background-image: url('/images/navigator/usercount_fixed_b.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.g {
+    background-image: url('/images/navigator/usercount_fixed_g.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.o {
+    background-image: url('/images/navigator/usercount_fixed_g.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.r {
+    background-image: url('/images/navigator/usercount_fixed_r.png');
+}
+
+.nav .wrapper .basic_rooms .room_button button.usercount.y {
+    background-image: url('/images/navigator/usercount_fixed_y.png');
+}
+
+.nav .wrapper .basic_rooms p {
+    margin: auto;
+    color: #000000;
+    border: none;
+    font: inherit;
+    font-weight: bold;
+    text-align: center;
+}
+
+.nav .wrapper .basic_rooms .room_button:nth-child(even) {
+    background: #ffffff;
+}
+
+.nav .wrapper .basic_rooms .room_button:hover, .nav .wrapper .basic_rooms .room_button:nth-child(even):hover {
+    background: #a2d6ea;
+}

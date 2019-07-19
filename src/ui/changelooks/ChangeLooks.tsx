@@ -4,6 +4,7 @@ import './changelooks.css';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import { canvas2Image } from '../misc/GraphicsUtilities';
 import AvatarInfo, { Gender, extractFigureParts, FigurePart, generateFigureString } from '../../bobba/imagers/avatars/AvatarInfo';
+import WindowManager from '../windows/WindowManager';
 
 type MainTabId = 'generic' | 'head' | 'torso' | 'legs';
 type MainTab = {
@@ -127,6 +128,7 @@ type ChangeLooksState = {
     secondTabId: number,
     look: string,
     gender: Gender,
+    zIndex: number,
 };
 
 const initialState: ChangeLooksState = {
@@ -135,6 +137,7 @@ const initialState: ChangeLooksState = {
     secondTabId: 0,
     look: '',
     gender: 'M',
+    zIndex: WindowManager.getNextZIndex(),
 };
 
 class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
@@ -148,7 +151,8 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
         game.uiManager.setOnOpenChangeLooksHandler(look => {
             this.setState({
                 visible: true,
-                look
+                look,
+                zIndex: WindowManager.getNextZIndex()
             });
         });
 
@@ -425,15 +429,19 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
     handleClose = () => {
         this.setState({ visible: false });
     }
-
+    upgradeZIndex = () => {
+        this.setState({
+            zIndex: WindowManager.getNextZIndex(),
+        });
+    }
     render() {
-        const { visible } = this.state;
+        const { visible, zIndex } = this.state;
         if (!visible) {
             return <></>;
         }
         return (
-            <Draggable defaultClassName="avatar_editor" handle=".title">
-                <div>
+            <Draggable defaultClassName="avatar_editor" handle=".title" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
+                <div style={{ zIndex }}>
                     <button className="close" onClick={this.handleClose}>
                         X
                     </button>

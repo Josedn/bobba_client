@@ -1,9 +1,11 @@
 .avatar_editor {
+    font-family: 'Volter';
+    font-size: 9px;
     position: absolute;
     left: 20px;
     right: 0;
     top: 15px;
-    height: 420px;
+    height: 410px;
     width: 380px;
     background: #3d3d3d;
     border: 1px solid #282722;
@@ -24,11 +26,11 @@
     background: inherit;
     border: none;
     font: inherit;
-    font-size: 0.8em;
 }
 
 .avatar_editor h2 {
     font: inherit;
+    font-weight: bold;
     margin: 0;
 }
 
@@ -82,7 +84,6 @@
     border: none;
     color: #ffffff;
     font: inherit;
-    font-size: 0.7em;
     margin-right: 5px;
     border-radius: 5px;
     height: 37px;
@@ -254,7 +255,6 @@
     display: flex;
     color: inherit;
     font: inherit;
-    font-size: 0.8em;
     color: #eeeeee;
     padding: 0 10px 2px 10px;
 }

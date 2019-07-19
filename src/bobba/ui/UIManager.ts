@@ -6,6 +6,7 @@ import RequestChangeMotto from "../communication/outgoing/rooms/RequestChangeMot
 import UserItem from "../inventory/UserItem";
 import CataloguePage from "../catalogue/CataloguePage";
 import { CatalogueIndex } from "../catalogue/Catalogue";
+import RoomData from "../navigator/RoomData";
 
 export default class UIManager {
     game: Game;
@@ -34,6 +35,14 @@ export default class UIManager {
     onLoadCataloguePage: (page: CataloguePage) => void;
     onLoadCatalogueIndex: (index: CatalogueIndex[]) => void;
     onCloseCatalogue: () => void;
+    //Navigator
+    onOpenNavigator: () => void;
+    onCloseNavigator: () => void;
+    onLoadRoomList: (rooms: RoomData[]) => void;
+    onOpenCreateRoom: () => void;
+    onCloseCreateRoom: () => void;
+    //Room Info
+    onCurrentRoomDataLoad: (data: RoomData) => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -56,6 +65,12 @@ export default class UIManager {
         this.onLoadCatalogueIndex = () => { };
         this.onUpdateCreditsBalance = () => { };
         this.onShowNotification = () => { };
+        this.onOpenNavigator = () => { };
+        this.onCloseNavigator = () => { };
+        this.onLoadRoomList = () => { };
+        this.onCurrentRoomDataLoad = () => { };
+        this.onOpenCreateRoom = () => { };
+        this.onCloseCreateRoom = () => { };
     }
 
     log(text: string) {
@@ -149,6 +164,20 @@ export default class UIManager {
         }
     }
 
+    doOpenCreateRoom() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenCreateRoom();
+        }
+    }
+
+    doCloseCreateRoom() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onCloseCreateRoom();
+        }
+    }
+
     doChangeMotto(motto: string) {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
@@ -160,7 +189,55 @@ export default class UIManager {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
             this.onOpenCatalogue();
+        }
+    }
 
+    doOpenNavigator() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.onOpenNavigator();
+        }
+    }
+
+    doRequestNavigatorSearch(search: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestSearchRooms(search);
+        }
+    }
+
+    doRequestNavigatorRooms() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestPopularRooms();
+        }
+    }
+
+    doRequestNavigatorMyRooms() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestOwnRooms();
+        }
+    }
+
+    doRequestGoToRoom(roomId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestGoToRoom(roomId);
+        }
+    }
+
+    doRequestLeaveRoom() {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestLeaveRoom();
+        }
+    }
+
+    doRequestCreateRoom(name: string, selectedModel: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            this.game.navigator.requestCreateRoom(name, selectedModel);
         }
     }
 
@@ -252,6 +329,30 @@ export default class UIManager {
 
     setOnShowNotificationHandler(handler: (text: string) => void) {
         this.onShowNotification = handler;
+    }
+
+    setOnOpenNavigatorHandler(handler: () => void) {
+        this.onOpenNavigator = handler;
+    }
+
+    setOnCloseNavigatorHandler(handler: () => void) {
+        this.onCloseNavigator = handler;
+    }
+
+    setOnLoadRoomListHandler(handler: (rooms: RoomData[]) => void) {
+        this.onLoadRoomList = handler;
+    }
+
+    setOnCurrentRoomDataLoad(handler: (roomData: RoomData) => void) {
+        this.onCurrentRoomDataLoad = handler;
+    }
+
+    setOnOpenCreateRoomHandler(handler: () => void) {
+        this.onOpenCreateRoom = handler;
+    }
+
+    setOnCloseCreateRoomHandler(handler: () => void) {
+        this.onCloseCreateRoom = handler;
     }
 }
 

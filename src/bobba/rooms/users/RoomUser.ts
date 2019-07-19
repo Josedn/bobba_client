@@ -169,7 +169,6 @@ export default class RoomUser implements Selectable {
         this._z = z;
         this.rot = rot;
         this.headRot = rot;
-        this.updateSpritePosition();
         this.status = status;
         if (status.mv != null) {
             const coords = status.mv.split(',');
@@ -177,7 +176,10 @@ export default class RoomUser implements Selectable {
         }
         if (status.sit != null) {
             this._seatZ = parseFloat(status.sit) - 1.0;
+        } else {
+            this._seatZ = 0;
         }
+        this.updateSpritePosition();
         this.updateTexture();
     }
     setMovement(x: number, y: number, z: number) {
@@ -278,7 +280,7 @@ export default class RoomUser implements Selectable {
         this.selectableContainer.x = this.container.x;
         this.selectableContainer.y = this.container.y;
 
-        const shadowCoords = this.room.engine.tileToLocal(this._x, this._y, 0);
+        const shadowCoords = this.room.engine.tileToLocal(this._x, this._y, this._z); //TODO: calculate z from heightmap
         this.shadowSprite.x = shadowCoords.x;
         this.shadowSprite.y = shadowCoords.y;
         this.shadowSprite.zIndex = this.room.engine.calculateZIndexUserShadow(this._x, this._y, 0);

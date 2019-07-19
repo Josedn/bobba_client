@@ -28,8 +28,9 @@ export default class Notifications extends React.Component<NotificationsProps, N
 
     render() {
         const { notifications } = this.state;
+        let i = 0;
         return notifications.map(text => {
-            return <Notif text={text} />
+            return <Notif id={i++} text={text} />
         });
     }
 }

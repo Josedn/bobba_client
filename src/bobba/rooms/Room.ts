@@ -8,17 +8,13 @@ import RequestChat from "../communication/outgoing/rooms/RequestChat";
 import RequestWave from "../communication/outgoing/rooms/RequestWave";
 
 export default class Room {
-    id: number;
-    name: string;
     model: RoomModel;
     engine: RoomEngine;
     roomUserManager: RoomUserManager;
     roomItemManager: RoomItemManager;
     chatManager: ChatManager;
 
-    constructor(id: number, name: string, model: RoomModel) {
-        this.id = id;
-        this.name = name;
+    constructor(model: RoomModel) {
         this.model = model;
         this.engine = new RoomEngine(this);
         this.roomUserManager = new RoomUserManager(this);

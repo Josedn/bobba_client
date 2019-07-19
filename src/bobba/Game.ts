@@ -3,12 +3,11 @@ import MainEngine from './graphics/MainEngine';
 import AvatarImager from "./imagers/avatars/AvatarImager";
 import FurniImager from "./imagers/furniture/FurniImager";
 import BaseItemManager from "./items/BaseItemManager";
-import { ROOM_TILE, ROOM_SELECTED_TILE, ROOM_WALL_L, ROOM_WALL_R, ROOM_WALL_DOOR_EXTENDED_L, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER } from "./graphics/GenericSprites";
+import { ROOM_SELECTED_TILE, ROOM_TILE_SHADOW, FLOOR_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER } from "./graphics/GenericSprites";
 import AvatarContainer, { GHOST_LOOK } from "./rooms/users/AvatarContainer";
 import CommunicationManager from "./communication/CommunicationManager";
-import RequestMap from "./communication/outgoing/rooms/RequestMap";
 import RoomModel from "./rooms/RoomModel";
-import RequestRoomData from "./communication/outgoing/rooms/RequestRoomData";
+import RequestRoomData from "./communication/outgoing/roomdata/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
 import BobbaEnvironment from "./BobbaEnvironment";
@@ -19,6 +18,10 @@ import RequestInventoryItems from "./communication/outgoing/users/RequestInvento
 import Catalogue from "./catalogue/Catalogue";
 import RequestCatalogueIndex from "./communication/outgoing/catalogue/RequestCatalogueIndex";
 import SoundManager from "./sound/SoundManager";
+import Nav from "./navigator/Nav";
+import RequestHeightMap from "./communication/outgoing/roomdata/RequestHeightMap";
+import RequestNavigatorGoToRoom from "./communication/outgoing/navigator/RequestNavigatorGoToRoom";
+import RoomImager from "./imagers/rooms/RoomImager";
 
 export default class Game {
     currentRoom?: Room;
@@ -27,12 +30,14 @@ export default class Game {
     furniImager: FurniImager;
     chatImager: ChatImager;
     meMenuImager: MeMenuImager;
+    roomImager: RoomImager;
     baseItemManager: BaseItemManager;
     userManager: UserManager;
     ghostTextures: AvatarContainer;
     communicationManager: CommunicationManager;
     inventory: Inventory;
     catalogue: Catalogue;
+    navigator: Nav;
     uiManager: UIManager;
     soundManager: SoundManager;
     isStarting: boolean;
@@ -44,12 +49,14 @@ export default class Game {
         this.avatarImager = new AvatarImager();
         this.furniImager = new FurniImager();
         this.chatImager = new ChatImager();
+        this.roomImager = new RoomImager();
         this.meMenuImager = new MeMenuImager();
         this.userManager = new UserManager();
         this.baseItemManager = new BaseItemManager(this.furniImager);
         this.communicationManager = new CommunicationManager();
         this.inventory = new Inventory();
         this.catalogue = new Catalogue();
+        this.navigator = new Nav();
         this.uiManager = new UIManager(this);
         this.isStarting = false;
     }
@@ -57,13 +64,9 @@ export default class Game {
     loadGame(): Promise<void> {
         this.isStarting = true;
         const sprites: string[] = [
-            ROOM_TILE,
             ROOM_SELECTED_TILE,
             FLOOR_ITEM_PLACEHOLDER,
             WALL_ITEM_PLACEHOLDER,
-            ROOM_WALL_L,
-            ROOM_WALL_R,
-            ROOM_WALL_DOOR_EXTENDED_L,
             ROOM_TILE_SHADOW
         ];
         BobbaEnvironment.getGame().uiManager.postLoading("Initializing game engine");
@@ -72,6 +75,7 @@ export default class Game {
             this.furniImager.initialize(),
             this.chatImager.initialize(),
             this.meMenuImager.initialize(),
+            this.roomImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             BobbaEnvironment.getGame().uiManager.postLoading("Connecting to server");
@@ -85,16 +89,28 @@ export default class Game {
             BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
             this.communicationManager.sendMessage(new RequestCatalogueIndex());
-            this.communicationManager.sendMessage(new RequestMap());
             this.soundManager.playPixelsSound();
+
+            this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(1));
         }
     }
 
-    loadRoom(id: number, name: string, model: RoomModel) {
-        this.currentRoom = new Room(id, name, model);
+    handleRoomModelInfo(modelId: string, roomId: number) {
+        this.communicationManager.sendMessage(new RequestHeightMap());
+    }
+
+    handleHeightMap(model: RoomModel) {
+        this.unloadRoom();
+
+        this.currentRoom = new Room(model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
-        BobbaEnvironment.getGame().uiManager.log("Loaded room: " + name);
+        BobbaEnvironment.getGame().uiManager.log("Loaded heightmap");
+        BobbaEnvironment.getGame().uiManager.onCloseNavigator();
+        BobbaEnvironment.getGame().uiManager.onCloseCreateRoom();
+        BobbaEnvironment.getGame().uiManager.onCloseCatalogue();
+        BobbaEnvironment.getGame().uiManager.onCloseInventory();
+        BobbaEnvironment.getGame().uiManager.onCloseChangeLooks();
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 
@@ -125,7 +141,7 @@ export default class Game {
 
     onMouseClick = (x: number, y: number, shiftKey: boolean, ctrlKey: boolean, altKey: boolean) => {
         if (this.currentRoom != null) {
-            this.currentRoom.engine.handleMouseClick(x, y, shiftKey, ctrlKey, altKey);
+            this.currentRoom.engine.handleMouseClick(x, y, shiftKey, ctrlKey, altKey, true);
         }
     }
 

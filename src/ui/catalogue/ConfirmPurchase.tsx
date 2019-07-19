@@ -8,9 +8,10 @@ type ConfirmPurchaseProps = {
     item: CatalogueItem,
     onClose: () => void,
     onPurchase: () => void,
+    zIndex: number,
 };
 type ConfirmPurchaseState = {
-    visible: boolean;
+    visible: boolean,
 };
 const initialState: ConfirmPurchaseState = {
     visible: true,
@@ -24,14 +25,14 @@ export default class ConfirmPurchase extends React.Component<ConfirmPurchaseProp
     }
 
     render() {
-        const { item, onClose, onPurchase } = this.props;
+        const { item, onClose, onPurchase, zIndex } = this.props;
         if (item.baseItem == null) {
             return <></>;
         }
         const image = canvas2Image(item.baseItem.iconImage);
         return (
             <Draggable handle=".handle">
-                <div className="catalogue_confirm_purchase">
+                <div className="catalogue_confirm_purchase" style={{ zIndex }}>
                     <button className="close" onClick={onClose}>
                         X
                     </button>

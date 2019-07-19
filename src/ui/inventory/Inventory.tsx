@@ -6,18 +6,21 @@ import UserItem from "../../bobba/inventory/UserItem";
 import { canvas2Image } from "../misc/GraphicsUtilities";
 import { ItemType } from "../../bobba/imagers/furniture/FurniImager";
 import { FLOOR_ITEM_PLACEHOLDER } from "../../bobba/graphics/GenericSprites";
+import WindowManager from "../windows/WindowManager";
 type InventoryContainerProps = {};
 type InventoryContainerState = {
     visible: boolean,
     selectedId: number,
     currentType: ItemType,
     items: UserItem[],
+    zIndex: number,
 };
 const initialState = {
     visible: false,
     selectedId: -1,
     currentType: ItemType.FloorItem,
-    items: []
+    items: [],
+    zIndex: WindowManager.getNextZIndex(),
 };
 export default class InventoryContainer extends React.Component<InventoryContainerProps, InventoryContainerState> {
     constructor(props: InventoryContainerProps) {
@@ -29,14 +32,14 @@ export default class InventoryContainer extends React.Component<InventoryContain
         const game = BobbaEnvironment.getGame();
         game.uiManager.setOnOpenInventoryHandler(() => {
             this.setState({
-                visible: true
+                visible: true,
+                zIndex: WindowManager.getNextZIndex()
             });
         });
 
         game.uiManager.setOnUpdateInventoryHandler(items => {
             this.setState({
                 items,
-                selectedId: -1,
             });
         });
 
@@ -143,14 +146,20 @@ export default class InventoryContainer extends React.Component<InventoryContain
         );
     }
 
+    upgradeZIndex = () => {
+        this.setState({
+            zIndex: WindowManager.getNextZIndex(),
+        });
+    }
+
     render() {
-        const { visible } = this.state;
+        const { visible, zIndex } = this.state;
         if (!visible) {
             return <></>;
         }
         return (
-            <Draggable defaultClassName="inventory" handle=".title">
-                <div>
+            <Draggable defaultClassName="inventory" handle=".title" onStart={() => this.upgradeZIndex()} onMouseDown={() => this.upgradeZIndex()}>
+                <div style={{ zIndex }}>
                     <button className="close" onClick={this.close}>
                         X
                     </button>
