@@ -8,8 +8,8 @@ import FloorItem from "./items/FloorItem";
 import RoomItem from "./items/RoomItem";
 import { Direction } from "../imagers/furniture/FurniImager";
 
-const CAMERA_CENTERED_OFFSET_X = 3;
-const CAMERA_CENTERED_OFFSET_Y = 114;
+const CAMERA_CENTERED_OFFSET_X = 0;
+const CAMERA_CENTERED_OFFSET_Y = 150;
 
 const ROOM_SELECTED_TILE_OFFSET_X = 0;
 const ROOM_SELECTED_TILE_OFFSET_Y = -3;
@@ -62,10 +62,24 @@ export default class RoomEngine {
     }
 
     centerCamera() {
-        const model = this.room.model;
-        this.container.x = Math.round((MainEngine.getViewportWidth() - (ROOM_TILE_WIDTH * (model.maxX - model.maxY + CAMERA_CENTERED_OFFSET_X))) / 2);
-        this.container.y = Math.round((MainEngine.getViewportHeight() - ((model.maxX + model.maxY) * ROOM_TILE_HEIGHT) + CAMERA_CENTERED_OFFSET_Y) / 2);
+        const { model, roomUserManager } = this.room;
+        const { currentUser } = BobbaEnvironment.getGame().userManager;
+        const doorCoords = this.tileToLocal(model.doorX, model.doorY, 0);
 
+        let centerPointX = doorCoords.x;
+        let centerPointY = doorCoords.y;
+
+        if (currentUser != null && roomUserManager != null) {
+            const roomUser = roomUserManager.getUser(currentUser.id);
+            if (roomUser != null) {
+                const userCoords = this.tileToLocal(roomUser._x, roomUser._y, roomUser._z);
+                centerPointX = userCoords.x;
+                centerPointY = userCoords.y;
+            }
+        }
+
+        this.container.x = Math.round((MainEngine.getViewportWidth() - (centerPointX + CAMERA_CENTERED_OFFSET_X)) / 2);
+        this.container.y = Math.round((MainEngine.getViewportHeight() - (centerPointY + CAMERA_CENTERED_OFFSET_Y)) / 2);
         this.selectableContainer.x = this.container.x;
         this.selectableContainer.y = this.container.y;
     }
