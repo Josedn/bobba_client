@@ -141,7 +141,8 @@ export default class RoomEngine {
             if (this.movingItem instanceof FloorItem) {
                 const { x, y } = this.globalToTile(globalX, globalY);
                 if (this.canPlaceFloorItem(x, y, this.movingItem)) {
-                    this.movingItem.updatePosition(x, y, 0, this.movingItemPosition.rot, false);
+                    const z = this.room.model.heightMap[x][y] - 1;
+                    this.movingItem.updatePosition(x, y, z, this.movingItemPosition.rot, false);
                     this.room.roomItemManager.finishRoomItemMovement(this.movingItem);
                 } else {
                     this.cancelRoomItemMove();

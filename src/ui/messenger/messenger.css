@@ -1,0 +1,221 @@
+.messenger {
+    position: absolute;
+    left: 20px;
+    right: 0;
+    top: 15px;
+    width: 230px;
+    background: #f9c100;
+    box-sizing: border-box;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 200;
+    padding: 0;
+    padding-top: 5px;
+    font-family: 'Volter';
+    font-size: 9px;
+}
+
+.messenger button.close {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+}
+
+.messenger h2 {
+    font: inherit;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    color: #936c05;
+}
+
+.messenger hr {
+    border: 1px solid #8c6d00;
+    border-bottom: none;
+    margin: 3px;
+}
+
+.messenger .main_tab {
+    cursor: pointer;
+    width: 100%;
+    font: inherit;
+    background: linear-gradient(to bottom, #6b6b6b 0%, #6b6b6b 50%, #555555 51%, #555555 100%);
+    height: 18px;
+    box-sizing: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    display: flex;
+}
+
+.messenger .main_tab.selected {
+    background: linear-gradient(to bottom, #8adaff 0%, #8adaff 50%, #59bfff 51%, #59bfff 100%);
+    color: #000000;
+}
+
+.messenger .main_tab span {
+    margin: auto 10px;
+}
+
+.messenger .main_tab button {
+    border: none;
+    background: none;
+    margin: auto 0;
+    padding: 0;
+}
+
+.messenger .main_tab button.open_arrow {
+    width: 9px;
+    height: 5px;
+    background-image: url('/images/messenger/arrow_down_black.png');
+}
+
+.messenger .main_tab button.close_arrow {
+    width: 5px;
+    height: 9px;
+    background-image: url('/images/messenger/arrow_right_white.png');
+}
+
+.messenger .wrapper {
+    background-color: #ffffff;
+    height: 230px;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #8c6d00;
+    border-top: none;
+}
+
+.messenger .wrapper button.second_tab {
+    background: #eeeeee;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    height: 20px;
+    border: none;
+    font-weight: bold;
+}
+
+.messenger .wrapper .friends_container {
+    overflow-y: scroll;
+    height: 185px;
+}
+
+.messenger .wrapper .friend_list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.messenger .wrapper .friend_list .friend {
+    background: #ffffff;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    font: inherit;
+    color: #000000;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.messenger .wrapper .friend_list .friend:nth-child(even) {
+    background: #eeeeee;
+}
+
+.messenger .wrapper .friend_list .friend:hover {
+    background: #8adaff;
+}
+
+.messenger .wrapper .friend_list .friend img {
+    margin: auto 0;
+    width: 20px;
+    height: 20px;
+    object-fit: none;
+    object-position: 20% 60%;
+}
+
+.messenger .wrapper .friend_list .friend span {
+    margin: auto 5px;
+    width: 110px;
+    text-align: left;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button {
+    border: none;
+    background: none;
+    margin: auto 0 auto 2px;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.follow_friend {
+    width: 16px;
+    height: 15px;
+    background-image: url('/images/messenger/follow_friend.png');
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.start_chat {
+    width: 16px;
+    height: 14px;
+    background-image: url('/images/messenger/start_chat.png');
+}
+
+.messenger .wrapper .actions_container {
+    margin-top: 5px;
+    width: 100%;
+    background: #d8d8d8;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #9a9a9a;
+    display: flex;
+    padding: 3px 5px;
+    box-sizing: border-box;
+}
+
+.messenger .wrapper .actions_container button {
+    border: none;
+    background: #ffffff;
+    width: 30px;
+    height: 23px;
+    margin: auto 10px auto 0;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    display: flex;
+}
+
+.messenger .wrapper .actions_container button img {
+    margin: auto;
+}
+
+.messenger .wrapper .actions_container button:hover {
+    background: #cccccc;
+}
+
+.messenger .footer {
+    width: 100%;
+    display: flex;
+    height: 40px;
+}
+
+.messenger .footer button {
+    background: #ffffff;
+    font: inherit;
+    width: 90px;
+    height: 20px;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    margin: auto 10px;
+    display: flex;
+}
+
+.messenger .footer button span, .messenger .footer button img {
+    margin: auto 5px;
+}
