@@ -83,6 +83,14 @@
     background-image: url('/images/messenger/arrow_right_white.png');
 }
 
+.messenger .main_tab.selected button.open_arrow {
+    background-image: url('/images/messenger/arrow_down_black.png');
+}
+
+.messenger .main_tab.selected button.close_arrow {
+    background-image: url('/images/messenger/arrow_right_black.png');
+}
+
 .messenger .wrapper {
     background-color: #ffffff;
     height: 230px;

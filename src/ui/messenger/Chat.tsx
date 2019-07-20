@@ -54,6 +54,9 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
                         Gravity
                     </h2>
                     <div className="main_tab_container">
+                        <button className="arrow">
+                            <img src="/images/messenger/prev.png" alt="" />
+                        </button>
                         <button className="alert">
                             <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=hd-190-10.lg-3023-1408.ch-215-91.hr-893-45&direction=2&head_direction=2&size=s&headonly=1" alt="" />
                         </button>
@@ -62,6 +65,15 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
                         </button>
                         <button>
                             <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10&direction=2&head_direction=2&size=s&headonly=1" alt="" />
+                        </button>
+                        <button>
+                            <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10&direction=2&head_direction=2&size=s&headonly=1" alt="" />
+                        </button>
+                        <button>
+                            <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10&direction=2&head_direction=2&size=s&headonly=1" alt="" />
+                        </button>
+                        <button className="arrow">
+                            <img src="/images/messenger/next.png" alt="" />
                         </button>
                     </div>
                     <div className="actions_container">

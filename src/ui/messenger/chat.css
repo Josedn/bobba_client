@@ -74,6 +74,10 @@
     object-position: 20% 60%;
 }
 
+.chat .main_tab_container button.arrow img {
+    object-position: initial;
+}
+
 .chat .actions_container {
     background: #ffffff;
     height: 32px;
