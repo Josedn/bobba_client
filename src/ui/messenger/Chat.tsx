@@ -1,24 +1,18 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import WindowManager from "../windows/WindowManager";
 import Draggable from 'react-draggable';
 import './chat.css';
-
-enum Tabs {
-    Friends, Search, Requests, None,
-};
 
 type ChatProps = {};
 type ChatState = {
     visible: boolean,
     zIndex: number,
-    search: string,
-    currentTab: Tabs,
+    text: string,
 };
 const initialState = {
     visible: true,
     zIndex: WindowManager.getNextZIndex(),
-    search: '',
-    currentTab: Tabs.Requests,
+    text: '',
 };
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
@@ -39,8 +33,26 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         });
     }
 
+    //TypeScript or React bug: KeyboardEvent is not a generic type
+    handleKeyDown = (evt: any) => {
+        const event = evt as KeyboardEvent;
+        const isEnter = event.which === 13;
+        if (isEnter) {
+            event.preventDefault();
+            this.setState({
+                text: '',
+            });
+        }
+    }
+
+    handleChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+        this.setState({
+            text: event.target.value,
+        });
+    }
+
     render() {
-        const { visible, zIndex } = this.state;
+        const { visible, zIndex, text } = this.state;
         if (!visible) {
             return <></>;
         }
@@ -100,7 +112,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
                     </div>
 
                     <form>
-                        <textarea rows={1}></textarea>
+                        <textarea value={text} onKeyDown={this.handleKeyDown} onChange={this.handleChange} rows={2} cols={10}></textarea>
                     </form>
                 </div>
             </Draggable>
