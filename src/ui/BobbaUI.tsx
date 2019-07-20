@@ -18,6 +18,7 @@ import Notifications from './notifications/Notifications';
 import Navigator from './navigator/Nav';
 import CreateRoom from './createroom/CreateRoom';
 import Messenger from './messenger/Messenger';
+import Chat from './messenger/Chat';
 
 type UserData = {
     id: number,
@@ -128,6 +129,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 <Navigator />
                 <CreateRoom />
                 <Messenger />
+                <Chat />
                 <Notifications />
                 <RoomInfo />
                 <ItemInfoContainer />
