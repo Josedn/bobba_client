@@ -24,9 +24,13 @@ export type MessengerChat = {
 
 export default class Messenger {
     activeChats: { [id: number]: MessengerChat };
+    onlineFriends: User[];
+    offlineFriends: User[];
 
     constructor() {
         this.activeChats = {};
+        this.onlineFriends = [];
+        this.offlineFriends = [];
     }
 
     requestStartChat(userId: number) {
@@ -47,7 +51,9 @@ export default class Messenger {
     }
 
     handleFriends(online: User[], offline: User[]) {
-        BobbaEnvironment.getGame().uiManager.onSetFriends(online, offline);
+        this.onlineFriends = online;
+        this.offlineFriends = offline;
+        this.notifyUiFriendsUpdate();
     }
 
     handleFriendsSearch(user: User[]) {
@@ -56,6 +62,31 @@ export default class Messenger {
 
     handleFriendRequests(user: User[]) {
 
+    }
+
+    notifyUiFriendsUpdate() {
+        BobbaEnvironment.getGame().uiManager.onSetFriends(this.onlineFriends, this.offlineFriends);
+    }
+
+    handleUpdateFriend(user: User, isOnline: boolean) {
+        this.offlineFriends = this.offlineFriends.filter(value => value.id !== user.id);
+        this.onlineFriends = this.onlineFriends.filter(value => value.id !== user.id);
+
+        if (isOnline) {
+            this.onlineFriends.push(user);
+        } else {
+            this.offlineFriends.push(user);
+        }
+
+        this.notifyUiFriendsUpdate();
+        const activeChat = this.activeChats[user.id]
+        if (activeChat != null) {
+            if (isOnline) {
+                this.handleMessengerMessage(user.id, "Your friend went online.", MessengerMessageType.Info);
+            } else {
+                this.handleMessengerMessage(user.id, "Your friend went offline.", MessengerMessageType.Info);
+            }
+        }
     }
 
     _tryInitializeChat(user: User) {
@@ -67,14 +98,14 @@ export default class Messenger {
         }
     }
 
-    handleMessengerMessage(userId: number, text: string, isFromMe: boolean) {
+    handleMessengerMessage(userId: number, text: string, type: MessengerMessageType) {
         const user = BobbaEnvironment.getGame().userManager.getUser(userId);
         if (user != null) {
             this._tryInitializeChat(user);
 
             const message: MessengerMessage = {
                 text,
-                type: isFromMe ? MessengerMessageType.Me : MessengerMessageType.Friend,
+                type
             };
 
             this.activeChats[userId].chats.push(message);

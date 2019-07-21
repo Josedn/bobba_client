@@ -2,7 +2,7 @@ import IMessageHandler from "../net/IMessageHandler";
 import WebSocketClient from "../net/WebSocketClient";
 import BobbaEnvironment from "../BobbaEnvironment";
 import IIncomingEvent from "./incoming/IIncomingEvent";
-import { LOGIN_OK, ROOM_DATA_HEIGHTMAP, ROOM_ITEM_DATA, PLAYERS_DATA, PLAYER_STATUS, PLAYER_REMOVE, CHAT, PLAYER_WAVE, ITEM_REMOVE, ITEM_STATE, WALL_ITEM_DATA, INVENTORY_ITEMS, INVENTORY_ITEM_REMOVE, CATALOGUE_INDEX, CATALOGUE_PAGE, CATALOGUE_PURCHASE_ERROR, CATALOGUE_PURCHASE_INFO, CREDITS_BALANCE, ROOM_DATA_MODEL_INFO, ROOM_DATA, NAVIGATOR_ROOM_LIST, NAVIGATOR_LEAVE_ROOM, MESSENGER_FRIENDS, MESSENGER_MESSAGE, MESSENGER_REQUESTS, MESSENGER_SEARCH_RESULT } from "./protocol/OpCodes/ServerOpCodes";
+import { LOGIN_OK, ROOM_DATA_HEIGHTMAP, ROOM_ITEM_DATA, PLAYERS_DATA, PLAYER_STATUS, PLAYER_REMOVE, CHAT, PLAYER_WAVE, ITEM_REMOVE, ITEM_STATE, WALL_ITEM_DATA, INVENTORY_ITEMS, INVENTORY_ITEM_REMOVE, CATALOGUE_INDEX, CATALOGUE_PAGE, CATALOGUE_PURCHASE_ERROR, CATALOGUE_PURCHASE_INFO, CREDITS_BALANCE, ROOM_DATA_MODEL_INFO, ROOM_DATA, NAVIGATOR_ROOM_LIST, NAVIGATOR_LEAVE_ROOM, MESSENGER_FRIENDS, MESSENGER_MESSAGE, MESSENGER_REQUESTS, MESSENGER_SEARCH_RESULT, MESSENGER_UPDATE_FRIEND } from "./protocol/OpCodes/ServerOpCodes";
 import HandleLoginOk from "./incoming/generic/HandleLoginOk";
 import ServerMessage from "./protocol/ServerMessage";
 import ClientMessage from "./protocol/ClientMessage";
@@ -31,6 +31,7 @@ import HandleMessengerFriends from "./incoming/messenger/HandleMessengerFriends"
 import HandleMessengerMessage from "./incoming/messenger/HandleMessengerMessage";
 import HandleMessengerRequests from "./incoming/messenger/HandleMessengerRequests";
 import HandleMessengerSearchResult from "./incoming/messenger/HandleMessengerSearchResult";
+import HandleMessengerUpdateFriend from "./incoming/messenger/HandleMessengerUpdateFriend";
 
 export default class CommunicationManager implements IMessageHandler {
     client: WebSocketClient;
@@ -69,6 +70,7 @@ export default class CommunicationManager implements IMessageHandler {
         this.requestHandlers[MESSENGER_MESSAGE] = new HandleMessengerMessage();
         this.requestHandlers[MESSENGER_REQUESTS] = new HandleMessengerRequests();
         this.requestHandlers[MESSENGER_SEARCH_RESULT] = new HandleMessengerSearchResult();
+        this.requestHandlers[MESSENGER_UPDATE_FRIEND] = new HandleMessengerUpdateFriend();
     }
 
     sendMessage(message: ClientMessage) {

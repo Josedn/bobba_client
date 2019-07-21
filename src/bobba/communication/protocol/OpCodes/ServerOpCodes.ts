@@ -24,3 +24,4 @@ export const MESSENGER_FRIENDS = 32;
 export const MESSENGER_SEARCH_RESULT = 33;
 export const MESSENGER_MESSAGE = 34;
 export const MESSENGER_REQUESTS = 35;
+export const MESSENGER_UPDATE_FRIEND = 36;

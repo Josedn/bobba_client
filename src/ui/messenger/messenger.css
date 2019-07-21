@@ -215,6 +215,15 @@
     box-sizing: border-box;
 }
 
+.messenger .wrapper .actions_container.requests button {
+    margin: auto;
+    width: 45%;
+}
+
+.messenger .wrapper .actions_container.requests button span {
+    margin: auto;
+}
+
 .messenger .wrapper .actions_container button {
     border: none;
     background: #ffffff;

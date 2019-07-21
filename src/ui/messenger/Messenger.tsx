@@ -24,7 +24,7 @@ type MessengerState = {
     currentSelectedFriendId: number,
 };
 const initialState: MessengerState = {
-    visible: false,
+    visible: true,
     zIndex: WindowManager.getNextZIndex(),
     search: '',
     currentTab: Tabs.Friends,
@@ -210,19 +210,19 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
             return (
                 <>
                     <div onClick={this.handleChangeTab(Tabs.None)} className="main_tab selected">
-                        <span>Amig@s</span>
+                        <span>Friends</span>
                         <button className="close_arrow" />
                     </div>
                     <div className="wrapper">
                         <div className="friends_container">
                             <button onClick={this.toggleFirstRow} className="second_tab">
-                                Amig@s ({onlineFriends.length})
+                                Friends ({onlineFriends.length})
                             </button>
                             <div className="friend_list">
                                 {firstRowActive ? this.generateOnlineFriendsGrid(onlineFriends) : <></>}
                             </div>
                             <button onClick={this.toggleSecondRow} className="second_tab">
-                                Amig@s desconectad@s ({offlineFriends.length})
+                                Offline friends ({offlineFriends.length})
                             </button>
                             <div className="friend_list">
                                 {secondRowActive ? this.generateOfflineFriendsGrid(offlineFriends) : <></>}
@@ -242,7 +242,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
         } else {
             return (
                 <div onClick={this.handleChangeTab(Tabs.Friends)} className="main_tab selected">
-                    <span>Amig@s</span>
+                    <span>Friends</span>
                     <button className="open_arrow" />
                 </div>
             );
@@ -259,19 +259,19 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
             return (
                 <>
                     <div onClick={this.handleChangeTab(Tabs.None)} className="main_tab">
-                        <span>Buscar</span>
+                        <span>Search</span>
                         <button className="close_arrow" />
                     </div>
                     <div className="wrapper search">
                         <div className="friends_container">
                             <button onClick={this.toggleFirstRow} className="second_tab">
-                                Amig@s ({filteredFriends.length})
+                                Friends ({filteredFriends.length})
                             </button>
                             <div className="friend_list">
                                 {firstRowActive ? this.generateOfflineFriendsGrid(filteredFriends) : <></>}
                             </div>
                             <button onClick={this.toggleSecondRow} className="second_tab">
-                                Otros usuarios ({searchResult.length})
+                                Other users ({searchResult.length})
                             </button>
                             <div className="friend_list">
                                 {secondRowActive ? this.generateSearchGrid(searchResult) : <></>}
@@ -289,7 +289,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
         } else {
             return (
                 <div onClick={this.handleChangeTab(Tabs.Search)} className="main_tab">
-                    <span>Buscar</span>
+                    <span>Search</span>
                     <button className="open_arrow" />
                 </div>
             );
@@ -309,7 +309,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
             return (
                 <>
                     <div onClick={this.handleChangeTab(Tabs.None)} className={className}>
-                        <span>Peticiones de amig@s</span>
+                        <span>Friend requests</span>
                         <button className="close_arrow" />
                     </div>
                     <div className="wrapper">
@@ -318,14 +318,14 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                                 {this.generateRequestsGrid(friendsRequests)}
                             </div>
                         </div>
-                        <div className="actions_container">
+                        <div className="actions_container requests">
                             <button onClick={this.requestAcceptAllFriendRequests}>
                                 <img src="/images/messenger/accept.png" alt="Remove friend" />
-                                <span>Aceptar todos</span>
+                                <span>Accept all</span>
                             </button>
                             <button onClick={this.requestDenyAllFriendRequests}>
                                 <img src="/images/messenger/decline.png" alt="Remove friend" />
-                                <span>Rechazar todos</span>
+                                <span>Deny all</span>
                             </button>
                         </div>
                     </div>
@@ -335,7 +335,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
             return (
                 <>
                     <div onClick={this.handleChangeTab(Tabs.Requests)} className={className}>
-                        <span>Peticiones de amig@s</span>
+                        <span>Friend requests</span>
                         <button className="open_arrow" />
                     </div>
                 </>
@@ -351,7 +351,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                 <div className="footer">
                     <button>
                         <img src="/images/messenger/open_edit_ctgs.png" alt="Settings" />
-                        <span>Ajustes</span>
+                        <span>Settings</span>
                     </button>
                 </div>
             </>
@@ -382,7 +382,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                         X
                     </button>
                     <h2 className="title">
-                        Amig@s
+                        Friends
                     </h2>
                     {this.generateFriendsTab()}
                     {this.generateSearchTab()}
