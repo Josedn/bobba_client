@@ -1,0 +1,308 @@
+.messenger {
+    position: absolute;
+    left: 20px;
+    right: 0;
+    top: 15px;
+    width: 230px;
+    background: #f9c100;
+    border: 1px solid #000000;
+    box-sizing: content-box;
+    border-radius: 5px;
+    text-align: center;
+    z-index: 200;
+    padding: 0;
+    padding-top: 5px;
+    font-family: 'Volter';
+    font-size: 9px;
+}
+
+.messenger button.close {
+    position: absolute;
+    top: 5px;
+    right: 2px;
+    width: 2em;
+    padding: 0;
+    color: #ffffff;
+    background: inherit;
+    border: none;
+    font: inherit;
+    color: #936c05;
+}
+
+.messenger h2 {
+    font: inherit;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    color: #936c05;
+    margin-bottom: 5px;
+}
+
+.messenger .main_tab {
+    cursor: pointer;
+    width: 100%;
+    font: inherit;
+    background: linear-gradient(to bottom, #6b6b6b 0%, #6b6b6b 50%, #555555 51%, #555555 100%);
+    height: 18px;
+    box-sizing: border-box;
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    display: flex;
+}
+
+.messenger .main_tab.selected {
+    background: linear-gradient(to bottom, #8adaff 0%, #8adaff 50%, #59bfff 51%, #59bfff 100%);
+    color: #000000;
+}
+
+.messenger .main_tab.active {
+    background: linear-gradient(to bottom, #ff9302 0%, #ff9302 50%, #ea8000 51%, #ea8000 100%);
+}
+
+.messenger .main_tab span {
+    margin: auto 10px;
+}
+
+.messenger .main_tab button {
+    border: none;
+    background: none;
+    margin: auto 0;
+    padding: 0;
+}
+
+.messenger .main_tab button.open_arrow {
+    width: 9px;
+    height: 5px;
+    background-image: url('/images/messenger/arrow_down_white.png');
+}
+
+.messenger .main_tab button.close_arrow {
+    width: 5px;
+    height: 9px;
+    background-image: url('/images/messenger/arrow_right_white.png');
+}
+
+.messenger .main_tab.selected button.open_arrow {
+    background-image: url('/images/messenger/arrow_down_black.png');
+}
+
+.messenger .main_tab.selected button.close_arrow {
+    background-image: url('/images/messenger/arrow_right_black.png');
+}
+
+.messenger .wrapper {
+    background-color: #ffffff;
+    height: 230px;
+    padding: 5px;
+    box-sizing: border-box;
+    border-top: none;
+}
+
+.messenger .wrapper.search {
+    background-color: #b6b6b6;
+}
+
+.messenger .wrapper.search button.second_tab {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.messenger .wrapper button.second_tab {
+    background: #eeeeee;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    height: 20px;
+    border: none;
+    font-weight: bold;
+}
+
+.messenger .wrapper .friends_container {
+    overflow-y: scroll;
+    height: 185px;
+}
+
+.messenger .wrapper .friend_list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.messenger .wrapper .friend_list .friend {
+    background: none;
+    width: 100%;
+    height: 20px;
+    display: flex;
+    font: inherit;
+    color: #000000;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.messenger .wrapper .friend_list .friend:nth-child(even) {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.messenger .wrapper .friend_list .friend:hover, .messenger .wrapper .friend_list .friend.selected {
+    background: #8adaff;
+}
+
+.messenger .wrapper .friend_list .friend img {
+    margin: auto 0;
+    width: 20px;
+    height: 20px;
+    object-fit: none;
+    object-position: 20% 60%;
+}
+
+.messenger .wrapper .friend_list .friend span {
+    margin: auto 5px;
+    width: 125px;
+    text-align: left;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button {
+    border: none;
+    background: none;
+    margin: auto 0 auto 2px;
+    padding: 0;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.ask_for_friend {
+    width: 16px;
+    height: 15px;
+    background-image: url('/images/messenger/ask_for_friend.png');
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.follow_friend {
+    width: 16px;
+    height: 15px;
+    background-image: url('/images/messenger/follow_friend.png');
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.start_chat {
+    width: 16px;
+    height: 14px;
+    background-image: url('/images/messenger/start_chat.png');
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.accept {
+    width: 16px;
+    height: 13px;
+    background-image: url('/images/messenger/accept.png');
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.decline {
+    width: 13px;
+    height: 13px;
+    background-image: url('/images/messenger/decline.png');
+}
+
+.messenger .wrapper .actions_container {
+    margin-top: 5px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #9a9a9a;
+    display: flex;
+    padding: 3px 5px;
+    box-sizing: border-box;
+}
+
+.messenger .wrapper .actions_container.requests button {
+    margin: auto;
+    width: 45%;
+}
+
+.messenger .wrapper .actions_container.requests button span {
+    margin: auto;
+}
+
+.messenger .wrapper .actions_container button {
+    border: none;
+    background: #ffffff;
+    min-width: 30px;
+    height: 23px;
+    margin: auto 5px auto 0;
+    box-sizing: border-box;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    display: flex;
+    font: inherit;
+}
+
+.messenger .wrapper .actions_container button img {
+    margin: auto;
+}
+
+.messenger .wrapper .actions_container button:hover {
+    background: #cccccc;
+}
+
+.messenger .wrapper .actions_container form {
+    margin: auto;
+    width: 100%;
+    display: flex;
+}
+
+.messenger .wrapper .actions_container input {
+    margin: auto;
+    height: 20px;
+    width: 130px;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    border-radius: 3px;
+    font: inherit;
+    padding: 0 5px;
+}
+
+.messenger .wrapper .actions_container ::placeholder {
+    color: #555555;
+}
+
+.messenger .wrapper .actions_container form button {
+    margin: auto;
+    background: #ffffff;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    height: 20px;
+    width: 60px;
+    padding: 0 8px;
+    border-radius: 3px;
+    font: inherit;
+}
+
+.messenger .wrapper .actions_container button:hover, .nav .wrapper .more_rooms button:hover {
+    background-color: #cbcbcb;
+}
+
+.messenger .footer {
+    width: 100%;
+    display: flex;
+    height: 40px;
+}
+
+.messenger .footer button {
+    background: #ffffff;
+    font: inherit;
+    width: 90px;
+    height: 20px;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    margin: auto 10px;
+    display: flex;
+}
+
+.messenger .footer button:hover {
+    border: 2px solid #000000;
+}
+
+.messenger .footer button span, .messenger .footer button img {
+    margin: auto 5px;
+}

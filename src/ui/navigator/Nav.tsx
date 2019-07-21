@@ -15,7 +15,7 @@ type NavigatorState = {
     currentRooms?: RoomData[],
 };
 const initialState: NavigatorState = {
-    visible: true,
+    visible: false,
     mainTabId: 'rooms',
     search: '',
     zIndex: WindowManager.getNextZIndex(),

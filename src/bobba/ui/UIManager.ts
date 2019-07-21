@@ -7,6 +7,8 @@ import UserItem from "../inventory/UserItem";
 import CataloguePage from "../catalogue/CataloguePage";
 import { CatalogueIndex } from "../catalogue/Catalogue";
 import RoomData from "../navigator/RoomData";
+import BobbaEnvironment from "../BobbaEnvironment";
+import { MessengerChat } from "../messenger/Messenger";
 
 export default class UIManager {
     game: Game;
@@ -43,6 +45,17 @@ export default class UIManager {
     onCloseCreateRoom: () => void;
     //Room Info
     onCurrentRoomDataLoad: (data: RoomData) => void;
+    //Messenger
+    onOpenMessenger: () => void;
+    onCloseMessenger: () => void;
+    onCloseChat: () => void;
+    onSetFriends: (online: User[], offline: User[]) => void;
+    onSetFriendsSearch: (users: User[]) => void;
+    onSetFriendRequests: (users: User[]) => void;
+    onReceiveMessengerMessage: (chat: MessengerChat) => boolean;
+    onOpenMessengerChat: (chat: MessengerChat) => void;
+    onOpenChat: () => void;
+    onShowMessengerAlert: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -71,6 +84,16 @@ export default class UIManager {
         this.onCurrentRoomDataLoad = () => { };
         this.onOpenCreateRoom = () => { };
         this.onCloseCreateRoom = () => { };
+        this.onOpenMessenger = () => { };
+        this.onCloseMessenger = () => { };
+        this.onCloseChat = () => { };
+        this.onSetFriends = () => { };
+        this.onSetFriendsSearch = () => { };
+        this.onSetFriendRequests = () => { };
+        this.onReceiveMessengerMessage = () => false;
+        this.onOpenChat = () => { };
+        this.onOpenMessengerChat = () => { };
+        this.onShowMessengerAlert = () => { };
     }
 
     log(text: string) {
@@ -255,6 +278,65 @@ export default class UIManager {
         }
     }
 
+    doRequestOpenChat() {
+        this.onOpenChat();
+    }
+
+    doRequestOpenMessenger(user?: User) {
+        this.onOpenMessenger();
+    }
+
+    doRequestAskForFriend(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestAddFriend(userId);
+        }
+    }
+
+    doRequestDenyFriendRequest(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.denyFriendRequest(userId);
+        }
+    }
+    doRequestAcceptFriendRequest(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.acceptFriendRequest(userId);
+        }
+    }
+    doRequestFriendSearch(search: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestFriendSearch(search);
+        }
+    }
+    doRequestRemoveFriend(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestRemoveFriend(userId);
+        }
+    }
+    doRequestFollowFriend(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestFollowFriend(userId);
+        }
+    }
+    doRequestStartChat(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestStartChat(userId);
+        }
+    }
+
+    doRequestSendChatMessage(userId: number, text: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.sendChatMessage(userId, text);
+        }
+    }
+
     setOnSetUserDataHandler(handler: (user: User) => void) {
         this.onSetUserData = handler;
     }
@@ -353,6 +435,37 @@ export default class UIManager {
 
     setOnCloseCreateRoomHandler(handler: () => void) {
         this.onCloseCreateRoom = handler;
+    }
+
+    setOnOpenMessengerHandler(handler: () => void) {
+        this.onOpenMessenger = handler;
+    }
+    setOnCloseMessengerHandler(handler: () => void) {
+        this.onCloseMessenger = handler;
+    }
+    setOnCloseChatHandler(handler: () => void) {
+        this.onCloseChat = handler;
+    }
+    setOnSetFriendsHandler(handler: (online: User[], offline: User[]) => void) {
+        this.onSetFriends = handler;
+    }
+    setOnSetFriendsSearchHandler(handler: (users: User[]) => void) {
+        this.onSetFriendsSearch = handler;
+    }
+    setOnSetFriendRequestsHandler(handler: (users: User[]) => void) {
+        this.onSetFriendRequests = handler;
+    }
+    setOnReceiveMessengerMessage(handler: (chat: MessengerChat) => boolean) {
+        this.onReceiveMessengerMessage = handler;
+    }
+    setOnOpenChatHandler(handler: () => void) {
+        this.onOpenChat = handler;
+    }
+    setOnOpenMessengerChat(handler: (chat: MessengerChat) => void) {
+        this.onOpenMessengerChat = handler;
+    }
+    setOnShowMessengerAlert(handler: () => void) {
+        this.onShowMessengerAlert = handler;
     }
 }
 

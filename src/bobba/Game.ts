@@ -22,6 +22,8 @@ import Nav from "./navigator/Nav";
 import RequestHeightMap from "./communication/outgoing/roomdata/RequestHeightMap";
 import RequestNavigatorGoToRoom from "./communication/outgoing/navigator/RequestNavigatorGoToRoom";
 import RoomImager from "./imagers/rooms/RoomImager";
+import Messenger from "./messenger/Messenger";
+import RequestMessengerLoadFriends from "./communication/outgoing/messenger/RequestMessengerLoadFriends";
 
 export default class Game {
     currentRoom?: Room;
@@ -38,6 +40,7 @@ export default class Game {
     inventory: Inventory;
     catalogue: Catalogue;
     navigator: Nav;
+    messenger: Messenger;
     uiManager: UIManager;
     soundManager: SoundManager;
     isStarting: boolean;
@@ -57,6 +60,7 @@ export default class Game {
         this.inventory = new Inventory();
         this.catalogue = new Catalogue();
         this.navigator = new Nav();
+        this.messenger = new Messenger();
         this.uiManager = new UIManager(this);
         this.isStarting = false;
     }
@@ -89,6 +93,7 @@ export default class Game {
             BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
             this.communicationManager.sendMessage(new RequestCatalogueIndex());
+            this.communicationManager.sendMessage(new RequestMessengerLoadFriends());
             this.soundManager.playPixelsSound();
 
             this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(1));
