@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode } from 'react';
+import React, { ChangeEvent, ReactNode, RefObject } from 'react';
 import WindowManager from "../windows/WindowManager";
 import Draggable from 'react-draggable';
 import './chat.css';
@@ -29,9 +29,17 @@ const initialState: ChatState = {
 };
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
+    chatWrapper: RefObject<HTMLDivElement>;
     constructor(props: ChatProps) {
         super(props);
         this.state = initialState;
+        this.chatWrapper = React.createRef();
+    }
+
+    scrollDown() {
+        if (this.chatWrapper.current != null) {
+            this.chatWrapper.current.scrollTop = this.chatWrapper.current.clientHeight;
+        }
     }
 
     componentDidMount() {
@@ -68,16 +76,18 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
                     currentActiveChatId: chat.user.id,
                 });
             }
+            this.scrollDown();
         });
 
         uiManager.setOnReceiveMessengerMessage((chat: MessengerChat) => {
-            const { currentActiveChatId, notifications, activeChats } = this.state;
+            const { currentActiveChatId, notifications, activeChats, visible } = this.state;
             if (activeChats.find(value => value.id === chat.user.id)) {
                 if (currentActiveChatId === chat.user.id) {
                     this.setState({
                         messages: chat.chats,
                     });
-                    return true;
+                    this.scrollDown();
+                    return visible;
                 } else {
                     this.setState({
                         notifications: [...notifications, chat.user.id],
@@ -89,6 +99,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
                     messages: chat.chats,
                     currentActiveChatId: chat.user.id,
                 });
+                this.scrollDown();
             } else {
                 this.setState({
                     activeChats: [...activeChats, chat.user],
@@ -292,7 +303,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
                             <img src="/images/messenger/close.png" alt="Close" />
                         </button>
                     </div>
-                    <div className="wrapper">
+                    <div className="wrapper" ref={this.chatWrapper}>
                         {this.generateChats()}
                     </div>
 

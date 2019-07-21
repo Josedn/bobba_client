@@ -82,6 +82,7 @@ export default class Messenger {
             const isActive = BobbaEnvironment.getGame().uiManager.onReceiveMessengerMessage(this.activeChats[userId]);
             if (!isActive) {
                 BobbaEnvironment.getGame().soundManager.playConsoleReceiveSound();
+                BobbaEnvironment.getGame().uiManager.onShowMessengerAlert();
             }
         }
     }

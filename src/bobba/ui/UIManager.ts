@@ -55,6 +55,7 @@ export default class UIManager {
     onReceiveMessengerMessage: (chat: MessengerChat) => boolean;
     onOpenMessengerChat: (chat: MessengerChat) => void;
     onOpenChat: () => void;
+    onShowMessengerAlert: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -92,6 +93,7 @@ export default class UIManager {
         this.onReceiveMessengerMessage = () => false;
         this.onOpenChat = () => { };
         this.onOpenMessengerChat = () => { };
+        this.onShowMessengerAlert = () => { };
     }
 
     log(text: string) {
@@ -461,6 +463,9 @@ export default class UIManager {
     }
     setOnOpenMessengerChat(handler: (chat: MessengerChat) => void) {
         this.onOpenMessengerChat = handler;
+    }
+    setOnShowMessengerAlert(handler: () => void) {
+        this.onShowMessengerAlert = handler;
     }
 }
 

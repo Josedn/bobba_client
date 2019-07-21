@@ -5,6 +5,7 @@ import './footer.css';
 const MAX_CHAT_LENGTH = 95;
 const initialState = {
     chat: '',
+    messengerAlert: false,
 };
 type FooterProps = {
     headImage?: HTMLImageElement,
@@ -12,6 +13,7 @@ type FooterProps = {
 };
 type FooterState = {
     chat: string,
+    messengerAlert: boolean,
 };
 class Footer extends Component<FooterProps, FooterState> {
 
@@ -24,6 +26,12 @@ class Footer extends Component<FooterProps, FooterState> {
 
     componentDidMount() {
         this.props.focuser(this.focusChatInput);
+
+        BobbaEnvironment.getGame().uiManager.setOnShowMessengerAlert(()=> {
+            this.setState({
+                messengerAlert: true,
+            });
+        });
     }
 
     focusChatInput = () => {
@@ -76,11 +84,14 @@ class Footer extends Component<FooterProps, FooterState> {
     }
 
     openChat = () => {
+        this.setState({
+            messengerAlert: false,
+        });
         BobbaEnvironment.getGame().uiManager.doRequestOpenChat();
     }
 
     render() {
-        const { chat } = this.state;
+        const { chat, messengerAlert } = this.state;
         const { headImage } = this.props;
 
         let userface = (
@@ -126,7 +137,7 @@ class Footer extends Component<FooterProps, FooterState> {
                             <img src="images/bottom_bar/all_friends.png" alt="Friends" />
                         </button>
                         <button onClick={this.openChat}>
-                            <img src="images/bottom_bar/messenger.png" alt="Messenger" />
+                            <img src={"images/bottom_bar/" + (messengerAlert ? 'messenger_notify0': 'messenger') + ".png"} alt="Messenger" />
                         </button>
                     </div>
                 </div>
