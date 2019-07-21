@@ -9,14 +9,33 @@ import RequestMessengerSearchFriend from "../communication/outgoing/messenger/Re
 import RequestMessengerAddFriend from "../communication/outgoing/messenger/RequestMessengerAddFriend";
 
 export default class Messenger {
-    friends: User[];
+    onlineFriends: User[];
 
     constructor() {
-        this.friends = [];
+        this.onlineFriends = [];
     }
 
     requestStartChat(userId: number) {
-        throw new Error("Method not implemented.");
+        const user = BobbaEnvironment.getGame().userManager.getUser(userId);
+        if (user != null) {
+            BobbaEnvironment.getGame().uiManager.onOpenChat(user);
+        }
+    }
+
+    handleFriends(online: User[], offline: User[]) {
+        BobbaEnvironment.getGame().uiManager.onSetFriends(online, offline);
+    }
+
+    handleFriendsSearch(user: User[]) {
+
+    }
+
+    handleFriendRequests(user: User[]) {
+
+    }
+
+    handleMessengerMessage(userId: number, text: string, isFromMe: boolean) {
+
     }
 
     sendChatMessage(userId: number, text: string) {
@@ -42,7 +61,7 @@ export default class Messenger {
     acceptFriendRequest(userId: number) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMessengerAcceptFriend(userId));
     }
-    
+
     denyFriendRequest(userId: number) {
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMessengerDenyFriend(userId));
     }

@@ -24,7 +24,6 @@ type ChatState = {
     currentTabOffset: number,
     activeChats: User[]
 };
-let tempId = 0;
 const initialState: ChatState = {
     visible: true,
     zIndex: WindowManager.getNextZIndex(),
@@ -32,54 +31,7 @@ const initialState: ChatState = {
     messages: [],
     currentActiveChatId: 0,
     currentTabOffset: 0,
-    activeChats: [{
-        id: tempId++,
-        look: 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45',
-        name: 'Relevance' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10',
-        name: 'Gravity' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45',
-        name: 'Gravity' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10',
-        name: 'Gravity' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45',
-        name: 'Gravity' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10',
-        name: 'Gravity' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45',
-        name: 'Gravity' + tempId,
-        motto: ''
-    },
-    {
-        id: tempId++,
-        look: 'ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10',
-        name: 'Gravity' + tempId,
-        motto: ''
-    }],
+    activeChats: [],
 };
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
@@ -91,10 +43,20 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     componentDidMount() {
         const { uiManager } = BobbaEnvironment.getGame();
         uiManager.setOnOpenChatHandler(user => {
-            this.setState({
-                visible: true,
-                zIndex: WindowManager.getNextZIndex(),
-            })
+            const { activeChats } = this.state;
+            if (user !== undefined) {
+                this.setState({
+                    visible: true,
+                    zIndex: WindowManager.getNextZIndex(),
+                    activeChats: [...activeChats, user],
+                    currentActiveChatId: user.id,
+                });
+            } else {
+                this.setState({
+                    visible: true,
+                    zIndex: WindowManager.getNextZIndex(),
+                });
+            }
         });
 
         uiManager.setOnCloseChatHandler(() => {

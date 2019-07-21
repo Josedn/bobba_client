@@ -27,7 +27,7 @@ const initialState: MessengerState = {
     visible: false,
     zIndex: WindowManager.getNextZIndex(),
     search: '',
-    currentTab: Tabs.Requests,
+    currentTab: Tabs.Friends,
     firstRowActive: true,
     secondRowActive: true,
     currentSelectedFriendId: -1,
@@ -98,6 +98,10 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
         BobbaEnvironment.getGame().uiManager.doRequestFollowFriend(userId);
     }
 
+    requestAddFriend = (userId: number) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestAskForFriend(userId);
+    }
+
     requestRemoveFriend = (userId: number) => () => {
         if (userId !== -1) {
             BobbaEnvironment.getGame().uiManager.doRequestRemoveFriend(userId);
@@ -166,6 +170,20 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                 <div key={friend.id} className="friend">
                     <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
                     <span>{friend.name}</span>
+                </div>
+            );
+        });
+    }
+
+    generateSearchGrid(friends: User[]): ReactNode {
+        return friends.map(friend => {
+            return (
+                <div key={friend.id} className="friend">
+                    <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
+                    <span>{friend.name}</span>
+                    <div className="icons_container">
+                        <button onClick={this.requestAddFriend(friend.id)} className="ask_for_friend" />
+                    </div>
                 </div>
             );
         });
@@ -253,10 +271,10 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                                 {firstRowActive ? this.generateOfflineFriendsGrid(filteredFriends) : <></>}
                             </div>
                             <button onClick={this.toggleSecondRow} className="second_tab">
-                                Otros usuarios ({offlineFriends.length})
+                                Otros usuarios ({searchResult.length})
                             </button>
                             <div className="friend_list">
-                                {secondRowActive ? this.generateOfflineFriendsGrid(searchResult) : <></>}
+                                {secondRowActive ? this.generateSearchGrid(searchResult) : <></>}
                             </div>
                         </div>
                         <div className="actions_container">

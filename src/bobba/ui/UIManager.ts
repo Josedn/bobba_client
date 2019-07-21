@@ -279,6 +279,13 @@ export default class UIManager {
         this.onOpenMessenger();
     }
 
+    doRequestAskForFriend(userId: number) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestAddFriend(userId);
+        }
+    }
+
     doRequestDenyFriendRequest(userId: number) {
         const { currentUser } = this.game.userManager;
         if (currentUser != null) {
@@ -439,7 +446,7 @@ export default class UIManager {
         this.onSetFriends = handler;
     }
     setOnSetFriendsSearchHandler(handler: (users: User[]) => void) {
-        this.onSetFriends = handler;
+        this.onSetFriendsSearch = handler;
     }
     setOnSetFriendRequestsHandler(handler: (users: User[]) => void) {
         this.onSetFriendRequests = handler;

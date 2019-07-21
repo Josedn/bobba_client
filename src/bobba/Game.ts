@@ -23,6 +23,7 @@ import RequestHeightMap from "./communication/outgoing/roomdata/RequestHeightMap
 import RequestNavigatorGoToRoom from "./communication/outgoing/navigator/RequestNavigatorGoToRoom";
 import RoomImager from "./imagers/rooms/RoomImager";
 import Messenger from "./messenger/Messenger";
+import RequestMessengerLoadFriends from "./communication/outgoing/messenger/RequestMessengerLoadFriends";
 
 export default class Game {
     currentRoom?: Room;
@@ -92,6 +93,7 @@ export default class Game {
             BobbaEnvironment.getGame().uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
             this.communicationManager.sendMessage(new RequestCatalogueIndex());
+            this.communicationManager.sendMessage(new RequestMessengerLoadFriends());
             this.soundManager.playPixelsSound();
 
             this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(1));
