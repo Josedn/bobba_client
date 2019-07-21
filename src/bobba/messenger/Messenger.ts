@@ -98,10 +98,19 @@ export default class Messenger {
         }
     }
 
+    getCurrentTime(): string {
+        const dateWithouthSecond = new Date();
+        return dateWithouthSecond.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
     handleMessengerMessage(userId: number, text: string, type: MessengerMessageType) {
         const user = BobbaEnvironment.getGame().userManager.getUser(userId);
         if (user != null) {
             this._tryInitializeChat(user);
+
+            if (type !== MessengerMessageType.Info) {
+                text = this.getCurrentTime() + ": " + text;
+            }
 
             const message: MessengerMessage = {
                 text,
