@@ -122,6 +122,9 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         const isEnter = event.which === 13;
         if (isEnter) {
             event.preventDefault();
+            const { currentActiveChatId, text } = this.state;
+            BobbaEnvironment.getGame().uiManager.doRequestSendChatMessage(currentActiveChatId, text);
+
             this.setState({
                 text: '',
             });

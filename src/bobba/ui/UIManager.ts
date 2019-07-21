@@ -7,6 +7,7 @@ import UserItem from "../inventory/UserItem";
 import CataloguePage from "../catalogue/CataloguePage";
 import { CatalogueIndex } from "../catalogue/Catalogue";
 import RoomData from "../navigator/RoomData";
+import BobbaEnvironment from "../BobbaEnvironment";
 
 export default class UIManager {
     game: Game;
@@ -279,22 +280,47 @@ export default class UIManager {
     }
 
     doRequestDenyFriendRequest(userId: number) {
-        throw new Error("Method not implemented.");
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.denyFriendRequest(userId);
+        }
     }
     doRequestAcceptFriendRequest(userId: number) {
-        throw new Error("Method not implemented.");
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.acceptFriendRequest(userId);
+        }
     }
     doRequestFriendSearch(search: string) {
-        throw new Error("Method not implemented.");
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestFriendSearch(search);
+        }
     }
     doRequestRemoveFriend(userId: number) {
-        throw new Error("Method not implemented.");
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestRemoveFriend(userId);
+        }
     }
     doRequestFollowFriend(userId: number) {
-        throw new Error("Method not implemented.");
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestFollowFriend(userId);
+        }
     }
     doRequestStartChat(userId: number) {
-        throw new Error("Method not implemented.");
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.requestStartChat(userId);
+        }
+    }
+
+    doRequestSendChatMessage(userId: number, text: string) {
+        const { currentUser } = this.game.userManager;
+        if (currentUser != null) {
+            BobbaEnvironment.getGame().messenger.sendChatMessage(userId, text);
+        }
     }
 
     setOnSetUserDataHandler(handler: (user: User) => void) {
