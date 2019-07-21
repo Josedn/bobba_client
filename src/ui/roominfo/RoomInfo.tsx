@@ -28,6 +28,12 @@ class RoomInfo extends Component<RoomInfoProps, RoomInfoState> {
                 visible: true,
             })
         });
+
+        BobbaEnvironment.getGame().uiManager.onCloseRoomInfo = () => {
+            this.setState({
+                visible: false,
+            })
+        };
     }
 
     render() {

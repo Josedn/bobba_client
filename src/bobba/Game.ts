@@ -95,8 +95,11 @@ export default class Game {
             this.communicationManager.sendMessage(new RequestMessengerLoadFriends());
             this.soundManager.playPixelsSound();
 
-            this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(-1));
             this.uiManager.doOpenNavigator();
+            this.uiManager.doRequestOpenMessenger();
+            this.uiManager.onCloseRoomInfo();
+
+            this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(-1));
         }
     }
 
@@ -126,6 +129,7 @@ export default class Game {
             this.engine.onLeaveRoom();
             this.uiManager.onCloseSelectFurni(-1);
             this.uiManager.onCloseSelectUser(-1);
+            this.uiManager.onCloseRoomInfo();
         }
         this.currentRoom = undefined;
     }

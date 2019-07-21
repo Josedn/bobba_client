@@ -45,6 +45,7 @@ export default class UIManager {
     onCloseCreateRoom: () => void;
     //Room Info
     onCurrentRoomDataLoad: (data: RoomData) => void;
+    onCloseRoomInfo: () => void;
     //Messenger
     onOpenMessenger: () => void;
     onCloseMessenger: () => void;
@@ -94,6 +95,7 @@ export default class UIManager {
         this.onOpenChat = () => { };
         this.onOpenMessengerChat = () => { };
         this.onShowMessengerAlert = () => { };
+        this.onCloseRoomInfo = () => { };
     }
 
     log(text: string) {
@@ -340,7 +342,7 @@ export default class UIManager {
     setOnSetUserDataHandler(handler: (user: User) => void) {
         this.onSetUserData = handler;
     }
-    
+
     setOnLoadHandler(handler: (text: string) => void) {
         this.onLoadPost = handler;
     }
