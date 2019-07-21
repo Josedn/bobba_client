@@ -49,7 +49,6 @@ export default class MainEngine {
 
         app.ticker.add(delta => gameLoop(delta));
         app.ticker.minFPS = 0;
-        document.body.appendChild(app.view);
 
         this.pixiApp = app;
         this.logicPixiApp = logicApp;
@@ -72,6 +71,14 @@ export default class MainEngine {
             loader.onError.add(() => reject('Cannot load global textures'));
             loader.onComplete.add(() => resolve());
         });
+    }
+
+    onEnterRoom() {
+        document.body.appendChild(this.pixiApp.view);
+    }
+
+    onLeaveRoom() {
+        document.body.removeChild(this.pixiApp.view);
     }
 
     getTextureFromImage(img: HTMLImageElement | HTMLCanvasElement): PIXI.Texture {

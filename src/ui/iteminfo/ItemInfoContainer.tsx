@@ -27,7 +27,7 @@ const initialUserProps = {
     isMe: false,
 };
 const initialState: ItemInfoContainerState = {
-    showing: Showing.FURNI,
+    showing: Showing.NONE,
     furniProps: initialFurniProps,
     userProps: initialUserProps,
 };
@@ -76,14 +76,14 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
 
     tryCloseFurniView = (itemId: number) => {
         const id = this.state.furniProps.itemId;
-        if (itemId === id) {
+        if (itemId === id || itemId === -1) {
             this.close();
         }
     }
 
     tryCloseUserView = (userId: number) => {
         const id = this.state.userProps.userId;
-        if (userId === id) {
+        if (userId === id || userId === -1) {
             this.close();
         }
     }

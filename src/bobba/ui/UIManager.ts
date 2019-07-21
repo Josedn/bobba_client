@@ -340,23 +340,7 @@ export default class UIManager {
     setOnSetUserDataHandler(handler: (user: User) => void) {
         this.onSetUserData = handler;
     }
-
-    setOnSelectFurni(handler: FurniInfo) {
-        this.onSelectFurni = handler;
-    }
-
-    setOnSelectUser(handler: UserInfo) {
-        this.onSelectUser = handler;
-    }
-
-    setOnCloseSelectFurniHandler(handler: () => void) {
-        this.onCloseSelectFurni = handler;
-    }
-
-    setOnCloseSelectUserHandler(handler: () => void) {
-        this.onCloseSelectUser = handler;
-    }
-
+    
     setOnLoadHandler(handler: (text: string) => void) {
         this.onLoadPost = handler;
     }

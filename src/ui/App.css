@@ -5,10 +5,13 @@ html {
 
 body {
     margin: 0 auto;
-    background-color: #000000;
     color: #ffffff;
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
+    background-color: #000000;
+    background-image: url('http://images.bobba.io/c_images/hotel_view_images_hq/hotelview_default.png');
+    background-repeat: no-repeat;
+    background-position: center 0; 
 }
 
 canvas {

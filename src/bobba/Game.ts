@@ -10,7 +10,6 @@ import RoomModel from "./rooms/RoomModel";
 import RequestRoomData from "./communication/outgoing/roomdata/RequestRoomData";
 import ChatImager from "./imagers/bubbles/ChatImager";
 import MeMenuImager from "./imagers/bubbles/MeMenuImager";
-import BobbaEnvironment from "./BobbaEnvironment";
 import UIManager from "./ui/UIManager";
 import UserManager from "./users/UserManager";
 import Inventory from "./inventory/Inventory";
@@ -73,7 +72,7 @@ export default class Game {
             WALL_ITEM_PLACEHOLDER,
             ROOM_TILE_SHADOW
         ];
-        BobbaEnvironment.getGame().uiManager.postLoading("Initializing game engine");
+        this.uiManager.postLoading("Initializing game engine");
         return Promise.all([
             this.avatarImager.initialize().then(() => this.ghostTextures.initialize()),
             this.furniImager.initialize(),
@@ -82,7 +81,7 @@ export default class Game {
             this.roomImager.initialize(),
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
-            BobbaEnvironment.getGame().uiManager.postLoading("Connecting to server");
+            this.uiManager.postLoading("Connecting to server");
             return this.communicationManager.connect("localhost", 8080, false);
         });
     }
@@ -90,13 +89,14 @@ export default class Game {
     handleUserData(id: number, name: string, look: string, motto: string) {
         this.uiManager.onSetUserData(this.userManager.setCurrentUser(id, name, motto, look));
         if (this.currentRoom == null) {
-            BobbaEnvironment.getGame().uiManager.log("Logged in!");
+            this.uiManager.log("Logged in!");
             this.communicationManager.sendMessage(new RequestInventoryItems());
             this.communicationManager.sendMessage(new RequestCatalogueIndex());
             this.communicationManager.sendMessage(new RequestMessengerLoadFriends());
             this.soundManager.playPixelsSound();
 
-            this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(1));
+            this.communicationManager.sendMessage(new RequestNavigatorGoToRoom(-1));
+            this.uiManager.doOpenNavigator();
         }
     }
 
@@ -106,22 +106,26 @@ export default class Game {
 
     handleHeightMap(model: RoomModel) {
         this.unloadRoom();
+        this.engine.onEnterRoom();
 
         this.currentRoom = new Room(model);
         this.engine.getLogicStage().addChild(this.currentRoom.engine.getLogicStage());
         this.engine.getMainStage().addChild(this.currentRoom.engine.getStage());
-        BobbaEnvironment.getGame().uiManager.log("Loaded heightmap");
-        BobbaEnvironment.getGame().uiManager.onCloseNavigator();
-        BobbaEnvironment.getGame().uiManager.onCloseCreateRoom();
-        BobbaEnvironment.getGame().uiManager.onCloseCatalogue();
-        BobbaEnvironment.getGame().uiManager.onCloseInventory();
-        BobbaEnvironment.getGame().uiManager.onCloseChangeLooks();
+        this.uiManager.log("Loaded heightmap");
+        this.uiManager.onCloseNavigator();
+        this.uiManager.onCloseCreateRoom();
+        this.uiManager.onCloseCatalogue();
+        this.uiManager.onCloseInventory();
+        this.uiManager.onCloseChangeLooks();
         this.communicationManager.sendMessage(new RequestRoomData());
     }
 
     unloadRoom() {
         if (this.currentRoom != null) {
             this.currentRoom.dispose();
+            this.engine.onLeaveRoom();
+            this.uiManager.onCloseSelectFurni(-1);
+            this.uiManager.onCloseSelectUser(-1);
         }
         this.currentRoom = undefined;
     }
