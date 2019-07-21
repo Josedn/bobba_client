@@ -27,7 +27,7 @@ const initialState = {
     currentPageId: -1,
     currentTabId: -1,
     currentItemId: -1,
-    visible: false,
+    visible: true,
     purchaseWindowVisible: false,
     zIndex: WindowManager.getNextZIndex(),
 };
