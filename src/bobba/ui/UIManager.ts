@@ -53,7 +53,8 @@ export default class UIManager {
     onSetFriendsSearch: (users: User[]) => void;
     onSetFriendRequests: (users: User[]) => void;
     onReceiveMessengerMessage: (chat: MessengerChat) => boolean;
-    onOpenChat: (chat?: MessengerChat) => void;
+    onOpenMessengerChat: (chat: MessengerChat) => void;
+    onOpenChat: () => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -89,7 +90,8 @@ export default class UIManager {
         this.onSetFriendsSearch = () => { };
         this.onSetFriendRequests = () => { };
         this.onReceiveMessengerMessage = () => false;
-        this.onOpenChat = () => false;
+        this.onOpenChat = () => { };
+        this.onOpenMessengerChat = () => { };
     }
 
     log(text: string) {
@@ -274,8 +276,8 @@ export default class UIManager {
         }
     }
 
-    doRequestOpenChat(chat?: MessengerChat) {
-        this.onOpenChat(chat);
+    doRequestOpenChat() {
+        this.onOpenChat();
     }
 
     doRequestOpenMessenger(user?: User) {
@@ -454,8 +456,11 @@ export default class UIManager {
     setOnReceiveMessengerMessage(handler: (chat: MessengerChat) => boolean) {
         this.onReceiveMessengerMessage = handler;
     }
-    setOnOpenChatHandler(handler: (chat?: MessengerChat) => void) {
+    setOnOpenChatHandler(handler: () => void) {
         this.onOpenChat = handler;
+    }
+    setOnOpenMessengerChat(handler: (chat: MessengerChat) => void) {
+        this.onOpenMessengerChat = handler;
     }
 }
 

@@ -33,7 +33,7 @@ export default class Messenger {
         const user = BobbaEnvironment.getGame().userManager.getUser(userId);
         if (user != null) {
             this._tryInitializeChat(user);
-            BobbaEnvironment.getGame().uiManager.onOpenChat(this.activeChats[userId]);
+            BobbaEnvironment.getGame().uiManager.onOpenMessengerChat(this.activeChats[userId]);
         }
     }
 

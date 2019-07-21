@@ -18,7 +18,7 @@ type ChatState = {
     activeChats: User[]
 };
 const initialState: ChatState = {
-    visible: true,
+    visible: false,
     zIndex: WindowManager.getNextZIndex(),
     text: '',
     messages: [],
@@ -36,22 +36,12 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     componentDidMount() {
         const { uiManager } = BobbaEnvironment.getGame();
-        uiManager.setOnOpenChatHandler(chat => {
+        uiManager.setOnOpenChatHandler(() => {
             const { activeChats } = this.state;
-            if (chat !== undefined) {
-                this.setState({
-                    visible: true,
-                    zIndex: WindowManager.getNextZIndex(),
-                    activeChats: [...activeChats, chat.user],
-                    messages: [...chat.chats],
-                    currentActiveChatId: chat.user.id,
-                });
-            } else {
-                this.setState({
-                    visible: true,
-                    zIndex: WindowManager.getNextZIndex(),
-                });
-            }
+            this.setState({
+                visible: activeChats.length > 0,
+                zIndex: WindowManager.getNextZIndex(),
+            });
         });
 
         uiManager.setOnCloseChatHandler(() => {
@@ -60,27 +50,52 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             })
         });
 
+        uiManager.setOnOpenMessengerChat((chat: MessengerChat) => {
+            const { activeChats } = this.state;
+            if (activeChats.find(user => user.id === chat.user.id)) {
+                this.setState({
+                    visible: true,
+                    zIndex: WindowManager.getNextZIndex(),
+                    messages: chat.chats,
+                    currentActiveChatId: chat.user.id,
+                });
+            } else {
+                this.setState({
+                    visible: true,
+                    zIndex: WindowManager.getNextZIndex(),
+                    activeChats: [...activeChats, chat.user],
+                    messages: chat.chats,
+                    currentActiveChatId: chat.user.id,
+                });
+            }
+        });
+
         uiManager.setOnReceiveMessengerMessage((chat: MessengerChat) => {
-            const { currentActiveChatId, notifications, visible, activeChats } = this.state;
-            if (currentActiveChatId === chat.user.id) {
-                if (activeChats.find(value => value.id === chat.user.id)) {
+            const { currentActiveChatId, notifications, activeChats } = this.state;
+            if (activeChats.find(value => value.id === chat.user.id)) {
+                if (currentActiveChatId === chat.user.id) {
                     this.setState({
                         messages: chat.chats,
                     });
-                    return visible;
+                    return true;
                 } else {
                     this.setState({
-                        activeChats: [...activeChats, chat.user],
                         notifications: [...notifications, chat.user.id],
                     });
-                    return false;
                 }
+            } else if (activeChats.length === 0) {
+                this.setState({
+                    activeChats: [...activeChats, chat.user],
+                    messages: chat.chats,
+                    currentActiveChatId: chat.user.id,
+                });
             } else {
                 this.setState({
+                    activeChats: [...activeChats, chat.user],
                     notifications: [...notifications, chat.user.id],
                 });
-                return false;
             }
+            return false;
         });
     }
 
@@ -120,7 +135,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     }
 
     requestFollowFriend = () => {
-        //BobbaEnvironment.getGame().uiManager.doRequestFollowFriend(userId);
+        const { currentActiveChatId } = this.state;
+        BobbaEnvironment.getGame().uiManager.doRequestFollowFriend(currentActiveChatId);
     }
 
     requestCloseChat = () => {
@@ -128,31 +144,38 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
         const newChats = activeChats.filter(value => {
             return value.id !== currentActiveChatId;
         });
-        this.setState({
-            activeChats: newChats,
-            currentActiveChatId: newChats.length === 0 ? 0 : newChats[0].id,
-        });
-    }
-
-    handleTabChange = (userId: number) => () => {
-        
-        const chat = BobbaEnvironment.getGame().messenger.getActiveChat(userId);
-        if (chat != null) {
+        if (newChats.length === 0) {
             this.setState({
-                currentActiveChatId: userId,
-                messages: [...chat.chats]
+                activeChats: newChats,
+                currentActiveChatId: 0,
+                visible: false,
             });
         } else {
             this.setState({
-                currentActiveChatId: userId
+                activeChats: newChats,
+            });
+            BobbaEnvironment.getGame().uiManager.doRequestStartChat(newChats[0].id);
+        }
+    }
+
+    handleTabChange = (userId: number) => () => {
+        const { notifications } = this.state;
+        if (notifications.includes(userId)) {
+            this.setState({
+                notifications: notifications.filter(friend => friend !== userId),
             });
         }
+        BobbaEnvironment.getGame().uiManager.doRequestStartChat(userId);
     }
 
     generateFriendTab(friend: User) {
         const { currentActiveChatId, notifications } = this.state;
+        let className = friend.id === currentActiveChatId ? 'selected' : '';
+        if (notifications.includes(friend.id)) {
+            className = 'alert';
+        }
         return (
-            <button onClick={this.handleTabChange(friend.id)} key={friend.id} className={friend.id === currentActiveChatId ? 'selected' : '' + notifications.includes(friend.id) ? ' alert' : ''}>
+            <button onClick={this.handleTabChange(friend.id)} key={friend.id} className={className}>
                 <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
             </button>
         );
