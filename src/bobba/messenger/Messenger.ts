@@ -111,7 +111,7 @@ export default class Messenger {
             this.activeChats[userId].chats.push(message);
 
             const isActive = BobbaEnvironment.getGame().uiManager.onReceiveMessengerMessage(this.activeChats[userId]);
-            if (!isActive) {
+            if (!isActive && type === MessengerMessageType.Friend) {
                 BobbaEnvironment.getGame().soundManager.playConsoleReceiveSound();
                 BobbaEnvironment.getGame().uiManager.onShowMessengerAlert();
             }
@@ -119,6 +119,12 @@ export default class Messenger {
     }
 
     sendChatMessage(userId: number, text: string) {
+        const activeChat = this.activeChats[userId];
+        if (activeChat != null) {
+            if (activeChat.chats.length === 0) {
+                BobbaEnvironment.getGame().soundManager.playConsoleSentSound();
+            }
+        }
         BobbaEnvironment.getGame().communicationManager.sendMessage(new RequestMessengerSendMessage(userId, text));
     }
 
