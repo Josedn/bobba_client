@@ -71,6 +71,14 @@ class Footer extends Component<FooterProps, FooterState> {
         BobbaEnvironment.getGame().uiManager.doRequestLeaveRoom();
     }
 
+    openMessenger = () => {
+        BobbaEnvironment.getGame().uiManager.doRequestOpenMessenger();
+    }
+
+    openChat = () => {
+        BobbaEnvironment.getGame().uiManager.doRequestOpenChat();
+    }
+
     render() {
         const { chat } = this.state;
         const { headImage } = this.props;
@@ -114,10 +122,10 @@ class Footer extends Component<FooterProps, FooterState> {
                         </form>
                     </div>
                     <div className="right_section">
-                        <button>
+                        <button onClick={this.openMessenger}>
                             <img src="images/bottom_bar/all_friends.png" alt="Friends" />
                         </button>
-                        <button>
+                        <button onClick={this.openChat}>
                             <img src="images/bottom_bar/messenger.png" alt="Messenger" />
                         </button>
                     </div>

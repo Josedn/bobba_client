@@ -143,7 +143,7 @@
     background: rgba(0, 0, 0, 0.1);
 }
 
-.messenger .wrapper .friend_list .friend:hover {
+.messenger .wrapper .friend_list .friend:hover, .messenger .wrapper .friend_list .friend.selected {
     background: #8adaff;
 }
 
@@ -171,6 +171,12 @@
     background: none;
     margin: auto 0 auto 2px;
     padding: 0;
+}
+
+.messenger .wrapper .friend_list .friend .icons_container button.ask_for_friend {
+    width: 16px;
+    height: 15px;
+    background-image: url('/images/messenger/ask_for_friend.png');
 }
 
 .messenger .wrapper .friend_list .friend .icons_container button.follow_friend {
@@ -220,10 +226,6 @@
     border-radius: 3px;
     display: flex;
     font: inherit;
-}
-
-.messenger .wrapper .actions_container.requests button {
-    margin: auto;
 }
 
 .messenger .wrapper .actions_container button img {
@@ -286,6 +288,10 @@
     border-radius: 3px;
     margin: auto 10px;
     display: flex;
+}
+
+.messenger .footer button:hover {
+    border: 2px solid #000000;
 }
 
 .messenger .footer button span, .messenger .footer button img {

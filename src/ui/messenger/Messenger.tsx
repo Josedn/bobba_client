@@ -2,6 +2,8 @@ import React, { ReactNode, FormEvent, ChangeEvent } from 'react';
 import WindowManager from "../windows/WindowManager";
 import Draggable from 'react-draggable';
 import './messenger.css';
+import User from '../../bobba/users/User';
+import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 
 enum Tabs {
     Friends, Search, Requests, None,
@@ -13,18 +15,67 @@ type MessengerState = {
     zIndex: number,
     search: string,
     currentTab: Tabs,
+    firstRowActive: boolean,
+    secondRowActive: boolean,
+    onlineFriends: User[],
+    offlineFriends: User[],
+    friendsRequests: User[],
+    searchResult: User[],
+    currentSelectedFriendId: number,
 };
-const initialState = {
-    visible: true,
+const initialState: MessengerState = {
+    visible: false,
     zIndex: WindowManager.getNextZIndex(),
     search: '',
     currentTab: Tabs.Requests,
+    firstRowActive: true,
+    secondRowActive: true,
+    currentSelectedFriendId: -1,
+    onlineFriends: [],
+    offlineFriends: [],
+    friendsRequests: [],
+    searchResult: [],
 };
 
 export default class Messenger extends React.Component<MessengerProps, MessengerState> {
     constructor(props: MessengerProps) {
         super(props);
         this.state = initialState;
+    }
+
+    componentDidMount() {
+        const { uiManager } = BobbaEnvironment.getGame();
+        uiManager.setOnOpenMessengerHandler(() => {
+            this.setState({
+                visible: true,
+                zIndex: WindowManager.getNextZIndex(),
+            })
+        });
+
+        uiManager.setOnCloseMessengerHandler(() => {
+            this.setState({
+                visible: false,
+            })
+        });
+
+        uiManager.setOnSetFriendsHandler((onlineFriends, offlineFriends) => {
+            this.setState({
+                onlineFriends,
+                offlineFriends
+            });
+        });
+
+        uiManager.setOnSetFriendRequestsHandler(friendsRequests => {
+            this.setState({
+                friendsRequests
+            });
+        });
+
+        uiManager.setOnSetFriendsSearchHandler(searchResult => {
+            this.setState({
+                searchResult
+            });
+        });
     }
 
     close = () => {
@@ -39,69 +90,103 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
         });
     }
 
-    generateRequestsGrid(): ReactNode {
-        return (
-            <>
-                <div className="friend">
-                    <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10&direction=2&head_direction=2&size=s&headonly=1" alt="" />
-                    <span>Gravity</span>
-                    <div className="icons_container">
-                        <button className="accept" />
-                        <button className="decline" />
-                    </div>
-                </div>
-                <div className="friend">
-                    <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=hd-190-10.lg-3023-1408.ch-215-91.hr-893-45&direction=2&head_direction=2&size=s&headonly=1" alt="" />
-                    <span>Relevance</span>
-                    <div className="icons_container">
-                        <button className="accept" />
-                        <button className="decline" />
-                    </div>
-                </div>
-            </>
-        );
+    requestStartChat = (userId: number) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestStartChat(userId);
     }
 
-    generateOnlineFriendsGrid(): ReactNode {
-        return (
-            <>
-                <div className="friend">
-                    <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10&direction=2&head_direction=2&size=s&headonly=1" alt="" />
-                    <span>Gravity</span>
-                    <div className="icons_container">
-                        <button className="start_chat" />
-                        <button className="follow_friend" />
-                    </div>
-                </div>
-                <div className="friend">
-                    <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=hd-190-10.lg-3023-1408.ch-215-91.hr-893-45&direction=2&head_direction=2&size=s&headonly=1" alt="" />
-                    <span>Relevance</span>
-                    <div className="icons_container">
-                        <button className="start_chat" />
-                        <button className="follow_friend" />
-                    </div>
-                </div>
-            </>
-        );
+    requestFollowFriend = (userId: number) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestFollowFriend(userId);
     }
 
-    generateOfflineFriendsGrid(): ReactNode {
-        return (
-            <>
-                <div className="friend">
-                    <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=ca-1811-62.lg-3018-81.hr-836-45.ch-669-1193.hd-600-10&direction=2&head_direction=2&size=s&headonly=1" alt="" />
-                    <span>Gravity</span>
+    requestRemoveFriend = (userId: number) => () => {
+        if (userId !== -1) {
+            BobbaEnvironment.getGame().uiManager.doRequestRemoveFriend(userId);
+        }
+    }
+
+    requestSearch = (search: string) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestFriendSearch(search);
+    }
+
+    requestAcceptFriendRequest = (userId: number) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestAcceptFriendRequest(userId);
+    }
+
+    requestDenyFriendRequest = (userId: number) => () => {
+        BobbaEnvironment.getGame().uiManager.doRequestDenyFriendRequest(userId);
+    }
+
+    requestAcceptAllFriendRequests = () => {
+        const { friendsRequests } = this.state;
+        friendsRequests.forEach(request => {
+            this.requestAcceptFriendRequest(request.id)();
+        });
+    }
+
+    requestDenyAllFriendRequests = () => {
+        const { friendsRequests } = this.state;
+        friendsRequests.forEach(request => {
+            this.requestDenyFriendRequest(request.id)();
+        });
+    }
+
+    generateRequestsGrid(friends: User[]): ReactNode {
+        return friends.map(friend => {
+            return (
+                <div key={friend.id} className="friend">
+                    <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
+                    <span>{friend.name}</span>
+                    <div className="icons_container">
+                        <button onClick={this.requestAcceptFriendRequest(friend.id)} className="accept" />
+                        <button onClick={this.requestDenyFriendRequest(friend.id)} className="decline" />
+                    </div>
                 </div>
-                <div className="friend">
-                    <img src="https://www.habbo.com/habbo-imaging/avatarimage?figure=hd-190-10.lg-3023-1408.ch-215-91.hr-893-45&direction=2&head_direction=2&size=s&headonly=1" alt="" />
-                    <span>Relevance</span>
+            );
+        });
+    }
+
+    generateOnlineFriendsGrid(friends: User[]): ReactNode {
+        return friends.map(friend => {
+            return (
+                <div key={friend.id} className="friend">
+                    <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
+                    <span>{friend.name}</span>
+                    <div className="icons_container">
+                        <button onClick={this.requestStartChat(friend.id)} className="start_chat" />
+                        <button onClick={this.requestFollowFriend(friend.id)} className="follow_friend" />
+                    </div>
                 </div>
-            </>
-        );
+            );
+        });
+    }
+
+    generateOfflineFriendsGrid(friends: User[]): ReactNode {
+        return friends.map(friend => {
+            return (
+                <div key={friend.id} className="friend">
+                    <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
+                    <span>{friend.name}</span>
+                </div>
+            );
+        });
+    }
+
+    toggleFirstRow = () => {
+        const { firstRowActive } = this.state;
+        this.setState({
+            firstRowActive: !firstRowActive,
+        })
+    }
+
+    toggleSecondRow = () => {
+        const { secondRowActive } = this.state;
+        this.setState({
+            secondRowActive: !secondRowActive,
+        })
     }
 
     generateFriendsTab(): React.ReactNode {
-        const { currentTab } = this.state;
+        const { currentTab, firstRowActive, secondRowActive, onlineFriends, offlineFriends, currentSelectedFriendId } = this.state;
 
         if (currentTab === Tabs.Friends) {
             return (
@@ -112,24 +197,24 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                     </div>
                     <div className="wrapper">
                         <div className="friends_container">
-                            <button className="second_tab">
-                                Amig@s (2)
-                                </button>
+                            <button onClick={this.toggleFirstRow} className="second_tab">
+                                Amig@s ({onlineFriends.length})
+                            </button>
                             <div className="friend_list">
-                                {this.generateOnlineFriendsGrid()}
+                                {firstRowActive ? this.generateOnlineFriendsGrid(onlineFriends) : <></>}
                             </div>
-                            <button className="second_tab">
-                                Amig@s desconectad@s (90)
-                                </button>
+                            <button onClick={this.toggleSecondRow} className="second_tab">
+                                Amig@s desconectad@s ({offlineFriends.length})
+                            </button>
                             <div className="friend_list">
-                                {this.generateOfflineFriendsGrid()}
+                                {secondRowActive ? this.generateOfflineFriendsGrid(offlineFriends) : <></>}
                             </div>
                         </div>
                         <div className="actions_container">
-                            <button>
+                            <button onClick={this.requestRemoveFriend(currentSelectedFriendId)}>
                                 <img src="/images/messenger/remove_friend.png" alt="Remove friend" />
                             </button>
-                            <button>
+                            <button onClick={this.requestStartChat(currentSelectedFriendId)}>
                                 <img src="/images/messenger/open_inbox.png" alt="Open inbox" />
                             </button>
                         </div>
@@ -147,7 +232,11 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
     }
 
     generateSearchTab(): React.ReactNode {
-        const { search, currentTab } = this.state;
+        const { currentTab, search, firstRowActive, secondRowActive, onlineFriends, offlineFriends, searchResult } = this.state;
+        const filteredFriends = [...onlineFriends, ...offlineFriends].filter(user => {
+            return user.name.toLowerCase().includes(search.toLowerCase());
+        });
+
         if (currentTab === Tabs.Search) {
             return (
                 <>
@@ -157,17 +246,17 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
                     </div>
                     <div className="wrapper search">
                         <div className="friends_container">
-                            <button className="second_tab">
-                                Amig@s (2)
-                                </button>
-                            <div className="friend_list">
-                                {this.generateOnlineFriendsGrid()}
-                            </div>
-                            <button className="second_tab">
-                                Otros usuarios (34)
+                            <button onClick={this.toggleFirstRow} className="second_tab">
+                                Amig@s ({filteredFriends.length})
                             </button>
                             <div className="friend_list">
-                                {this.generateOfflineFriendsGrid()}
+                                {firstRowActive ? this.generateOfflineFriendsGrid(filteredFriends) : <></>}
+                            </div>
+                            <button onClick={this.toggleSecondRow} className="second_tab">
+                                Otros usuarios ({offlineFriends.length})
+                            </button>
+                            <div className="friend_list">
+                                {secondRowActive ? this.generateOfflineFriendsGrid(searchResult) : <></>}
                             </div>
                         </div>
                         <div className="actions_container">
@@ -195,27 +284,28 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
     }
 
     generateRequestsTab(): React.ReactNode {
-        const { currentTab } = this.state;
+        const { currentTab, friendsRequests } = this.state;
+        const className = "main_tab " + (friendsRequests.length > 0 ? 'active' : '');
 
         if (currentTab === Tabs.Requests) {
             return (
                 <>
-                    <div onClick={this.handleChangeTab(Tabs.None)} className="main_tab active">
+                    <div onClick={this.handleChangeTab(Tabs.None)} className={className}>
                         <span>Peticiones de amig@s</span>
                         <button className="close_arrow" />
                     </div>
                     <div className="wrapper">
                         <div className="friends_container">
                             <div className="friend_list">
-                                {this.generateRequestsGrid()}
+                                {this.generateRequestsGrid(friendsRequests)}
                             </div>
                         </div>
-                        <div className="actions_container requests">
-                            <button>
+                        <div className="actions_container">
+                            <button onClick={this.requestAcceptAllFriendRequests}>
                                 <img src="/images/messenger/accept.png" alt="Remove friend" />
                                 <span>Aceptar todos</span>
                             </button>
-                            <button>
+                            <button onClick={this.requestDenyAllFriendRequests}>
                                 <img src="/images/messenger/decline.png" alt="Remove friend" />
                                 <span>Rechazar todos</span>
                             </button>
@@ -226,7 +316,7 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
         } else {
             return (
                 <>
-                    <div onClick={this.handleChangeTab(Tabs.Requests)} className="main_tab active">
+                    <div onClick={this.handleChangeTab(Tabs.Requests)} className={className}>
                         <span>Peticiones de amig@s</span>
                         <button className="open_arrow" />
                     </div>
@@ -258,12 +348,8 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
 
     handleSearch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        /*const { search } = this.state;
-        this.setState({
-            mainTabId: 'search',
-            currentRooms: undefined,
-        });
-        BobbaEnvironment.getGame().uiManager.doRequestNavigatorSearch(search);*/
+        const { search } = this.state;
+        BobbaEnvironment.getGame().uiManager.doRequestFriendSearch(search);
     }
 
     render() {

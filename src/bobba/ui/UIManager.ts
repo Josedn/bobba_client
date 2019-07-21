@@ -43,6 +43,14 @@ export default class UIManager {
     onCloseCreateRoom: () => void;
     //Room Info
     onCurrentRoomDataLoad: (data: RoomData) => void;
+    //Messenger
+    onOpenMessenger: () => void;
+    onCloseMessenger: () => void;
+    onOpenChat: (user?: User) => void;
+    onCloseChat: () => void;
+    onSetFriends: (online: User[], offline: User[]) => void;
+    onSetFriendsSearch: (users: User[]) => void;
+    onSetFriendRequests: (users: User[]) => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -71,6 +79,13 @@ export default class UIManager {
         this.onCurrentRoomDataLoad = () => { };
         this.onOpenCreateRoom = () => { };
         this.onCloseCreateRoom = () => { };
+        this.onOpenMessenger = () => { };
+        this.onOpenChat = () => { };
+        this.onCloseMessenger = () => { };
+        this.onCloseChat = () => { };
+        this.onSetFriends = () => { };
+        this.onSetFriendsSearch = () => { };
+        this.onSetFriendRequests = () => { };
     }
 
     log(text: string) {
@@ -255,6 +270,33 @@ export default class UIManager {
         }
     }
 
+    doRequestOpenChat(user?: User) {
+        this.onOpenChat(user);
+    }
+
+    doRequestOpenMessenger(user?: User) {
+        this.onOpenMessenger();
+    }
+
+    doRequestDenyFriendRequest(userId: number) {
+        throw new Error("Method not implemented.");
+    }
+    doRequestAcceptFriendRequest(userId: number) {
+        throw new Error("Method not implemented.");
+    }
+    doRequestFriendSearch(search: string) {
+        throw new Error("Method not implemented.");
+    }
+    doRequestRemoveFriend(userId: number) {
+        throw new Error("Method not implemented.");
+    }
+    doRequestFollowFriend(userId: number) {
+        throw new Error("Method not implemented.");
+    }
+    doRequestStartChat(userId: number) {
+        throw new Error("Method not implemented.");
+    }
+
     setOnSetUserDataHandler(handler: (user: User) => void) {
         this.onSetUserData = handler;
     }
@@ -353,6 +395,28 @@ export default class UIManager {
 
     setOnCloseCreateRoomHandler(handler: () => void) {
         this.onCloseCreateRoom = handler;
+    }
+
+    setOnOpenMessengerHandler(handler: () => void) {
+        this.onOpenMessenger = handler;
+    }
+    setOnOpenChatHandler(handler: (user?: User) => void) {
+        this.onOpenChat = handler;
+    }
+    setOnCloseMessengerHandler(handler: () => void) {
+        this.onCloseMessenger = handler;
+    }
+    setOnCloseChatHandler(handler: () => void) {
+        this.onCloseChat = handler;
+    }
+    setOnSetFriendsHandler(handler: (online: User[], offline: User[]) => void) {
+        this.onSetFriends = handler;
+    }
+    setOnSetFriendsSearchHandler(handler: (users: User[]) => void) {
+        this.onSetFriends = handler;
+    }
+    setOnSetFriendRequestsHandler(handler: (users: User[]) => void) {
+        this.onSetFriendRequests = handler;
     }
 }
 
