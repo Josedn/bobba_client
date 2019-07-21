@@ -8,6 +8,7 @@ import CataloguePage from "../catalogue/CataloguePage";
 import { CatalogueIndex } from "../catalogue/Catalogue";
 import RoomData from "../navigator/RoomData";
 import BobbaEnvironment from "../BobbaEnvironment";
+import { MessengerChat } from "../messenger/Messenger";
 
 export default class UIManager {
     game: Game;
@@ -47,11 +48,12 @@ export default class UIManager {
     //Messenger
     onOpenMessenger: () => void;
     onCloseMessenger: () => void;
-    onOpenChat: (user?: User) => void;
     onCloseChat: () => void;
     onSetFriends: (online: User[], offline: User[]) => void;
     onSetFriendsSearch: (users: User[]) => void;
     onSetFriendRequests: (users: User[]) => void;
+    onReceiveMessengerMessage: (chat: MessengerChat) => boolean;
+    onOpenChat: (chat?: MessengerChat) => void;
 
     constructor(game: Game) {
         this.game = game;
@@ -81,12 +83,13 @@ export default class UIManager {
         this.onOpenCreateRoom = () => { };
         this.onCloseCreateRoom = () => { };
         this.onOpenMessenger = () => { };
-        this.onOpenChat = () => { };
         this.onCloseMessenger = () => { };
         this.onCloseChat = () => { };
         this.onSetFriends = () => { };
         this.onSetFriendsSearch = () => { };
         this.onSetFriendRequests = () => { };
+        this.onReceiveMessengerMessage = () => false;
+        this.onOpenChat = () => false;
     }
 
     log(text: string) {
@@ -271,8 +274,8 @@ export default class UIManager {
         }
     }
 
-    doRequestOpenChat(user?: User) {
-        this.onOpenChat(user);
+    doRequestOpenChat(chat?: MessengerChat) {
+        this.onOpenChat(chat);
     }
 
     doRequestOpenMessenger(user?: User) {
@@ -433,9 +436,6 @@ export default class UIManager {
     setOnOpenMessengerHandler(handler: () => void) {
         this.onOpenMessenger = handler;
     }
-    setOnOpenChatHandler(handler: (user?: User) => void) {
-        this.onOpenChat = handler;
-    }
     setOnCloseMessengerHandler(handler: () => void) {
         this.onCloseMessenger = handler;
     }
@@ -450,6 +450,12 @@ export default class UIManager {
     }
     setOnSetFriendRequestsHandler(handler: (users: User[]) => void) {
         this.onSetFriendRequests = handler;
+    }
+    setOnReceiveMessengerMessage(handler: (chat: MessengerChat) => boolean) {
+        this.onReceiveMessengerMessage = handler;
+    }
+    setOnOpenChatHandler(handler: (chat?: MessengerChat) => void) {
+        this.onOpenChat = handler;
     }
 }
 

@@ -4,15 +4,7 @@ import Draggable from 'react-draggable';
 import './chat.css';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import User from '../../bobba/users/User';
-
-enum MessengerMessageType {
-    Me, Friend, Info
-}
-
-type MessengerMessage = {
-    text: string,
-    type: MessengerMessageType,
-};
+import { MessengerMessage, MessengerMessageType, MessengerChat } from '../../bobba/messenger/Messenger';
 
 type ChatProps = {};
 type ChatState = {
@@ -20,6 +12,7 @@ type ChatState = {
     zIndex: number,
     text: string,
     messages: MessengerMessage[],
+    notifications: number[]
     currentActiveChatId: number,
     currentTabOffset: number,
     activeChats: User[]
@@ -32,6 +25,7 @@ const initialState: ChatState = {
     currentActiveChatId: 0,
     currentTabOffset: 0,
     activeChats: [],
+    notifications: [],
 };
 
 export default class Chat extends React.Component<ChatProps, ChatState> {
@@ -42,14 +36,15 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     componentDidMount() {
         const { uiManager } = BobbaEnvironment.getGame();
-        uiManager.setOnOpenChatHandler(user => {
+        uiManager.setOnOpenChatHandler(chat => {
             const { activeChats } = this.state;
-            if (user !== undefined) {
+            if (chat !== undefined) {
                 this.setState({
                     visible: true,
                     zIndex: WindowManager.getNextZIndex(),
-                    activeChats: [...activeChats, user],
-                    currentActiveChatId: user.id,
+                    activeChats: [...activeChats, chat.user],
+                    messages: [...chat.chats],
+                    currentActiveChatId: chat.user.id,
                 });
             } else {
                 this.setState({
@@ -63,6 +58,29 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             this.setState({
                 visible: false,
             })
+        });
+
+        uiManager.setOnReceiveMessengerMessage((chat: MessengerChat) => {
+            const { currentActiveChatId, notifications, visible, activeChats } = this.state;
+            if (currentActiveChatId === chat.user.id) {
+                if (activeChats.find(value => value.id === chat.user.id)) {
+                    this.setState({
+                        messages: chat.chats,
+                    });
+                    return visible;
+                } else {
+                    this.setState({
+                        activeChats: [...activeChats, chat.user],
+                        notifications: [...notifications, chat.user.id],
+                    });
+                    return false;
+                }
+            } else {
+                this.setState({
+                    notifications: [...notifications, chat.user.id],
+                });
+                return false;
+            }
         });
     }
 
@@ -82,10 +100,12 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     handleKeyDown = (evt: any) => {
         const event = evt as KeyboardEvent;
         const isEnter = event.which === 13;
+        const { currentActiveChatId, text } = this.state;
         if (isEnter) {
             event.preventDefault();
-            const { currentActiveChatId, text } = this.state;
-            BobbaEnvironment.getGame().uiManager.doRequestSendChatMessage(currentActiveChatId, text);
+            if (text.length > 0) {
+                BobbaEnvironment.getGame().uiManager.doRequestSendChatMessage(currentActiveChatId, text);
+            }
 
             this.setState({
                 text: '',
@@ -104,19 +124,35 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     }
 
     requestCloseChat = () => {
-        //BobbaEnvironment.getGame().uiManager.doRequestFollowFriend(userId);
-    }
-
-    handleTabChange = (userId: number) => () => {
+        const { activeChats, currentActiveChatId } = this.state;
+        const newChats = activeChats.filter(value => {
+            return value.id !== currentActiveChatId;
+        });
         this.setState({
-            currentActiveChatId: userId,
+            activeChats: newChats,
+            currentActiveChatId: newChats.length === 0 ? 0 : newChats[0].id,
         });
     }
 
+    handleTabChange = (userId: number) => () => {
+        
+        const chat = BobbaEnvironment.getGame().messenger.getActiveChat(userId);
+        if (chat != null) {
+            this.setState({
+                currentActiveChatId: userId,
+                messages: [...chat.chats]
+            });
+        } else {
+            this.setState({
+                currentActiveChatId: userId
+            });
+        }
+    }
+
     generateFriendTab(friend: User) {
-        const { currentActiveChatId } = this.state;
+        const { currentActiveChatId, notifications } = this.state;
         return (
-            <button onClick={this.handleTabChange(friend.id)} key={friend.id} className={friend.id === currentActiveChatId ? 'selected' : ''}>
+            <button onClick={this.handleTabChange(friend.id)} key={friend.id} className={friend.id === currentActiveChatId ? 'selected' : '' + notifications.includes(friend.id) ? ' alert' : ''}>
                 <img src={"https://www.habbo.com/habbo-imaging/avatarimage?figure=" + friend.look + "&direction=2&head_direction=2&size=s&headonly=1"} alt={friend.name} />
             </button>
         );
@@ -183,22 +219,22 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
     }
 
     generateChats(): ReactNode {
-        return (
-            <>
-                <p className="info">
-                    Revelar tu contraseña o datos personales en Internet es peligroso. Por tu seguridad, un moderador podría supervisar tu conversación.
-                        </p>
-                <p className="me">
-                    3:50pm: hello ther, this is a very long chat line. idk what to write more
-                        </p>
-                <p>
-                    3:51pm: lol it actually works
-                        </p>
-                <p className="info">
-                    Tu amig@ se ha desconectado.
-                        </p>
-            </>
-        );
+        const { messages } = this.state;
+        let key = 0;
+        return messages.map(chat => {
+            let className = '';
+            if (chat.type === MessengerMessageType.Me) {
+                className = 'me';
+            }
+            if (chat.type === MessengerMessageType.Info) {
+                className = 'info';
+            }
+            return (
+                <p key={key++} className={className}>
+                    {chat.text}
+                </p>
+            );
+        });
     }
 
     render() {
