@@ -38,7 +38,8 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     scrollDown() {
         if (this.chatWrapper.current != null) {
-            this.chatWrapper.current.scrollTop = this.chatWrapper.current.clientHeight;
+            (window as any).wrapper = this.chatWrapper.current;
+            this.chatWrapper.current.scrollTop = this.chatWrapper.current.scrollHeight - this.chatWrapper.current.clientHeight;
         }
     }
 

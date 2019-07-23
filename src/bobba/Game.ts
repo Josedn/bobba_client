@@ -130,6 +130,7 @@ export default class Game {
             this.uiManager.onCloseSelectFurni(-1);
             this.uiManager.onCloseSelectUser(-1);
             this.uiManager.onCloseRoomInfo();
+            this.uiManager.doOpenNavigator();
         }
         this.currentRoom = undefined;
     }
