@@ -82,7 +82,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             this.uiManager.postLoading("Connecting to server");
-            return this.communicationManager.connect("localhost", 8080, false);
+            return this.communicationManager.connect("bobba.io", 8080, true);
         });
     }
 

@@ -16,7 +16,7 @@ export default class HandleCatalogueIndex implements IIncomingEvent {
 
     extractPage(request: ServerMessage): CatalogueIndex {
         const visible = request.popBoolean();
-        const color = request.popString();
+        const color = request.popInt();
         const iconId = request.popInt();
         const id = request.popInt();
         const name = request.popString();

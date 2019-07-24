@@ -7,7 +7,7 @@ export type CatalogueIndex = {
     id: number;
     name: string;
     iconId: number;
-    color: string;
+    color: number;
     visible: boolean,
     children: CatalogueIndex[];
 };

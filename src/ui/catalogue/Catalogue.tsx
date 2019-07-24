@@ -32,6 +32,8 @@ const initialState = {
     zIndex: WindowManager.getNextZIndex(),
 };
 
+const pageColors = [4293190884, 4293914607, 0xFFFFDB54, 4289454682, 4289431551, 4285716709, 4294016606, 4293326172, 4293694138, 4285383659, 4293082689, 4288782753];
+
 export default class Catalogue extends React.Component<CatalogueProps, CatalogueState> {
     constructor(props: CatalogueProps) {
         super(props);
@@ -92,10 +94,12 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 );
             });
 
+            const calculatedColor = pageColors[currentPage.color % pageColors.length].toString(16).substr(2);
+
             return (
                 <Fragment key={currentPage.id}>
                     <button onClick={this.handleChangePage(currentPage.id)} className={"main_tab" + (currentPageId === currentPage.id ? ' selected' : '') + (currentTabId === currentPage.id ? ' open' : '')}>
-                        <div className="icon" style={{ backgroundColor: '#' + currentPage.color }}>
+                        <div className="icon" style={{ backgroundColor: '#' + calculatedColor }}>
                             <img src={"//images.bobba.io/c_images/catalogue/icon_" + currentPage.iconId + ".png"} alt={currentPage.name} />
                         </div>
                         <span>{currentPage.name}</span>
@@ -175,7 +179,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return (
             <>
                 <div className="image_container">
-                    <img src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" />
+                {currentPage.imageTeaser.length > 0 ? <img src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" /> : <></>}
                 </div>
                 <div className="description_container">
                     {currentPage.textDetails}
@@ -289,7 +293,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             return (
                 <div className="wrapper">
                     <div className="header_container">
-                        <img alt="Furniture" src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageHeadline + ".gif"} />
+                        {currentPage.imageHeadline.length > 0 ? <img alt="Furniture" src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageHeadline + ".gif"} /> : <></>}
                     </div>
                     {page}
                 </div>
