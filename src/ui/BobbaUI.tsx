@@ -39,6 +39,7 @@ type BobbaUIState = {
     gameLoaded: boolean,
     loggedIn: boolean,
     error: string,
+    initialized: boolean,
     loadingInfo: string,
     userData: UserData,
 };
@@ -48,6 +49,7 @@ const initialState = {
     error: '',
     loadingInfo: '',
     userData: initialUserData,
+    initialized: false,
 };
 class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     constructor(props: BobbaUIProps) {
@@ -56,47 +58,69 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     }
 
     componentDidMount() {
-        const game = BobbaEnvironment.getGame();
+        try {
+            const game = BobbaEnvironment.getGame();
 
-        game.uiManager.setOnLoadHandler((text: string) => {
-            this.setState({
-                loadingInfo: text,
-            });
-        });
-
-        game.loadGame().then(() => {
-            this.setState({
-                gameLoaded: true,
-            });
-
-            game.uiManager.setOnGameStopHandler(() => {
+            game.uiManager.setOnLoadHandler((text: string) => {
                 this.setState({
-                    error: 'Game has stoppped!',
+                    loadingInfo: text,
                 });
             });
 
-            //AUTO LOGIN 
-            //game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
-        }).catch(err => {
-            this.setState({
-                gameLoaded: false,
-                loggedIn: false,
-                error: err,
-            });
-        });
-
-        game.uiManager.setOnSetUserDataHandler(user => {
-            game.avatarImager.generateGeneric(new AvatarInfo(user.look, 2, 2, ["std"], "std", 0, true, false, "n"), false).then(canvas => {
+            game.loadGame().then(() => {
                 this.setState({
-                    loggedIn: true,
-                    userData: {
-                        id: user.id, name: user.name, look: user.look, motto: user.motto, image: canvas2Image(canvas),
-                    }
+                    gameLoaded: true,
+                });
+
+                game.uiManager.setOnGameStopHandler(() => {
+                    this.setState({
+                        error: 'Game has stoppped!',
+                    });
+                });
+
+                //AUTO LOGIN 
+                //game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
+            }).catch(err => {
+                this.setState({
+                    gameLoaded: false,
+                    loggedIn: false,
+                    error: err,
                 });
             });
-            //AUTO NAV
-            //game.uiManager.doOpenNavigator();
-        });
+
+            game.uiManager.setOnSetUserDataHandler(user => {
+                game.avatarImager.generateGeneric(new AvatarInfo(user.look, 2, 2, ["std"], "std", 0, true, false, "n"), false).then(canvas => {
+                    this.setState({
+                        loggedIn: true,
+                        userData: {
+                            id: user.id, name: user.name, look: user.look, motto: user.motto, image: canvas2Image(canvas),
+                        }
+                    });
+                });
+                //AUTO NAV
+                //game.uiManager.doOpenNavigator();
+            });
+
+            this.setState({
+                initialized: true,
+            });
+
+            //debug
+            const win: any = window;
+            win.mainGame = game;
+        }
+        catch (err) {
+            const error = err as Error;
+
+            let errorMessage = "Error loading game."
+            if (error.message.includes("WebGL unsupported")) {
+                errorMessage = "Please enable hardware acceleration.";
+            }
+
+            this.setState({
+                error: errorMessage,
+            });
+        }
 
     }
 
@@ -106,8 +130,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
     }
 
     render() {
-        const { gameLoaded, error, loggedIn, loadingInfo, userData } = this.state;
-
+        const { gameLoaded, error, loggedIn, loadingInfo, userData, initialized } = this.state;
 
         let mainPage = <></>;
         if (error !== '') {
@@ -118,24 +141,28 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             mainPage = <SplashScreen />;
         }
 
-        return (
-            <>
-                <Header />
-                <TopBar />
-                {mainPage}
-                <ChangeLooks />
-                <Catalogue />
-                <Inventory />
-                <Navigator />
-                <CreateRoom />
-                <Messenger />
-                <Chat />
-                <Notifications />
-                <RoomInfo />
-                <ItemInfoContainer />
-                <Footer focuser={this.updateChatFocuser} headImage={userData.image} />
-            </>
-        );
+        if (initialized) {
+            return (
+                <>
+                    <Header />
+                    <TopBar />
+                    {mainPage}
+                    <ChangeLooks />
+                    <Catalogue />
+                    <Inventory />
+                    <Navigator />
+                    <CreateRoom />
+                    <Messenger />
+                    <Chat />
+                    <Notifications />
+                    <RoomInfo />
+                    <ItemInfoContainer />
+                    <Footer focuser={this.updateChatFocuser} headImage={userData.image} />
+                </>
+            );
+        }
+
+        return mainPage;
     }
 }
 
