@@ -46,10 +46,10 @@ class UserInfo extends Component<UserInfoProps> {
             buttons = (
                 <>
                     <button onClick={this.handleChangeLooks}>
-                        Change looks
+                        <span>Change looks</span>
                     </button>
                     <button onClick={this.handleWave}>
-                        Wave
+                        <span>Wave</span>
                     </button>
 
                 </>
@@ -66,8 +66,21 @@ class UserInfo extends Component<UserInfoProps> {
                     </button>
                     <h2 className="title">{name}</h2>
                     <hr />
-                    <div className="image_container">
-                        <img src={src} alt={name} />
+                    <div className="user_container">
+                        <div className="avatar_container">
+                            <img src={src} alt={name} />
+                        </div>
+                        <div className="badge_container">
+                            <button>
+                                <img src={"http://images.bobba.io/c_images/album1584/J0S3.gif"} alt={"ADM"} />
+                            </button>
+                            <button>
+                                <img src={"http://images.bobba.io/c_images/album1584/ADM.gif"} alt={"ADM"} />
+                            </button>
+                            <button>
+                                <img src={"http://images.bobba.io/c_images/album1584/WHY.gif"} alt={"ADM"} />
+                            </button>
+                        </div>
                     </div>
                     <hr />
                     <p className="motto">
