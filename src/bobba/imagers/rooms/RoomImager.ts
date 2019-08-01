@@ -1,4 +1,4 @@
-import { Texture } from "pixi.js";
+import { Texture } from 'pixi.js-legacy';
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { flipImage } from "../furniture/FurniBase";
 

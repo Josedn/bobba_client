@@ -1,4 +1,4 @@
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite } from 'pixi.js-legacy';
 import { Direction } from "../../imagers/avatars/AvatarInfo";
 import Room from "../Room";
 import AvatarContainer from "./AvatarContainer";

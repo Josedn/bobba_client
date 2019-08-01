@@ -1,5 +1,5 @@
 import Room from "./Room";
-import { Sprite, Container, Point, Texture } from "pixi.js";
+import { Sprite, Container, Point, Texture } from 'pixi.js-legacy';
 import BobbaEnvironment from "../BobbaEnvironment";
 import MainEngine from "../graphics/MainEngine";
 import { ROOM_TILE_WIDTH, ROOM_TILE_HEIGHT, ROOM_SELECTED_TILE, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y } from "../graphics/GenericSprites";

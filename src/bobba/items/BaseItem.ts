@@ -1,5 +1,5 @@
 import FurniBase from "../imagers/furniture/FurniBase";
-import { Texture } from "pixi.js";
+import { Texture } from 'pixi.js-legacy';
 import BobbaEnvironment from "../BobbaEnvironment";
 import { TextureDictionary } from "../graphics/MainEngine";
 import { generateSilhouette } from "../imagers/misc/Silhouettes";

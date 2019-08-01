@@ -1,6 +1,6 @@
 import Chat from "./Chat";
 import Room from "../Room";
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite } from 'pixi.js-legacy';
 import BobbaEnvironment from "../../BobbaEnvironment";
 
 export default class ChatManager {

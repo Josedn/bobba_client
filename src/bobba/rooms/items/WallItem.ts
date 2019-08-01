@@ -1,7 +1,7 @@
 import RoomItem from "./RoomItem";
 import { Direction, ItemType } from "../../imagers/furniture/FurniImager";
 import Room from "../Room";
-import { Sprite } from "pixi.js";
+import { Sprite } from 'pixi.js-legacy';
 import { calculateZIndexWallItem } from "../RoomEngine";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import { WALL_ITEM_PLACEHOLDER, WALL_ITEM_PLACEHOLDER_OFFSET_X, WALL_ITEM_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";

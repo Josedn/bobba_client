@@ -1,5 +1,5 @@
 import Room from "../Room";
-import { Container, Sprite, BLEND_MODES } from "pixi.js";
+import { Container, Sprite, BLEND_MODES } from 'pixi.js-legacy';
 import BaseItem from "../../items/BaseItem";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestFurniInteract from "../../communication/outgoing/rooms/RequestFurniInteract";

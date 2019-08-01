@@ -2,7 +2,7 @@ import RoomItem from "./RoomItem";
 import { calculateZIndexFloorItem } from "../RoomEngine";
 import { ItemType, Direction } from "../../imagers/furniture/FurniImager";
 import Room from "../Room";
-import { Sprite } from "pixi.js";
+import { Sprite } from 'pixi.js-legacy';
 import { FLOOR_ITEM_PLACEHOLDER, FLOOR_ITEM_PLACEHOLDER_OFFSET_X, FLOOR_ITEM_PLACEHOLDER_OFFSET_Y } from "../../graphics/GenericSprites";
 import BobbaEnvironment from "../../BobbaEnvironment";
 import RequestFurniMove from "../../communication/outgoing/rooms/RequestFurniMove";
