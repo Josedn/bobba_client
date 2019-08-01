@@ -31,6 +31,8 @@ export default class RoomEngine {
     currentSelectedItem?: Selectable | null;
     movingItem: RoomItem | null;
     movingItemPosition: { x: number, y: number, z: number, rot: Direction };
+    wallPoints: { x: number, y: number, z: number, rot: Direction }[];
+    maxHeight: number;
 
     constructor(room: Room) {
         this.room = room;
@@ -45,9 +47,12 @@ export default class RoomEngine {
         this.selectableItems = {};
         this.lastMousePositionX = 0;
         this.lastMousePositionY = 0;
+        this.maxHeight = 1;
 
         this.movingItem = null;
         this.movingItemPosition = { x: 0, y: 0, z: 0, rot: 0 };
+
+        this.wallPoints = [];
 
         this.container.sortableChildren = true;
         this.selectableContainer.sortableChildren = true;
@@ -188,24 +193,52 @@ export default class RoomEngine {
 
     calculateWallDirection(globalX: number, globalY: number): Direction {
         const local = this.globalToLocal(globalX, globalY);
-        const { x } = this.localToWall(local.x, local.y);
-        if (x < 2) {
-            return 2;
+        const wall = this.localToWall(local.x, local.y);
+        wall.x--;
+
+        for (let wallPoint of this.wallPoints) {
+            const localWall = this.tileToLocal(wallPoint.x, wallPoint.y, wallPoint.z);
+            const wallCoords = this.localToWall(localWall.x, localWall.y);
+
+            if (wallPoint.rot === 4) {
+                const diffX = wall.x - wallCoords.x;
+
+                if (diffX < 1.1 && diffX > 0) {
+                    return 4;
+                }
+            }
         }
-        return 4;
+        return 2;
     }
 
     canPlaceWallItem(globalX: number, globalY: number): boolean {
         const local = this.globalToLocal(globalX, globalY);
         const wall = this.localToWall(local.x, local.y);
         const invertedWall = this.localToWall(-local.x, local.y);
-        const { model } = this.room;
+        wall.x--;
 
-        if (wall.x > 2) {
-            return wall.x < model.maxX + 0.5 && wall.y > -3 && wall.y < -1;
-        } else {
-            return invertedWall.x < model.maxY - 2.5 && invertedWall.y > -1 && invertedWall.y < 1;
+        for (let wallPoint of this.wallPoints) {
+            const localWall = this.tileToLocal(wallPoint.x, wallPoint.y, wallPoint.z);
+            if (wallPoint.rot === 4) {
+                const wallCoords = this.localToWall(localWall.x, localWall.y);
+                const diffX = wall.x - wallCoords.x;
+                const diffY = wall.y - wallCoords.y;
+
+                if (diffX < 1.1 && diffX > 0 && diffY < -0.5 && diffY > -4) {
+                    return true;
+                }
+            } else {
+                const wallCoords = this.localToWall(-localWall.x, localWall.y);
+                const diffX = wallCoords.x - invertedWall.x;
+                const diffY = invertedWall.y - wallCoords.y;
+
+                if (diffX < 1.1 && diffX > 0 && diffY < 0.5 && diffY > -3) {
+                    return true;
+                }
+            }
         }
+
+        return false;
     }
 
     canPlaceFloorItem(tileX: number, tileY: number, floorItem: FloorItem): boolean {
@@ -298,6 +331,8 @@ export default class RoomEngine {
             }
         }
 
+        this.maxHeight = maxHeight;
+
         for (let i = 0; i < model.maxX; i++) {
             for (let j = 0; j < model.maxY; j++) {
                 const tile = model.heightMap[i][j];
@@ -306,8 +341,7 @@ export default class RoomEngine {
                         minY = j;
                     }
                     this._addWallSprite(roomImager.generateRoomWallR(maxHeight - tile), i, j + 1, maxHeight - 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y + 4, PRIORITY_WALL);
-
-                    break;
+                    this.wallPoints.push({ x: i, y: j, z: maxHeight - 1, rot: 4 });
                 }
             }
         }
@@ -326,6 +360,7 @@ export default class RoomEngine {
                     } else {
                         this._addWallSprite(roomImager.generateRoomWallL(maxHeight - tile), i, j, maxHeight - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y + 4, PRIORITY_WALL);
                     }
+                    this.wallPoints.push({ x: i, y: j, z: maxHeight - 1, rot: 2 });
                     break;
                 }
             }
@@ -381,13 +416,27 @@ export default class RoomEngine {
         return new Point((x - y) * ROOM_TILE_WIDTH, (x + y) * ROOM_TILE_HEIGHT - (z * ROOM_TILE_HEIGHT * 2));
     }
 
-    globalToTile(x: number, y: number): Point {
-        const first = this.globalToTileWithHeight(x, y, 0);
-        const second = this.globalToTileWithHeight(x, y, 1);
+    globalToTileStrict(x: number, y: number): Point | null {
         const { model } = this.room;
 
-        if (model.isValidTile(second.x, second.y) && model.heightMap[second.x][second.y] > 1) {
-            return second;
+        for (let i = this.maxHeight; i >= 0; i--) {
+            const second = this.globalToTileWithHeight(x, y, i);
+            if (model.isValidTile(second.x, second.y) && model.heightMap[second.x][second.y] === i + 1) {
+                return second;
+            }
+        }
+        return null;
+    }
+
+    globalToTile(x: number, y: number): Point {
+        const { model } = this.room;
+        const first = this.globalToTileWithHeight(x, y, 0);
+
+        for (let i = this.maxHeight; i >= 1; i--) {
+            const second = this.globalToTileWithHeight(x, y, i);
+            if (model.isValidTile(second.x, second.y) && model.heightMap[second.x][second.y] === i + 1) {
+                return second;
+            }
         }
         return first;
     }
@@ -419,7 +468,7 @@ export default class RoomEngine {
     }
 
     handleMouseMovement = (mouseX: number, mouseY: number, isDrag: boolean) => {
-        const { x, y } = this.globalToTile(mouseX, mouseY);
+        const tile = this.globalToTileStrict(mouseX, mouseY);
         const colorId = this.getSelectableColorId(mouseX, mouseY);
         let selectable = null;
         if (colorId !== -1) {
@@ -439,8 +488,12 @@ export default class RoomEngine {
         }
         this.lastMousePositionX = Math.round(mouseX);
         this.lastMousePositionY = Math.round(mouseY);
-        this.updateSelectedTile(x, y);
         this.updateMovingItem(mouseX, mouseY);
+        if (tile != null) {
+            this.updateSelectedTile(tile.x, tile.y);
+        } else {
+            this.hideSelectedTile();
+        }
     }
 
     getSelectableColorId(mouseX: number, mouseY: number): number {
@@ -524,6 +577,12 @@ export default class RoomEngine {
             selectable.handleDoubleClick(colorId);
         } else if (!this.room.model.isValidTile(x, y)) {
             this.centerCamera();
+        }
+    }
+
+    hideSelectedTile() {
+        if (this.selectedTileSprite != null) {
+            this.selectedTileSprite.visible = false;
         }
     }
 
