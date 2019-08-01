@@ -455,5 +455,5 @@ export default class UIManager {
     }
 }
 
-export type FurniInfo = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement, isUpdate: boolean) => void;
+export type FurniInfo = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement, isUpdate: boolean, canMove: boolean, canRotate: boolean, canPickUp: boolean, canUse: boolean) => void;
 export type UserInfo = (id: number, name: string, motto: string, look: string, isMe: boolean, image: HTMLCanvasElement, isUpdate: boolean) => void;

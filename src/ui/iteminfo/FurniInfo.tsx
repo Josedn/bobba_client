@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, ReactNode } from 'react';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import { FLOOR_ITEM_PLACEHOLDER } from '../../bobba/graphics/GenericSprites';
 
@@ -7,6 +7,10 @@ export type FurniInfoProps = {
     description: string,
     itemId: number,
     image?: HTMLImageElement,
+    canRotate: boolean,
+    canMove: boolean,
+    canPickUp: boolean,
+    canUse: boolean,
     onClose?: () => void,
 };
 
@@ -41,14 +45,48 @@ class FurniInfo extends Component<FurniInfoProps> {
     }
 
     render() {
-        const { name, description, image, onClose } = this.props;
+        const { name, description, image, onClose, canRotate, canMove, canPickUp, canUse } = this.props;
         let src = FLOOR_ITEM_PLACEHOLDER;
         if (image != null && image.src != null) {
             src = image.src;
         }
+        let buttons: ReactNode[] = [];
+
+        if (canMove) {
+            buttons.push(
+                <button key="move" onClick={this.moveItem}>
+                    Move
+                </button>
+            );
+        }
+
+        if (canRotate) {
+            buttons.push(
+                <button key="rotate" onClick={this.rotateItem}>
+                    Rotate
+                </button>
+            );
+        }
+
+        if (canPickUp) {
+            buttons.push(
+                <button key="pickup" onClick={this.pickUpItem}>
+                    Pick up
+                </button>
+            );
+        }
+
+        if (canUse) {
+            buttons.push(
+                <button key="use" onClick={this.useItem}>
+                    Use
+                </button>
+            );
+        }
+
         return (
             <>
-                <div className="item_info">
+                <div className={"item_info" + (buttons.length === 0 ? " no_buttons" : "")}>
                     <button className="close" onClick={onClose}>
                         X
                     </button>
@@ -63,18 +101,7 @@ class FurniInfo extends Component<FurniInfoProps> {
                     </p>
                 </div >
                 <div className="item_info_button_container">
-                    <button onClick={this.moveItem}>
-                        Move
-                    </button>
-                    <button onClick={this.rotateItem}>
-                        Rotate
-                    </button>
-                    <button onClick={this.pickUpItem}>
-                        Pick up
-                    </button>
-                    <button onClick={this.useItem}>
-                        Use
-                    </button>
+                    {buttons}
                 </div>
             </>
         );

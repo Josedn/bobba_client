@@ -18,6 +18,10 @@ const initialFurniProps = {
     name: '',
     description: '',
     itemId: -1,
+    canRotate: false,
+    canMove: false,
+    canPickUp: false,
+    canUse: false,
 };
 const initialUserProps = {
     showing: true,
@@ -43,7 +47,7 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
         });
     }
 
-    showFurniView = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement, isUpdate: boolean) => {
+    showFurniView = (id: number, baseId: number, name: string, description: string, image: HTMLCanvasElement, isUpdate: boolean, canMove: boolean, canRotate: boolean, canPickUp: boolean, canUse: boolean) => {
         const currentId = this.state.furniProps.itemId;
         if ((isUpdate && this.state.showing === Showing.FURNI && currentId === id) || !isUpdate) {
             this.setState({
@@ -52,6 +56,10 @@ class ItemInfoContainer extends Component<ItemInfoContainerProps, ItemInfoContai
                     name,
                     description,
                     image: canvas2Image(image),
+                    canRotate,
+                    canMove,
+                    canPickUp,
+                    canUse,
                 },
                 showing: Showing.FURNI
             });

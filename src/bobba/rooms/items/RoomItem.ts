@@ -266,7 +266,8 @@ export default abstract class RoomItem implements Selectable {
 
     showItemInfo(isUpdate: boolean) {
         if (this.baseItem != null) {
-            BobbaEnvironment.getGame().uiManager.onSelectFurni(this.id, this.baseId, this.baseItem.furniBase.itemData.name, this.baseItem.furniBase.itemData.description, this.baseItem.infoImage, isUpdate);
+            const states = Object.keys(this.baseItem.furniBase.states).length;
+            BobbaEnvironment.getGame().uiManager.onSelectFurni(this.id, this.baseId, this.baseItem.furniBase.itemData.name, this.baseItem.furniBase.itemData.description, this.baseItem.infoImage, isUpdate, true, this.getItemType() === ItemType.FloorItem, true, states !== 1);
         }
     }
 
