@@ -223,16 +223,18 @@ export default class RoomEngine {
                 const wallCoords = this.localToWall(localWall.x, localWall.y);
                 const diffX = wall.x - wallCoords.x;
                 const diffY = wall.y - wallCoords.y;
+                const offset = this.maxHeight - wallPoint.z - 1;
 
-                if (diffX < 1.1 && diffX > 0 && diffY < -0.5 && diffY > -4) {
+                if (diffX < 1.1 && diffX > 0 && diffY < -0.5 && diffY > -4 - offset) {
                     return true;
                 }
             } else {
                 const wallCoords = this.localToWall(-localWall.x, localWall.y);
                 const diffX = wallCoords.x - invertedWall.x;
                 const diffY = invertedWall.y - wallCoords.y;
+                const offset = this.maxHeight - wallPoint.z - 1;
 
-                if (diffX < 1.1 && diffX > 0 && diffY < 0.5 && diffY > -3) {
+                if (diffX < 1.1 && diffX > 0 && diffY < 0.5 && diffY > -3 - offset) {
                     return true;
                 }
             }
@@ -341,7 +343,7 @@ export default class RoomEngine {
                         minY = j;
                     }
                     this._addWallSprite(roomImager.generateRoomWallR(maxHeight - tile), i, j + 1, maxHeight - 1, ROOM_WALL_R_OFFSET_X, ROOM_WALL_R_OFFSET_Y + 4, PRIORITY_WALL);
-                    this.wallPoints.push({ x: i, y: j, z: maxHeight - 1, rot: 4 });
+                    this.wallPoints.push({ x: i, y: j, z: tile - 1, rot: 4 });
                 }
             }
         }
@@ -360,7 +362,7 @@ export default class RoomEngine {
                     } else {
                         this._addWallSprite(roomImager.generateRoomWallL(maxHeight - tile), i, j, maxHeight - 1, ROOM_WALL_L_OFFSET_X, ROOM_WALL_L_OFFSET_Y + 4, PRIORITY_WALL);
                     }
-                    this.wallPoints.push({ x: i, y: j, z: maxHeight - 1, rot: 2 });
+                    this.wallPoints.push({ x: i, y: j, z: tile - 1, rot: 2 });
                     break;
                 }
             }

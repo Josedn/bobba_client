@@ -78,7 +78,7 @@ class UserInfo extends Component<UserInfoProps> {
                                 <img src={"http://images.bobba.io/c_images/album1584/ADM.gif"} alt={"ADM"} />
                             </button>
                             <button>
-                                <img src={"http://images.bobba.io/c_images/album1584/WHY.gif"} alt={"ADM"} />
+                                <img src={"http://images.bobba.io/c_images/album1584/Z64.gif"} alt={"ADM"} />
                             </button>
                         </div>
                     </div>
