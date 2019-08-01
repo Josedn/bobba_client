@@ -338,7 +338,7 @@ export default class RoomImager {
                 }
             ];
 
-            ctx.strokeStyle = '#6f717a';
+            ctx.strokeStyle = '#70727a';
             ctx.fillStyle = '#70727a';
             ctx.beginPath();
             ctx.moveTo(points[0].x - 0.5, points[0].y);
@@ -352,8 +352,8 @@ export default class RoomImager {
 
 
             if (height > 0) {
-                ctx.strokeStyle = '#9597a3';
-                ctx.fillStyle = '#9597a3';
+                ctx.strokeStyle = '#90929e';
+                ctx.fillStyle = '#90929e';
                 ctx.beginPath();
                 ctx.moveTo(points[1].x - 0.5, points[1].y);
                 ctx.lineTo(points[1].x - 0.5, points[1].y + height);
@@ -408,7 +408,7 @@ export default class RoomImager {
                 }
             ];
 
-            ctx.strokeStyle = '#6f717a';
+            ctx.strokeStyle = '#70727a';
             ctx.fillStyle = '#70727a';
             ctx.beginPath();
             ctx.moveTo(points[0].x, points[0].y);
