@@ -30,7 +30,7 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
     componentDidMount() {
         const game = BobbaEnvironment.getGame();
 
-        game.uiManager.setOnOpenNavigatorHandler(() => {
+        game.uiManager.onOpenNavigator = (() => {
             const { mainTabId } = this.state;
             this.requestRoomList(mainTabId);
             this.setState({
@@ -39,13 +39,13 @@ export default class Navigator extends React.Component<NavigatorProps, Navigator
             });
         });
 
-        game.uiManager.setOnCloseNavigatorHandler(() => {
+        game.uiManager.onCloseNavigator = (() => {
             this.setState({
                 visible: false,
             });
         });
 
-        game.uiManager.setOnLoadRoomListHandler((rooms) => {
+        game.uiManager.onLoadRoomList = ((rooms) => {
             this.setState({
                 currentRooms: rooms,
             });

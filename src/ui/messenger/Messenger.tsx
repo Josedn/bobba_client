@@ -45,33 +45,33 @@ export default class Messenger extends React.Component<MessengerProps, Messenger
 
     componentDidMount() {
         const { uiManager } = BobbaEnvironment.getGame();
-        uiManager.setOnOpenMessengerHandler(() => {
+        uiManager.onOpenMessenger = (() => {
             this.setState({
                 visible: true,
                 zIndex: WindowManager.getNextZIndex(),
             })
         });
 
-        uiManager.setOnCloseMessengerHandler(() => {
+        uiManager.onCloseMessenger = (() => {
             this.setState({
                 visible: false,
             })
         });
 
-        uiManager.setOnSetFriendsHandler((onlineFriends, offlineFriends) => {
+        uiManager.onSetFriends = ((onlineFriends, offlineFriends) => {
             this.setState({
                 onlineFriends,
                 offlineFriends
             });
         });
 
-        uiManager.setOnSetFriendRequestsHandler(friendsRequests => {
+        uiManager.onSetFriendRequests = (friendsRequests => {
             this.setState({
                 friendsRequests
             });
         });
 
-        uiManager.setOnSetFriendsSearchHandler(searchResult => {
+        uiManager.onSetFriendsSearch = (searchResult => {
             this.setState({
                 searchResult
             });

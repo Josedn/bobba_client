@@ -16,7 +16,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     }
 
     componentDidMount() {
-        BobbaEnvironment.getGame().uiManager.setOnUpdateCreditsBalanceHandler((amount: number) => {
+        BobbaEnvironment.getGame().uiManager.onUpdateCreditsBalance = ((amount: number) => {
             this.setState({
               credits: amount,  
             })

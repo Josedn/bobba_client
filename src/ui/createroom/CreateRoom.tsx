@@ -61,14 +61,14 @@ export default class CreateRoom extends React.Component<CreateRoomProps, CreateR
     componentDidMount() {
         const game = BobbaEnvironment.getGame();
 
-        game.uiManager.setOnOpenCreateRoomHandler(() => {
+        game.uiManager.onOpenCreateRoom = (() => {
             this.setState({
                 visible: true,
                 zIndex: WindowManager.getNextZIndex(),
             });
         });
 
-        game.uiManager.setOnCloseCreateRoomHandler(() => {
+        game.uiManager.onCloseCreateRoom = (() => {
             this.setState({
                 visible: false,
             });

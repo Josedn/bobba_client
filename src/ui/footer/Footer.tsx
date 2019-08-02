@@ -27,7 +27,7 @@ class Footer extends Component<FooterProps, FooterState> {
     componentDidMount() {
         this.props.focuser(this.focusChatInput);
 
-        BobbaEnvironment.getGame().uiManager.setOnShowMessengerAlert(()=> {
+        BobbaEnvironment.getGame().uiManager.onShowMessengerAlert = (()=> {
             this.setState({
                 messengerAlert: true,
             });

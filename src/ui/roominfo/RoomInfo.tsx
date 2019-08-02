@@ -22,7 +22,7 @@ class RoomInfo extends Component<RoomInfoProps, RoomInfoState> {
     }
 
     componentDidMount() {
-        BobbaEnvironment.getGame().uiManager.setOnCurrentRoomDataLoad(roomData => {
+        BobbaEnvironment.getGame().uiManager.onCurrentRoomDataLoad = (roomData => {
             this.setState({
                 roomData,
                 visible: true,

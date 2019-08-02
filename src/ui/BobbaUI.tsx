@@ -61,7 +61,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
         try {
             const game = BobbaEnvironment.getGame();
 
-            game.uiManager.setOnLoadHandler((text: string) => {
+            game.uiManager.onLoadPost = ((text: string) => {
                 this.setState({
                     loadingInfo: text,
                 });
@@ -72,7 +72,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                     gameLoaded: true,
                 });
 
-                game.uiManager.setOnGameStopHandler(() => {
+                game.uiManager.onGameStop = (() => {
                     this.setState({
                         error: 'Game has stoppped!',
                     });
@@ -88,7 +88,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 });
             });
 
-            game.uiManager.setOnSetUserDataHandler(user => {
+            game.uiManager.onSetUserData = (user => {
                 game.avatarImager.generateGeneric(new AvatarInfo(user.look, 2, 2, ["std"], "std", 0, true, false, "n"), false).then(canvas => {
                     this.setState({
                         loggedIn: true,
@@ -126,7 +126,7 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
 
     updateChatFocuser = (handler: () => void) => {
         const game = BobbaEnvironment.getGame();
-        game.uiManager.setOnFocusChatHandler(handler);
+        game.uiManager.onFocusChat = (handler);
     }
 
     render() {

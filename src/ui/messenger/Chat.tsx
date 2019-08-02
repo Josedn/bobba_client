@@ -45,7 +45,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
 
     componentDidMount() {
         const { uiManager } = BobbaEnvironment.getGame();
-        uiManager.setOnOpenChatHandler(() => {
+        uiManager.onOpenChat = (() => {
             const { activeChats } = this.state;
             this.setState({
                 visible: activeChats.length > 0,
@@ -53,13 +53,13 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             });
         });
 
-        uiManager.setOnCloseChatHandler(() => {
+        uiManager.onCloseChat = (() => {
             this.setState({
                 visible: false,
             })
         });
 
-        uiManager.setOnOpenMessengerChat((chat: MessengerChat) => {
+        uiManager.onOpenMessengerChat = ((chat: MessengerChat) => {
             const { activeChats } = this.state;
             if (activeChats.find(user => user.id === chat.user.id)) {
                 this.setState({
@@ -80,7 +80,7 @@ export default class Chat extends React.Component<ChatProps, ChatState> {
             this.scrollDown();
         });
 
-        uiManager.setOnReceiveMessengerMessage((chat: MessengerChat) => {
+        uiManager.onReceiveMessengerMessage = ((chat: MessengerChat) => {
             const { currentActiveChatId, notifications, activeChats, visible } = this.state;
             if (activeChats.find(value => value.id === chat.user.id)) {
                 if (currentActiveChatId === chat.user.id) {

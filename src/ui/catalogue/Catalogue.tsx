@@ -44,20 +44,20 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
     componentDidMount() {
         const game = BobbaEnvironment.getGame();
 
-        game.uiManager.setOnOpenCatalogueHandler(() => {
+        game.uiManager.onOpenCatalogue = (() => {
             this.setState({
                 visible: true,
                 zIndex: WindowManager.getNextZIndex()
             });
         });
 
-        game.uiManager.setOnCloseCatalogueHandler(() => {
+        game.uiManager.onCloseCatalogue = (() => {
             this.setState({
                 visible: false,
             });
         });
 
-        game.uiManager.setOnLoadCatalogueIndexHandler(index => {
+        game.uiManager.onLoadCatalogueIndex = (index => {
             this.setState({
                 pages: index,
                 currentPage: undefined,
@@ -67,7 +67,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             });
         });
 
-        game.uiManager.setOnLoadCataloguePageHandler(page => {
+        game.uiManager.onLoadCataloguePage = (page => {
             this.setState({
                 currentPage: page,
             });

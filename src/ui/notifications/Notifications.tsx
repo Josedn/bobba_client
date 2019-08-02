@@ -18,7 +18,7 @@ export default class Notifications extends React.Component<NotificationsProps, N
     }
 
     componentDidMount() {
-        BobbaEnvironment.getGame().uiManager.setOnShowNotificationHandler((text: string) => {
+        BobbaEnvironment.getGame().uiManager.onShowNotification = ((text: string) => {
             const { notifications } = this.state;
             this.setState({
                 notifications: notifications.concat(text),

@@ -30,20 +30,20 @@ export default class InventoryContainer extends React.Component<InventoryContain
 
     componentDidMount() {
         const game = BobbaEnvironment.getGame();
-        game.uiManager.setOnOpenInventoryHandler(() => {
+        game.uiManager.onOpenInventory = (() => {
             this.setState({
                 visible: true,
                 zIndex: WindowManager.getNextZIndex()
             });
         });
 
-        game.uiManager.setOnUpdateInventoryHandler(items => {
+        game.uiManager.onUpdateInventory = (items => {
             this.setState({
                 items,
             });
         });
 
-        game.uiManager.setOnCloseInventoryHandler(() => {
+        game.uiManager.onCloseInventory = (() => {
             this.setState({
                 visible: false,
             });

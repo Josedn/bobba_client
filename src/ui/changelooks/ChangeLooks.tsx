@@ -148,7 +148,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
 
     componentDidMount() {
         const game = BobbaEnvironment.getGame();
-        game.uiManager.setOnOpenChangeLooksHandler(look => {
+        game.uiManager.onOpenChangeLooks = (look => {
             this.setState({
                 visible: true,
                 look,
@@ -156,7 +156,7 @@ class ChangeLooks extends React.Component<ChangeLooksProps, ChangeLooksState>  {
             });
         });
 
-        game.uiManager.setOnCloseChangeLooksHandler(() => {
+        game.uiManager.onCloseChangeLooks = (() => {
             this.setState({
                 visible: false,
             });
