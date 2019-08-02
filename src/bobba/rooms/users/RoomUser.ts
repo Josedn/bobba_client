@@ -274,7 +274,6 @@ export default class RoomUser implements Selectable {
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z + this._seatZ);
-        console.log("seatZ: " + this._seatZ);
         const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
         this.container.x = x + offsetX;
         this.container.y = y + ROOM_USER_SPRITE_OFFSET_Y;
