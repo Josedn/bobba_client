@@ -31,9 +31,6 @@ export default class Catalogue {
 
     setCataloguePage(page: CataloguePage) {
         this.pages[page.id] = page;
-        page.loadBases().then(() => {
-            BobbaEnvironment.getGame().uiManager.onLoadCataloguePage(page);
-        });
         BobbaEnvironment.getGame().uiManager.onLoadCataloguePage(page);
     }
 

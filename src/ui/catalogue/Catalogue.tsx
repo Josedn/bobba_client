@@ -1,4 +1,4 @@
-import React, { ReactNode, Fragment } from "react";
+import React, { ReactNode, Fragment, RefObject } from "react";
 import Draggable from "react-draggable";
 import './catalogue.css';
 import ConfirmPurchase from "./ConfirmPurchase";
@@ -7,6 +7,7 @@ import CataloguePage from "../../bobba/catalogue/CataloguePage";
 import BobbaEnvironment from "../../bobba/BobbaEnvironment";
 import { canvas2Image } from "../misc/GraphicsUtilities";
 import WindowManager from "../windows/WindowManager";
+import CatalogueItem from "../../bobba/catalogue/CatalogueItem";
 
 type CatalogueProps = {};
 
@@ -179,7 +180,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return (
             <>
                 <div className="image_container">
-                {currentPage.imageTeaser.length > 0 ? <img src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" /> : <></>}
+                    {currentPage.imageTeaser.length > 0 ? <img src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" /> : <></>}
                 </div>
                 <div className="description_container">
                     {currentPage.textDetails}
@@ -208,28 +209,35 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         });
     }
 
+    generateFurniButton(item: CatalogueItem): ReactNode {
+        const { currentItemId } = this.state;
+        const ref: RefObject<HTMLImageElement> = React.createRef();
+
+        item.loadBase().then(base => {
+            const image = canvas2Image(base.iconImage);
+            const renderedImg = ref.current;
+            if (renderedImg != null) {
+                renderedImg.src = image.src;
+                renderedImg.alt = base.furniBase.itemData.name;
+            }
+        }).catch(err => {
+            
+        });
+
+        return (
+            <button key={item.itemId} onClick={this.handleSelectItem(item.itemId)} className={currentItemId === item.itemId ? 'selected' : ''}>
+                <img ref={ref} src="images/avatar_editor/avatar_editor_download_icon.png" alt={"Loading"} />
+            </button>
+        );
+    }
+
     generateGrid(): ReactNode {
-        const { currentPage, currentItemId } = this.state;
+        const { currentPage } = this.state;
         if (currentPage == null) {
             return <></>;
         }
 
-        return currentPage.items.map(item => {
-            if (item.baseItem == null) {
-                return (
-                    <button key={item.itemId} onClick={() => { }} className={''}>
-                        <img src="images/avatar_editor/avatar_editor_download_icon.png" alt={"Loading"} />
-                    </button>
-                );
-            } else {
-                const image = canvas2Image(item.baseItem.iconImage);
-                return (
-                    <button key={item.itemId} onClick={this.handleSelectItem(item.itemId)} className={currentItemId === item.itemId ? 'selected' : ''}>
-                        <img src={image.src} alt={item.baseItem.furniBase.itemData.name} />
-                    </button>
-                );
-            }
-        });
+        return currentPage.items.map(item => this.generateFurniButton(item));
     }
 
     generateFrontPage(currentPage: CataloguePage): ReactNode {

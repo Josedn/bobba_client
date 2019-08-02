@@ -21,9 +21,10 @@ export default class CatalogueItem {
         this.baseItem = null;
     }
 
-    loadBase(): Promise<void> {
+    loadBase(): Promise<BaseItem> {
         return BobbaEnvironment.getGame().baseItemManager.getItem(this.itemType, this.baseId).then(baseItem => {
             this.baseItem = baseItem;
+            return baseItem;
         });
     }
 }
