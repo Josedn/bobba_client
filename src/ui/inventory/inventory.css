@@ -120,6 +120,7 @@
     position: relative;
     padding: 1px;
     font: inherit;
+    overflow: hidden;
 }
 
 .inventory .grid_container .grid button.selected, .inventory .grid_container .grid button:hover {

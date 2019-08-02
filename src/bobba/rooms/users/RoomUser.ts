@@ -170,17 +170,18 @@ export default class RoomUser implements Selectable {
         this.rot = rot;
         this.headRot = rot;
         this.status = status;
-        if (status.mv != null) {
-            const coords = status.mv.split(',');
-            this.setMovement(parseInt(coords[0]), parseInt(coords[1]), parseFloat(coords[2]));
-        }
         if (status.sit != null) {
             this._seatZ = parseFloat(status.sit) - 1.0;
         } else {
             this._seatZ = 0;
         }
-        this.updateSpritePosition();
+        if (status.mv != null) {
+            const coords = status.mv.split(',');
+            this.setMovement(parseInt(coords[0]), parseInt(coords[1]), parseFloat(coords[2]));
+            this._seatZ = 0;
+        }
         this.updateTexture();
+        this.updateSpritePosition();
     }
     setMovement(x: number, y: number, z: number) {
         this.targetX = x;
@@ -273,6 +274,7 @@ export default class RoomUser implements Selectable {
 
     updateSpritePosition() {
         const { x, y } = this.room.engine.tileToLocal(this._x, this._y, this._z + this._seatZ);
+        console.log("seatZ: " + this._seatZ);
         const offsetX = (this.rot === 6 || this.rot === 5 || this.rot === 4) ? ROOM_USER_SPRITE_OFFSET_X : 0;
         this.container.x = x + offsetX;
         this.container.y = y + ROOM_USER_SPRITE_OFFSET_Y;
