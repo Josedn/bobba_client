@@ -78,7 +78,7 @@
 .item_info p {
     margin: 0;
     color: #9d9ca0;
-    word-break: break-all;
+    word-break: break-word;
 }
 
 .item_info p.motto {
@@ -94,7 +94,6 @@
 
 .item_info p .loading {
     font-style: oblique;
-    color: #444444;
 }
 
 .item_info p input {
