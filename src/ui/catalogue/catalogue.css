@@ -276,6 +276,7 @@
     padding: 1px;
     font: inherit;
     font-size: 0.55em;
+    overflow: hidden;
 }
 
 .catalogue .wrapper .second_row .grid_container .grid button:hover, .catalogue .wrapper .second_row .grid_container .grid button.selected {
