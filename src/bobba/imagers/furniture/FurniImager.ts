@@ -1,6 +1,6 @@
 import FurniBase from "./FurniBase";
 import FurniAsset from "./FurniAsset";
-import { FurniOffset } from "./FurniOffset";
+import { FurniOffset, generateOffsetFromXml } from "./FurniOffset";
 import { Furnidata, FurniDescription } from "./Furnidata";
 
 export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni/";
@@ -71,8 +71,12 @@ export default class FurniImager {
                             let count = 1;
                             for (let animationLayer of visualization.animations[stateId].layers) {
                                 if (animationLayer.frameSequence != null) {
-                                    if (count < animationLayer.frameSequence.length) {
-                                        count = animationLayer.frameSequence.length;
+                                    let frameSequenceLength = 0;
+                                    animationLayer.frameSequence.forEach(sequence => {
+                                        frameSequenceLength += sequence.length;
+                                    });
+                                    if (count < frameSequenceLength) {
+                                        count = frameSequenceLength;
                                     }
                                 }
                             }
@@ -80,7 +84,7 @@ export default class FurniImager {
                             if (visualization.animations[stateId] != null) {
                                 const { transitionTo } = visualization.animations[stateId];
                                 if (transitionTo != null) {
-                                    const allegedTransition = parseInt(transitionTo);
+                                    const allegedTransition = transitionTo;
                                     states[stateId].transitionTo = allegedTransition;
                                     states[allegedTransition].transition = stateId;
                                 }
@@ -99,9 +103,10 @@ export default class FurniImager {
                                 resourceName = asset.source;
                             }
                             assetsPromises.push(this._downloadImageAsync(itemName, resourceName).then(img => {
-                                furniBase.assets[asset.name] = new FurniAsset(img, parseInt(asset.x), parseInt(asset.y), asset.flipH != null && asset.flipH === '1');
+                                furniBase.assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === 1);
                             }).catch(err => {
-                                reject(err);
+                                console.log("Cannot download " + asset.name);
+                                //reject(err);
                             }));
                         }
                     }
@@ -154,7 +159,7 @@ export default class FurniImager {
         return d;
     }
 
-    _fetchJsonAsync(URL: string): Promise<object> {
+    _fetchJsonAsync(url: string): Promise<object> {
         return new Promise((resolve, reject) => {
 
             const options: RequestInit = {
@@ -163,8 +168,24 @@ export default class FurniImager {
                 cache: 'default',
             };
 
-            fetch(URL, options)
+            fetch(url, options)
                 .then(response => response.json())
+                .then(data => resolve(data))
+                .catch(err => reject(err));
+        });
+    }
+
+    async _fetchXmlAsync(url: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+
+            const options: RequestInit = {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+            };
+
+            fetch(url, options)
+                .then(response => response.text())
                 .then(data => resolve(data))
                 .catch(err => reject(err));
         });
@@ -172,9 +193,21 @@ export default class FurniImager {
 
     _fetchOffsetAsync(uniqueName: string): Promise<FurniOffset> {
         return new Promise((resolve, reject) => {
-            this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
-                resolve(data as FurniOffset);
+            const visualization = this._fetchXmlAsync(LOCAL_RESOURCES_URL + uniqueName + '/' + uniqueName + '_visualization.xml');
+            const logic = this._fetchXmlAsync(LOCAL_RESOURCES_URL + uniqueName + '/' + uniqueName + '_logic.xml');
+            const assets = this._fetchXmlAsync(LOCAL_RESOURCES_URL + uniqueName + '/' + uniqueName + '_assets.xml');
+
+            Promise.all([assets, logic, visualization]).then(data => {
+                const offset = generateOffsetFromXml(data[0], data[1], data[2]);
+                if (offset != null) {
+                    resolve(offset);
+                }
+                reject('Invalid XML');
             }).catch(err => reject(err));
+
+            /*this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
+                resolve(data as FurniOffset);
+            }).catch(err => reject(err));*/
         });
     }
 }

@@ -166,7 +166,7 @@ export default class FurniBase {
         const { itemName, colorId } = splitItemNameAndColor(this.itemData.classname);
 
         const visualization = this.offset.visualization[isIcon ? 1 : this.size];
-        for (let i = isIcon ? 0 : -1; i < parseInt(visualization.layerCount); i++) {
+        for (let i = isIcon ? 0 : -1; i < visualization.layerCount; i++) {
             let layerData: any = { id: i, frame: 0, resourceName: '' };
 
             if (i === -1) {
@@ -174,7 +174,7 @@ export default class FurniBase {
             }
             if (visualization.layers != null) {
                 for (let layer of visualization.layers) {
-                    if (parseInt(layer.id) === i) {
+                    if (layer.layerId === i) {
                         if (layer.z != null) {
                             layerData.z = layer.z;
                         }
@@ -185,14 +185,14 @@ export default class FurniBase {
                             layerData.alpha = layer.alpha;
                         }
                         if (layer.ignoreMouse != null) {
-                            layerData.ignoreMouse = layer.ignoreMouse === '1';
+                            layerData.ignoreMouse = layer.ignoreMouse === 1;
                         }
                     }
                 }
             }
             if (visualization.directions != null && visualization.directions[direction] != null) {
                 for (let overrideLayer of visualization.directions[direction]) {
-                    if (parseInt(overrideLayer.layerId) === i && overrideLayer.z != null) {
+                    if (overrideLayer.layerId === i && overrideLayer.z != null) {
                         layerData.z = overrideLayer.z;
                     }
                 }
@@ -200,7 +200,7 @@ export default class FurniBase {
 
             if (visualization.colors != null && visualization.colors[colorId] != null) {
                 for (let colorLayer of visualization.colors[colorId]) {
-                    if (parseInt(colorLayer.layerId) === i) {
+                    if (colorLayer.layerId === i) {
                         layerData.color = parseInt(colorLayer.color, 16);
                     }
                 }
@@ -208,8 +208,21 @@ export default class FurniBase {
 
             if (visualization.animations != null && visualization.animations[state] != null) {
                 for (let animationLayer of visualization.animations[state].layers) {
-                    if (parseInt(animationLayer.layerId) === i && animationLayer.frameSequence != null) {
-                        layerData.frame = animationLayer.frameSequence[frame % animationLayer.frameSequence.length];
+                    if (animationLayer.layerId === i && animationLayer.frameSequence != null) {
+                        if (animationLayer.frameSequence.length === 1) {
+                            layerData.frame = animationLayer.frameSequence[0][frame % animationLayer.frameSequence[0].length];
+                        } else {
+                            let frameCount = 0;
+                            for (let i = 0; i < animationLayer.frameSequence.length; i++) {
+                                const currentSequence = animationLayer.frameSequence[i];
+                                if (frame < currentSequence.length + frameCount && frame > frameCount) {
+                                    layerData.frame = currentSequence[(frame - frameCount - 1) % currentSequence.length];
+                                    break;
+                                } else {
+                                    frameCount += currentSequence.length;
+                                }
+                            }
+                        }
                     }
                 }
             }

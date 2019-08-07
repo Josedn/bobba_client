@@ -248,8 +248,8 @@ export default class RoomEngine {
         let maxX = tileX;
         let maxY = tileY;
         if (floorItem.baseItem != null) {
-            const first = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.x);
-            const second = parseInt(floorItem.baseItem.furniBase.offset.logic.dimensions.y);
+            const first = floorItem.baseItem.furniBase.offset.logic.dimensions.x;
+            const second = floorItem.baseItem.furniBase.offset.logic.dimensions.y;
             if (first > 1) {
                 if (floorItem.rot === 0 || floorItem.rot === 4) {
                     maxX += first - 1;

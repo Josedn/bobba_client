@@ -7,7 +7,7 @@ import { ItemType, Direction } from "../../imagers/furniture/FurniImager";
 import { Selectable } from "../RoomEngine";
 import RequestFurniPickUp from "../../communication/outgoing/rooms/RequestFurniPickUp";
 
-const FRAME_SPEED = 80;
+const FRAME_SPEED = 100;
 
 export default abstract class RoomItem implements Selectable {
     id: number;
@@ -113,7 +113,7 @@ export default abstract class RoomItem implements Selectable {
         if (this.baseItem != null) {
             const layerCount = this.baseItem.furniBase.offset.visualization[this.baseItem.furniBase.size].layerCount + 1;
 
-            for (let i = 1; i < parseInt(layerCount); i++) {
+            for (let i = 1; i < layerCount; i++) {
                 const sprite = new Sprite();
                 sprite.visible = false;
 
