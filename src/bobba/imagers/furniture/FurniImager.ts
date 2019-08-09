@@ -1,9 +1,9 @@
 import FurniBase from "./FurniBase";
 import FurniAsset from "./FurniAsset";
-import { FurniOffset, generateOffsetFromXml } from "./FurniOffset";
+import { FurniOffset } from "./FurniOffset";
 import { Furnidata, FurniDescription } from "./Furnidata";
 
-export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni/";
+export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni2/";
 
 export default class FurniImager {
     ready: boolean;
@@ -98,16 +98,18 @@ export default class FurniImager {
                         const asset = offset.assets[assetId];
                         const fixedName = asset.name.split(itemName + '_')[1] as String;
                         if (fixedName.startsWith(size.toString()) || fixedName.startsWith("icon_")) {
-                            let resourceName = asset.name;
+                            let sourceAsset = asset;
                             if (asset.source != null) {
-                                resourceName = asset.source;
+                                sourceAsset = offset.assets[asset.source];
                             }
-                            assetsPromises.push(this._downloadImageAsync(itemName, resourceName).then(img => {
-                                furniBase.assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === 1);
-                            }).catch(err => {
-                                console.log("Cannot download " + asset.name);
-                                //reject(err);
-                            }));
+                            if (sourceAsset != null && sourceAsset.exists) {
+                                assetsPromises.push(this._downloadImageAsync(itemName, sourceAsset.name).then(img => {
+                                    furniBase.assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === 1);
+                                }).catch(err => {
+                                    console.log("Cannot download " + asset.name);
+                                    //reject(err);
+                                }));
+                            }
                         }
                     }
                     furniBase.states = states;
@@ -193,26 +195,14 @@ export default class FurniImager {
 
     _fetchOffsetAsync(uniqueName: string): Promise<FurniOffset> {
         return new Promise((resolve, reject) => {
-            const visualization = this._fetchXmlAsync(LOCAL_RESOURCES_URL + uniqueName + '/' + uniqueName + '_visualization.xml');
-            const logic = this._fetchXmlAsync(LOCAL_RESOURCES_URL + uniqueName + '/' + uniqueName + '_logic.xml');
-            const assets = this._fetchXmlAsync(LOCAL_RESOURCES_URL + uniqueName + '/' + uniqueName + '_assets.xml');
-
-            Promise.all([assets, logic, visualization]).then(data => {
-                const offset = generateOffsetFromXml(data[0], data[1], data[2]);
-                if (offset != null) {
-                    resolve(offset);
-                }
-                reject('Invalid XML');
-            }).catch(err => reject(err));
-
-            /*this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
+            this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
                 resolve(data as FurniOffset);
-            }).catch(err => reject(err));*/
+            }).catch(err => reject(err));
         });
     }
 }
 
-export type Size = 1 | 32 | 64;
+export type Size = 1 | 64;
 export enum ItemType { FloorItem = 'roomitem', WallItem = 'wallitem' }
 export interface NameColorPair { itemName: string, colorId: number };
 export type Direction = 0 | 2 | 4 | 6;
