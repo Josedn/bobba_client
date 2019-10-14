@@ -81,10 +81,16 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
                 //AUTO LOGIN 
                 game.uiManager.doLogin('Jose', 'hd-190-10.lg-3023-1408.ch-215-91.hr-893-45');
             }).catch(err => {
+                let errorMessage = err;
+
+                if (err instanceof Error) {
+                    errorMessage = err.message;
+                }
+
                 this.setState({
                     gameLoaded: false,
                     loggedIn: false,
-                    error: err,
+                    error: errorMessage,
                 });
             });
 
@@ -110,11 +116,12 @@ class BobbaUI extends Component<BobbaUIProps, BobbaUIState> {
             win.mainGame = game;
         }
         catch (err) {
-            const error = err as Error;
+            let errorMessage = err;
 
-            let errorMessage = "Error loading game."
-            if (error.message.includes("WebGL unsupported")) {
-                errorMessage = "Please enable hardware acceleration.";
+            if (err instanceof Error) {
+                if (err.message.includes("WebGL unsupported")) {
+                    errorMessage = "Please enable hardware acceleration.";
+                }
             }
 
             this.setState({
