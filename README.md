@@ -40,7 +40,7 @@ To build the client execute the following commands:
 Then you'll be running the React development server.
 If you want to deploy it, run
 
-    npm run serve
+    npm run build
 
 ## Related projects
 * [bobba_server](https://github.com/Josedn/bobba_server): Official compatible bobba server.
@@ -51,6 +51,6 @@ If you want to deploy it, run
 * [battleball_server](https://github.com/Josedn/battleball_server): Bobba 1.0 server
 
 ##
-![enter image description here](https://i.imgur.com/tALiJ2X.png)
+![Preview](https://i.imgur.com/tALiJ2X.png)
 ##
 Made with <3 by Relevance.
