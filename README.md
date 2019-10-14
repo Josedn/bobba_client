@@ -1,7 +1,7 @@
 # [bobba.io](https://bobba.io/) client &middot; [![GitHub license](https://img.shields.io/badge/license-GNU-blue.svg)](https://github.com/josedn/bobba_client/blob/master/LICENSE) 
 ![bobba](https://i.imgur.com/SKaFSwX.png)
-Habbo Hotel (r60+) remake made with modern (as 2019) technologies.
 
+Habbo Hotel (r60+) remake made with modern (as 2019) technologies.
 ## Features:
 * Built-in avatar imager
 * Built-in furni imager
