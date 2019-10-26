@@ -100,7 +100,7 @@ export default class Messenger {
 
     getCurrentTime(): string {
         const dateWithouthSecond = new Date();
-        return dateWithouthSecond.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return dateWithouthSecond.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
     }
 
     handleMessengerMessage(userId: number, text: string, type: MessengerMessageType) {
