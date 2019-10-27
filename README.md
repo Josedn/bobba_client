@@ -1,9 +1,8 @@
-
 # [bobba.io](https://bobba.io/) client &middot; [![GitHub license](https://img.shields.io/badge/license-GNU-blue.svg)](https://github.com/josedn/bobba_client/blob/master/LICENSE) 
-![bobba](https://i.imgur.com/SKaFSwX.png)
+![bobba](https://i.imgur.com/wGITX22.png)
 
 Habbo Hotel (r60+) remake made with modern (as 2019) technologies.
-
+This repo features a TypeScript/PixiJS/React Habbo Hotel client remake.
 ## Features:
 * Built-in avatar imager
 * Built-in furni imager
@@ -51,6 +50,13 @@ If you want to deploy it, run
 * [battleball_server](https://github.com/Josedn/battleball_server): Bobba 1.0 server
 
 ##
+![Preview](https://i.imgur.com/PSJi35v.png)
 ![Preview](https://i.imgur.com/tALiJ2X.png)
+![Preview](https://i.imgur.com/fjUhlpc.png)
+![Preview](https://i.imgur.com/IerdB6L.png)
+![Preview](https://i.imgur.com/AiFEKsP.png)
+![Preview](https://i.imgur.com/hCOwdYG.png)
+![Preview](https://i.imgur.com/OSMuMF4.png)
+![Preview](https://i.imgur.com/LlkrmLN.png)
 ##
 Made with <3 by Relevance.
