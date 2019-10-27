@@ -2,6 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 import { FLOOR_ITEM_PLACEHOLDER } from '../../bobba/graphics/GenericSprites';
 import MottoEdit from './MottoEdit';
+import Constants from '../../Constants';
 
 export type UserInfoProps = {
     name: string,
@@ -72,13 +73,13 @@ class UserInfo extends Component<UserInfoProps> {
                         </div>
                         <div className="badge_container">
                             <button>
-                                <img src={"https://images.bobba.io/c_images/album1584/J0S3.gif"} alt={"ADM"} />
+                                <img src={Constants.BADGE_RESOURCES_URL + "J0S3.gif"} alt={"ADM"} />
                             </button>
                             <button>
-                                <img src={"https://images.bobba.io/c_images/album1584/ADM.gif"} alt={"ADM"} />
+                                <img src={Constants.BADGE_RESOURCES_URL + "ADM.gif"} alt={"ADM"} />
                             </button>
                             <button>
-                                <img src={"https://images.bobba.io/c_images/album1584/Z64.gif"} alt={"ADM"} />
+                                <img src={Constants.BADGE_RESOURCES_URL + "Z64.gif"} alt={"ADM"} />
                             </button>
                         </div>
                     </div>

@@ -1,7 +1,8 @@
 import AvatarInfo, { Direction, FigurePart } from "./AvatarInfo";
 import AvatarChunk from "./AvatarChunk";
+import Constants from "../../../Constants";
 
-export const LOCAL_RESOURCES_URL = "//images.bobba.io/resource/";
+export const LOCAL_RESOURCES_URL = Constants.AVATAR_RESOURCES_URL;
 
 export default class AvatarImager {
     ready: boolean;

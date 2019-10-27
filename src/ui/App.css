@@ -9,7 +9,7 @@ body {
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
     background-color: #000000;
-    background-image: url('https://images.bobba.io/c_images/hotel_view_images_hq/hotelview_default.png');
+    background-image: url('/images/hotel_view_images_hq/hotelview_default.png');
     background-repeat: no-repeat;
     background-position: center 0; 
 }

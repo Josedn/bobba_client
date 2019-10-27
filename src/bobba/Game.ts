@@ -23,6 +23,7 @@ import RequestNavigatorGoToRoom from "./communication/outgoing/navigator/Request
 import RoomImager from "./imagers/rooms/RoomImager";
 import Messenger from "./messenger/Messenger";
 import RequestMessengerLoadFriends from "./communication/outgoing/messenger/RequestMessengerLoadFriends";
+import Constants from "../Constants";
 
 export default class Game {
     currentRoom?: Room;
@@ -82,7 +83,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             this.uiManager.postLoading("Connecting to server");
-            return this.communicationManager.connect("localhost", 8080, false);
+            return this.communicationManager.connect(Constants.HOST, Constants.PORT, Constants.SSL_ENABLED);
         });
     }
 

@@ -8,6 +8,7 @@ import BobbaEnvironment from "../../bobba/BobbaEnvironment";
 import { canvas2Image } from "../misc/GraphicsUtilities";
 import WindowManager from "../windows/WindowManager";
 import CatalogueItem from "../../bobba/catalogue/CatalogueItem";
+import Constants from "../../Constants";
 
 type CatalogueProps = {};
 
@@ -88,7 +89,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 return (
                     <button onClick={this.handleChangePage(child.id)} key={child.id} className={"second_tab" + (currentPageId === child.id ? ' selected' : '')}>
                         <div className="icon">
-                            <img src={"//images.bobba.io/c_images/catalogue/icon_" + child.iconId + ".png"} alt={child.name} />
+                            <img src={Constants.CATALOGUE_RESOURCES_URL + "icon_" + child.iconId + ".png"} alt={child.name} />
                         </div>
                         <span>{child.name}</span>
                     </button>
@@ -101,7 +102,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
                 <Fragment key={currentPage.id}>
                     <button onClick={this.handleChangePage(currentPage.id)} className={"main_tab" + (currentPageId === currentPage.id ? ' selected' : '') + (currentTabId === currentPage.id ? ' open' : '')}>
                         <div className="icon" style={{ backgroundColor: '#' + calculatedColor }}>
-                            <img src={"//images.bobba.io/c_images/catalogue/icon_" + currentPage.iconId + ".png"} alt={currentPage.name} />
+                            <img src={Constants.CATALOGUE_RESOURCES_URL + "icon_" + currentPage.iconId + ".png"} alt={currentPage.name} />
                         </div>
                         <span>{currentPage.name}</span>
                     </button>
@@ -180,7 +181,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return (
             <>
                 <div className="image_container">
-                    {currentPage.imageTeaser.length > 0 ? <img src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageTeaser + ".gif"} alt="Furniture" /> : <></>}
+                    {currentPage.imageTeaser.length > 0 ? <img src={Constants.CATALOGUE_RESOURCES_URL + "" + currentPage.imageTeaser + ".gif"} alt="Furniture" /> : <></>}
                 </div>
                 <div className="description_container">
                     {currentPage.textDetails}
@@ -244,8 +245,8 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
         return (
             <>
                 <div className="frontpage_teaser">
-                    <img alt="border" src="//images.bobba.io/c_images/catalogue/front_page_border.gif" className="border" />
-                    <img alt="article" src={"//images.bobba.io/c_images/Top_Story_Images/" + currentPage.imageTeaser + ".gif"} className="top_story" />
+                    <img alt="border" src={Constants.CATALOGUE_RESOURCES_URL + "front_page_border.gif"} className="border" />
+                    <img alt="article" src={Constants.TOP_STORY_RESOURCES_URL + currentPage.imageTeaser + ".gif"} className="top_story" />
                     <h2>
                         {currentPage.textHeader}
                     </h2>
@@ -301,7 +302,7 @@ export default class Catalogue extends React.Component<CatalogueProps, Catalogue
             return (
                 <div className="wrapper">
                     <div className="header_container">
-                        {currentPage.imageHeadline.length > 0 ? <img alt="Furniture" src={"//images.bobba.io/c_images/catalogue/" + currentPage.imageHeadline + ".gif"} /> : <></>}
+                        {currentPage.imageHeadline.length > 0 ? <img alt="Furniture" src={Constants.CATALOGUE_RESOURCES_URL + "" + currentPage.imageHeadline + ".gif"} /> : <></>}
                     </div>
                     {page}
                 </div>

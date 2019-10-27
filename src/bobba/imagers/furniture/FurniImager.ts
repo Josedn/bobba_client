@@ -2,8 +2,9 @@ import FurniBase from "./FurniBase";
 import FurniAsset from "./FurniAsset";
 import { FurniOffset } from "./FurniOffset";
 import { Furnidata, FurniDescription } from "./Furnidata";
+import Constants from "../../../Constants";
 
-export const LOCAL_RESOURCES_URL = "//images.bobba.io/hof_furni2/";
+export const LOCAL_RESOURCES_URL = Constants.FURNI_RESOURCES_URL;
 
 export default class FurniImager {
     ready: boolean;
