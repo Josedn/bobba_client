@@ -3,18 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/jest": "24.0.16",
-    "@types/node": "12.6.8",
-    "@types/react": "16.8.24",
-    "@types/react-dom": "16.8.5",
-    "pixi.js-legacy": "^5.1.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-draggable": "^3.3.0",
-    "react-scripts": "3.0.1",
+    "@types/jest": "24.0.20",
+    "@types/node": "12.11.7",
+    "@types/react": "16.9.11",
+    "@types/react-dom": "16.9.3",
+    "pixi.js-legacy": "^5.1.5",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "react-draggable": "^4.1.0",
+    "react-scripts": "3.2.0",
     "react-snap": "^1.23.0",
     "riek": "^1.1.0",
-    "typescript": "3.5.3"
+    "typescript": "3.6.4"
   },
   "scripts": {
     "start": "react-scripts start",

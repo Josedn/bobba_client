@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js-legacy';
-import { LoaderResource } from 'pixi.js-legacy';
 
 export default class MainEngine {
     pixiApp: PIXI.Application;
@@ -62,9 +61,12 @@ export default class MainEngine {
         return new Promise((resolve, reject) => {
             const loader = PIXI.Loader.shared;
             loader.add(texturesUrl);
-            loader.load((loader: PIXI.Loader, resources: { [key: string]: LoaderResource }) => {
+            loader.load((loader, resources) => {
                 for (let resourceId in resources) {
-                    this.globalTextures[resourceId] = resources[resourceId].texture;
+                    const res = resources[resourceId];
+                    if (res !== undefined) {
+                        this.globalTextures[resourceId] = res.texture;
+                    }
                 }
             });
 
