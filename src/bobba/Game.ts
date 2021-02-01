@@ -83,7 +83,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             this.uiManager.postLoading("Connecting to server");
-            return this.communicationManager.connect(Constants.HOST, Constants.PORT, Constants.SSL_ENABLED);
+            return this.communicationManager.connect(Constants.WS_URL);
         });
     }
 
