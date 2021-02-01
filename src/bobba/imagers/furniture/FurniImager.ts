@@ -2,17 +2,17 @@ import FurniBase from "./FurniBase";
 import FurniAsset from "./FurniAsset";
 import { FurniOffset } from "./FurniOffset";
 import { Furnidata, FurniDescription } from "./Furnidata";
-import Constants from "../../../Constants";
-
-export const LOCAL_RESOURCES_URL = Constants.FURNI_RESOURCES_URL;
+import { extractImage } from "./Atlas";
 
 export default class FurniImager {
     ready: boolean;
     bases: { roomitem: { [id: string]: Promise<FurniBase> }, wallitem: { [id: string]: Promise<FurniBase> } };
     offsets: { [id: string]: Promise<FurniOffset> };
     furnidata: Furnidata;
+    resourcesUrl: string;
 
-    constructor() {
+    constructor(resourcesUrl: string) {
+        this.resourcesUrl = resourcesUrl;
         this.ready = false;
         this.bases = { roomitem: {}, wallitem: {} };
         this.furnidata = { roomitemtypes: {}, wallitemtypes: {} };
@@ -60,7 +60,7 @@ export default class FurniImager {
                 }
                 const offsetPromise = this.offsets[itemName];
 
-                offsetPromise.then(offset => {
+                offsetPromise.then(async (offset) => {
                     const visualization = offset.visualization[64];
                     let states: { [id: number]: State } = { "0": { count: 1 } };
 
@@ -93,7 +93,7 @@ export default class FurniImager {
                         }
                     }
 
-                    const assetsPromises = [];
+                    const atlasImg = await this._downloadImageAsync(itemName, "atlas");
 
                     for (let assetId in offset.assets) {
                         const asset = offset.assets[assetId];
@@ -104,6 +104,24 @@ export default class FurniImager {
                                 sourceAsset = offset.assets[asset.source];
                             }
                             if (sourceAsset != null && sourceAsset.exists) {
+                                const extractedImage = extractImage(offset.atlas, atlasImg, sourceAsset.name + ".png");
+                                if (extractedImage != null) {
+                                    furniBase.assets[asset.name] = new FurniAsset(extractedImage, asset.x, asset.y, asset.flipH != null && asset.flipH === 1);
+                                }
+                            }
+                        }
+                    }
+
+                    /*for (let assetId in offset.assets) {
+                        const asset = offset.assets[assetId];
+                        const fixedName = asset.name.split(itemName + '_')[1] as String;
+                        if (fixedName.startsWith(size.toString()) || fixedName.startsWith("icon_")) {
+                            let sourceAsset = asset;
+                            if (asset.source != null) {
+                                sourceAsset = offset.assets[asset.source];
+                            }
+                            if (sourceAsset != null && sourceAsset.exists) {
+                                console.log(itemName + " --> " + sourceAsset.name);
                                 assetsPromises.push(this._downloadImageAsync(itemName, sourceAsset.name).then(img => {
                                     furniBase.assets[asset.name] = new FurniAsset(img, asset.x, asset.y, asset.flipH != null && asset.flipH === 1);
                                 }).catch(err => {
@@ -112,14 +130,9 @@ export default class FurniImager {
                                 }));
                             }
                         }
-                    }
+                    }*/
                     furniBase.states = states;
-
-                    Promise.all(assetsPromises).then(() => {
-                        resolve(furniBase);
-                    }).catch(err => {
-                        reject(err);
-                    });
+                    resolve(furniBase);
 
                 }).catch(err => {
                     reject("Error downloading offset for " + itemName + " reason: " + err);
@@ -138,7 +151,7 @@ export default class FurniImager {
 
     _loadFiles(): Promise<void>[] {
         return [
-            this._fetchJsonAsync(LOCAL_RESOURCES_URL + "furnidata.json")
+            this._fetchJsonAsync(this.resourcesUrl + "furnidata.json")
                 .then(data => {
                     this.furnidata = data as Furnidata;
                 }),
@@ -158,7 +171,7 @@ export default class FurniImager {
             };
         });
         img.crossOrigin = "anonymous";
-        img.src = LOCAL_RESOURCES_URL + itemName + "/" + resourceName + ".png";
+        img.src = this.resourcesUrl + itemName + "/" + resourceName + ".png";
         return d;
     }
 
@@ -196,7 +209,7 @@ export default class FurniImager {
 
     _fetchOffsetAsync(uniqueName: string): Promise<FurniOffset> {
         return new Promise((resolve, reject) => {
-            this._fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + '/furni.json').then(data => {
+            this._fetchJsonAsync(this.resourcesUrl + uniqueName + '/furni.json').then(data => {
                 resolve(data as FurniOffset);
             }).catch(err => reject(err));
         });

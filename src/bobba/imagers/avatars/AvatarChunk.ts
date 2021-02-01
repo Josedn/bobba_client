@@ -1,5 +1,5 @@
+import { Atlas, extractImage } from "./Atlas";
 import { Direction } from "./AvatarInfo";
-import { LOCAL_RESOURCES_URL } from "./AvatarImager";
 
 export default class AvatarChunk {
     lib: string;
@@ -83,7 +83,16 @@ export default class AvatarChunk {
         return resourceName;
     }
 
-    downloadAsync(): Promise<HTMLImageElement> {
+    extractFromAtlas(atlas: Atlas, atlasImg: HTMLImageElement) {
+        const img = extractImage(atlas, atlasImg, this.lib + "_" + this.getResourceName() + ".png");
+        if (img != null) {
+            this.resource = img;
+            this.promise = Promise.resolve(img);
+        }
+        return this.promise;
+    }
+
+    downloadAsync(resourcesUrl: string): Promise<HTMLImageElement> {
         if (this.promise == null) {
             let img = new Image();
             this.promise = new Promise((resolve, reject) => {
@@ -99,7 +108,7 @@ export default class AvatarChunk {
                 };
             });
             img.crossOrigin = "anonymous";
-            img.src = LOCAL_RESOURCES_URL + this.lib + "/" + this.lib + "_" + this.getResourceName() + ".png";
+            img.src = resourcesUrl + this.lib + "/" + this.lib + "_" + this.getResourceName() + ".png";
         }
         return this.promise;
     }

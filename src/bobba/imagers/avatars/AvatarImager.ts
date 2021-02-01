@@ -1,9 +1,5 @@
 import AvatarInfo, { Direction, FigurePart } from "./AvatarInfo";
 import AvatarChunk from "./AvatarChunk";
-import Constants from "../../../Constants";
-
-export const LOCAL_RESOURCES_URL = Constants.AVATAR_RESOURCES_URL;
-
 export default class AvatarImager {
     ready: boolean;
     offsets: any;
@@ -13,8 +9,9 @@ export default class AvatarImager {
     partsets: any;
     draworder: any;
     animation: any;
+    resourcesUrl: string;
 
-    constructor() {
+    constructor(resourcesUrl: string) {
         this.ready = false;
         this.offsets = {};
         this.chunks = {};
@@ -23,6 +20,7 @@ export default class AvatarImager {
         this.partsets = {};
         this.draworder = {};
         this.animation = {};
+        this.resourcesUrl = resourcesUrl;
     }
 
     initialize(): Promise<void> {
@@ -34,23 +32,23 @@ export default class AvatarImager {
 
     loadFiles(): Promise<void>[] {
         return [
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + "map.json")
+            this.fetchJsonAsync(this.resourcesUrl + "map.json")
                 .then(data => {
                     this.figuremap = data;
                 }),
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + "figuredata.json")
+            this.fetchJsonAsync(this.resourcesUrl + "figuredata.json")
                 .then(data => {
                     this.figuredata = data;
                 }),
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + "partsets.json")
+            this.fetchJsonAsync(this.resourcesUrl + "partsets.json")
                 .then(data => {
                     this.partsets = data;
                 }),
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + "draworder.json")
+            this.fetchJsonAsync(this.resourcesUrl + "draworder.json")
                 .then(data => {
                     this.draworder = data;
                 }),
-            this.fetchJsonAsync(LOCAL_RESOURCES_URL + "animation.json")
+            this.fetchJsonAsync(this.resourcesUrl + "animation.json")
                 .then(data => {
                     this.animation = data;
                 })
@@ -73,11 +71,33 @@ export default class AvatarImager {
         });
     }
 
-    fetchOffsetAsync(uniqueName: string): Promise<void> {
-        return this.fetchJsonAsync(LOCAL_RESOURCES_URL + uniqueName + "/offset.json")
+    downloadAtlasAsync(uniqueName: string): Promise<HTMLImageElement> {
+        let img = new Image();
+        let d: Promise<HTMLImageElement> = new Promise((resolve, reject) => {
+            img.onload = () => {
+                //console.log("downloaded " + this.itemName + " -> " + this.resourceName);
+                resolve(img);
+            };
+            img.onerror = () => {
+                //console.log("NOT DOWNLOADED " + this.itemName + " -> " + this.resourceName);
+                reject('Could not load image: ' + img.src);
+            };
+        });
+        img.crossOrigin = "anonymous";
+        img.src = this.resourcesUrl + uniqueName + "/atlas.png";
+        return d;
+    }
+
+    fetchOffsetAsync(uniqueName: string): Promise<any> {
+        const offsetPromise = this.fetchJsonAsync(this.resourcesUrl + uniqueName + "/offset.json")
             .then(data => {
                 this.offsets[uniqueName].data = data;
             });
+        const atlasPromise = this.downloadAtlasAsync(uniqueName)
+            .then(data => {
+                this.offsets[uniqueName].atlas = data;
+            });
+        return Promise.all([offsetPromise, atlasPromise]);
     }
 
     getTypeColorId(figure: string, part: string): number {
@@ -211,7 +231,7 @@ export default class AvatarImager {
                         }
 
                         if (this.offsets[uniqueName] == null) {
-                            this.offsets[uniqueName] = { 'promise': this.fetchOffsetAsync(uniqueName), 'data': {} };
+                            this.offsets[uniqueName] = { 'promise': this.fetchOffsetAsync(uniqueName), 'data': {}, 'atlas': {} };
                         }
                         offsetsPromises.push(this.offsets[uniqueName].promise);
 
@@ -236,7 +256,10 @@ export default class AvatarImager {
                 for (let chunk of chunks) {
                     if (this.offsets[chunk.lib].data != null && this.offsets[chunk.lib].data[chunk.getResourceName()] != null && !this.offsets[chunk.lib].data[chunk.getResourceName()].flipped) {
                         //console.log("Found sprite: " + chunk.getResourceName());
-                        chunksPromises.push(chunk.downloadAsync());
+                        //chunksPromises.push(chunk.downloadAsync(this.resourcesUrl));
+                        const atlasData = this.offsets[chunk.lib].data.atlas;
+                        const atlasImg = this.offsets[chunk.lib].atlas;
+                        chunksPromises.push(chunk.extractFromAtlas(atlasData, atlasImg));
                     } else {
                         let flippedType = this.partsets.partSet[chunk.type]['flipped-set-type'];
                         if (flippedType !== "") {
@@ -289,7 +312,10 @@ export default class AvatarImager {
                         }
                         if (this.offsets[chunk.lib].data != null && this.offsets[chunk.lib].data[chunk.getResourceName()] != null && !this.offsets[chunk.lib].data[chunk.getResourceName()].flipped) {
                             //console.log("Found sprite: " + chunk.getResourceName());
-                            chunksPromises.push(chunk.downloadAsync());
+                            //chunksPromises.push(chunk.downloadAsync(this.resourcesUrl));
+                            const atlasData = this.offsets[chunk.lib].data.atlas;
+                            const atlasImg = this.offsets[chunk.lib].atlas;
+                            chunksPromises.push(chunk.extractFromAtlas(atlasData, atlasImg));
                         } else {
                             //console.log("Not found... " + chunk.getResourceName());
                         }
