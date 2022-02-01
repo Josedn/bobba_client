@@ -1,15 +1,20 @@
 import User from "./User";
 import BobbaEnvironment from "../BobbaEnvironment";
 
+export enum CoinType {
+    Credit, Pixel
+};
+
 export default class UserManager {
     users: UserDictionary;
     currentUser?: User;
-    credits: number;
+    coins: [CoinType, number];
     clubDays: number;
 
     constructor() {
         this.users = {};
-        this.credits = -1;
+        this.coins = [CoinType.Credit, -1];
+        this.coins = [CoinType.Pixel, -1];
         this.clubDays = 69;
     }
 
@@ -34,11 +39,13 @@ export default class UserManager {
         return this.currentUser;
     }
 
-    updateCreditsBalance(balance: number) {
-        if (this.credits !== -1) {
+    updateCreditsBalance(coinType: CoinType, balance: number) {
+        if (this.coins[coinType] !== -1) {
             BobbaEnvironment.getGame().soundManager.playCreditsSound();
         }
-        this.credits = balance;
+
+        this.coins[coinType] = balance;
+        
         BobbaEnvironment.getGame().uiManager.onUpdateCreditsBalance(balance);
     }
 }
