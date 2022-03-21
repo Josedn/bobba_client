@@ -49,8 +49,8 @@ export default class Game {
         this.engine = new MainEngine(this.gameLoop, this.onResize, this.onMouseMove, this.onTouchStart, this.onTouchMove, this.onMouseClick, this.onMouseDoubleClick);
         this.soundManager = new SoundManager();
         this.ghostTextures = new AvatarContainer(GHOST_LOOK, true);
-        this.avatarImager = new AvatarImager();
-        this.furniImager = new FurniImager();
+        this.avatarImager = new AvatarImager(Constants.AVATAR_RESOURCES_URL);
+        this.furniImager = new FurniImager(Constants.FURNI_RESOURCES_URL);
         this.chatImager = new ChatImager();
         this.roomImager = new RoomImager();
         this.meMenuImager = new MeMenuImager();
@@ -83,7 +83,7 @@ export default class Game {
             this.engine.loadGlobalTextures(sprites),
         ]).then(() => {
             this.uiManager.postLoading("Connecting to server");
-            return this.communicationManager.connect(Constants.HOST, Constants.PORT, Constants.SSL_ENABLED);
+            return this.communicationManager.connect(Constants.WS_URL);
         });
     }
 

@@ -103,8 +103,7 @@ export default class CommunicationManager implements IMessageHandler {
 
     }
 
-    connect(host: string, port: number, secure: boolean): Promise<void> {
-        const connectionURL = (secure ? 'wss' : 'ws') + '://' + host + ':' + port;
+    connect(connectionURL: string): Promise<void> {
         return this.client.connect(connectionURL);
     }
 }

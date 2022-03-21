@@ -1,3 +1,4 @@
+import { Atlas } from "./Atlas";
 
 //assets
 export type FurniOffsetAsset = {
@@ -73,4 +74,5 @@ export type FurniOffset = {
     visualization: FurniOffsetVisualization;
     logic: FurniOffsetLogic;
     index: FurniOffsetIndex;
+    atlas: Atlas;
 };
