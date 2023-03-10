@@ -1,4 +1,5 @@
 export const LOGIN = 1;
+export const SIGN_UP = 3;
 export const REQUEST_MOVEMENT = 7;
 export const REQUEST_CHAT = 9;
 export const REQUEST_LOOK_AT = 12;

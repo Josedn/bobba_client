@@ -1,7 +1,9 @@
+import { lookup } from 'dns';
 import React, { SyntheticEvent } from 'react';
 import BobbaEnvironment from '../../bobba/BobbaEnvironment';
 
 const MAX_NAME_LENGTH = 20;
+const MAX_PASSWORD_LENGTH = 20;
 export interface LookGroup {
     figure: string,
     image: HTMLImageElement,
@@ -13,16 +15,20 @@ type JoinFormProps = {
 
 const initialState = {
     username: '',
+    password: '',
     look: '',
     wrongUsername: false,
     queuedLogin: false,
+    login: false,
 };
 
 type JoinFormState = {
     username: string,
+    password: string,
     look: string,
     wrongUsername: boolean,
     queuedLogin: boolean,
+    login: boolean
 };
 class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
 
@@ -41,11 +47,11 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
     }
 
     handleSubmit = (event: SyntheticEvent) => {
-        const { username, look } = this.state;
+        const { username, password, look } = this.state;
         event.preventDefault();
 
         if (username.length > 0 || username.length > MAX_NAME_LENGTH) {
-            BobbaEnvironment.getGame().uiManager.doLogin(username, look);
+            BobbaEnvironment.getGame().uiManager.doLogin(username, password, look);
             this.setState({
                 queuedLogin: true,
             });
@@ -89,20 +95,24 @@ class JoinForm extends React.Component<JoinFormProps, JoinFormState> {
     }
 
     render() {
-        const { username, wrongUsername, queuedLogin } = this.state;
+        const { username, password, look, wrongUsername, queuedLogin } = this.state;
         const classname = wrongUsername ? "wrong" : "";
 
-        const button = queuedLogin ? <button disabled>Loading...</button> : <button>Join</button>
+        const buttonLogin = queuedLogin ? <button disabled>Loading...</button> : <button onClick={() => this.setState({username: username, password: password, look: look, wrongUsername: wrongUsername, queuedLogin: queuedLogin, login: true})}>Login</button>
+        const buttonSignUp = queuedLogin ? <button disabled>Loading...</button> : <button onClick={() => this.setState({username: username, password: password, look: look, wrongUsername: wrongUsername, queuedLogin: queuedLogin, login: false})}>Sign Up</button>
+
         return (
             <form onSubmit={this.handleSubmit}>
                 <input type="text" autoComplete="off" maxLength={MAX_NAME_LENGTH} className={classname} placeholder="Username" name="username" onChange={this.handleInputChange} value={username} />
+                <input type="password" autoComplete="off" maxLength={MAX_PASSWORD_LENGTH} className={classname} placeholder="Password" name="password" onChange={this.handleInputChange} value={password} />
                 <br /><br />
                 <div className="looks">
                     {this.getLooks()}
                 </div>
                 <br />
                 <br />
-                {button}
+                {buttonLogin}
+                {buttonSignUp}
             </form>
         );
     }
